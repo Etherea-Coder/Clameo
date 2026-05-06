@@ -40,9 +40,9 @@ export const ClameoMark = ({ size = 28, className = "" }) => {
   );
 };
 
-export const ClameoLogo = ({ size = 28, className = "", textClass = "text-2xl" }) => {
+export const ClameoLogo = ({ size = 28, className = "", textClass = "text-2xl", light = false }) => {
   return (
-    <div className={`flex items-center gap-2 text-foreground ${className}`}>
+    <div className={`flex items-center gap-2 ${light ? "text-white" : "text-foreground"} ${className}`}>
       <ClameoMark size={size} />
       <span className={`font-semibold ${textClass} leading-none`}>
         Clameo<span className="text-coral">•</span>

@@ -39,14 +39,16 @@ export default function Header() {
   const isActive = (to) =>
     to === "/" ? location.pathname === "/" : location.pathname + location.hash === to;
 
+  const isLanding = location.pathname === "/";
+
   return (
     <header
-      className="w-full border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-40"
+      className={`w-full ${isLanding ? "absolute top-0 left-0 border-b border-white/10 bg-transparent backdrop-blur-sm" : "border-b border-border bg-background/80 backdrop-blur-sm sticky top-0"} z-40`}
       data-testid="site-header"
     >
       <div className="max-w-[1320px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center" data-testid="logo-link">
-          <ClameoLogo size={28} textClass="text-2xl" />
+          <ClameoLogo size={28} textClass="text-2xl" light={isLanding} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
@@ -54,8 +56,8 @@ export default function Header() {
             <Link
               key={n.to}
               to={n.to}
-              className={`nav-link text-[15px] text-foreground/80 hover:text-foreground ${
-                isActive(n.to) ? "active text-foreground" : ""
+              className={`nav-link text-[15px] ${isLanding ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground"} ${
+                isActive(n.to) ? "active" : ""
               }`}
               data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
             >
@@ -69,7 +71,7 @@ export default function Header() {
             type="button"
             onClick={() => setDark((d) => !d)}
             aria-label="Basculer le thème"
-            className="hidden sm:inline-flex items-center gap-2 px-2 py-1.5 rounded-[14px] border border-border hover:border-foreground/40 transition"
+            className={`hidden sm:inline-flex items-center gap-2 px-2 py-1.5 rounded-[14px] border transition ${isLanding ? "border-white/20 hover:border-white/40" : "border-border hover:border-foreground/40"}`}
             data-testid="theme-toggle"
           >
             <Sun size={14} className={dark ? "opacity-40" : "opacity-100"} />
@@ -96,7 +98,7 @@ export default function Header() {
 
           <button
             type="button"
-            className="md:hidden p-2"
+            className={`md:hidden p-2 ${isLanding ? "text-white" : "text-foreground"}`}
             onClick={() => setOpen((o) => !o)}
             aria-label="Menu"
             data-testid="mobile-menu-toggle"
@@ -108,14 +110,14 @@ export default function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-border bg-background" data-testid="mobile-menu">
+        <div className={`md:hidden border-t ${isLanding ? "border-white/10 bg-black/90 backdrop-blur-md" : "border-border bg-background"} data-testid="mobile-menu"`}>
           <div className="px-6 py-6 flex flex-col gap-4">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 onClick={() => setOpen(false)}
-                className="text-foreground text-base"
+                className={`text-base ${isLanding ? "text-white" : "text-foreground"}`}
                 data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
               >
                 {n.label}
