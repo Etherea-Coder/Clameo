@@ -5,61 +5,19 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
   <url>
     <loc>https://clameo.fr/builder</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/remboursement</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://clameo.fr/builder/logement</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/non-livre</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/mise-en-demeure</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/employeur</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/rgpd</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/consommation</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/voisinage</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clameo.fr/builder/banque</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+
   <url>
     <loc>https://clameo.fr/mentions-legales</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
   <url>
     <loc>https://clameo.fr/confidentialite</loc>
     <changefreq>yearly</changefreq>

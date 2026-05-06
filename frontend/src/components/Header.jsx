@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import ClameoLogo from "./Logo";
 
 const NAV = [
@@ -10,31 +10,9 @@ const NAV = [
 ];
 
 export default function Header() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      const stored = localStorage.getItem("clameo:theme");
-      if (stored === "dark") return true;
-      if (stored === "light") return false;
-      return document.documentElement.classList.contains("dark");
-    } catch {
-      return false;
-    }
-  });
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Apply + persist
-  useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add("dark");
-      try { localStorage.setItem("clameo:theme", "dark"); } catch {}
-    } else {
-      document.documentElement.classList.remove("dark");
-      try { localStorage.setItem("clameo:theme", "light"); } catch {}
-    }
-  }, [dark]);
 
   const isActive = (to) =>
     to === "/" ? location.pathname === "/" : location.pathname + location.hash === to;
@@ -69,26 +47,6 @@ export default function Header() {
         <div className="flex items-center gap-3 md:gap-5">
           <button
             type="button"
-            onClick={() => setDark((d) => !d)}
-            aria-label="Basculer le thème"
-            className={`hidden sm:inline-flex items-center gap-2 px-2 py-1.5 rounded-[14px] border transition ${isLanding ? "border-white/20 hover:border-white/40" : "border-border hover:border-foreground/40"}`}
-            data-testid="theme-toggle"
-          >
-            <Sun size={14} className={dark ? "opacity-40" : "opacity-100"} />
-            <span
-              className={`relative w-8 h-4 rounded-full transition ${
-                dark ? "bg-foreground" : "bg-foreground/20"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 ${dark ? "left-4" : "left-0.5"} w-3 h-3 rounded-full bg-background transition-all`}
-              />
-            </span>
-            <Moon size={14} className={dark ? "opacity-100" : "opacity-40"} />
-          </button>
-
-          <button
-            type="button"
             onClick={() => navigate("/builder")}
             className="btn-coral hidden md:inline-flex items-center px-5 py-2.5 rounded-[14px] text-sm font-semibold"
             data-testid="header-cta"
@@ -110,7 +68,12 @@ export default function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <div className={`md:hidden border-t ${isLanding ? "border-white/10 bg-black/90 backdrop-blur-md" : "border-border bg-background"} data-testid="mobile-menu"`}>
+        <div
+          className={`md:hidden border-t ${
+            isLanding ? "border-white/10 bg-black/90 backdrop-blur-md" : "border-border bg-background"
+          }`}
+          data-testid="mobile-menu"
+        >
           <div className="px-6 py-6 flex flex-col gap-4">
             {NAV.map((n) => (
               <Link

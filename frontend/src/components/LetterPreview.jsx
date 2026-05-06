@@ -2,7 +2,7 @@ import React from "react";
 
 /**
  * Floating Letter Preview — premium hero visual
- * Cream paper, thin amber top border, subtle blurred body lines, layered sheets behind.
+ * Cream paper, thin coral top border, subtle blurred body lines, layered sheets behind.
  */
 export default function LetterPreview({ className = "" }) {
   return (
@@ -19,14 +19,13 @@ export default function LetterPreview({ className = "" }) {
         style={{ background: "#fbf8f0", transform: "rotate(2deg)" }}
         aria-hidden="true"
       />
-
       {/* Main letter */}
       <div
         className="relative bg-white rounded-sm letter-shadow letter-float overflow-hidden"
         style={{ aspectRatio: "1 / 1.32" }}
       >
-        {/* Top amber border */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-amber-brand" />
+        {/* Top coral border */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#e8502a]" />
 
         <div className="p-6 sm:p-9 h-full flex flex-col font-mono-letter text-[11px] sm:text-[12px] text-ink/90 leading-relaxed">
           {/* Sender + recipient */}
@@ -35,8 +34,6 @@ export default function LetterPreview({ className = "" }) {
               <p className="font-semibold">Jean Dupont</p>
               <p>12 rue des Lilas</p>
               <p>75011 Paris</p>
-              <p className="mt-1 text-ink/60">jean.dupont@email.fr</p>
-              <p className="text-ink/60">06 12 34 56 78</p>
             </div>
             <div className="text-right">
               <p className="font-semibold">Service Client</p>
@@ -75,7 +72,6 @@ export default function LetterPreview({ className = "" }) {
               Madame, Monsieur, l'expression de mes salutations distinguées.
             </p>
             <p className="mt-5">Jean Dupont</p>
-            {/* Hand-written signature pseudo */}
             <svg
               className="mt-1"
               width="86"

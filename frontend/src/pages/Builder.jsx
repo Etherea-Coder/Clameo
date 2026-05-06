@@ -4,8 +4,10 @@ import { ArrowLeft, ArrowRight, Check, Save, Trash2, Lock } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { CASES, CASE_STEPS, RECIPIENT_STEP, USER_STEP, getCase } from "../lib/letterCases";
+import { CASES, CASE_STEPS, RECIPIENT_STEP, ATTACHMENTS_STEP, USER_STEP, getCase } from "../lib/letterCases";
+import { validateLetterData } from "../lib/letterTemplates";
 import { saveDraft, loadDraft, clearDraft } from "../lib/share";
+import { setResult } from "../lib/resultStore";
 
 const token = {
   light: "#fbfaf7",
@@ -27,7 +29,7 @@ function InjectBuilderStyles() {
       .builder-eyebrow {
         font-size: 11px;
         font-weight: 900;
-        letter-spacing: "0.16em";
+        letter-spacing: 0.16em;
         text-transform: uppercase;
         color: ${token.coral};
         margin-bottom: 8px;
@@ -36,22 +38,31 @@ function InjectBuilderStyles() {
   );
 }
 
-function FieldRenderer({ field, value, onChange }) {
+function FieldRenderer({ field, value, onChange, attempted }) {
   const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
+  const isInvalid = attempted && field.required && !value;
 
   if (field.type === "textarea") {
     return (
-      <textarea
-        rows={4}
-        className={base}
-        value={value || ""}
-        placeholder={field.placeholder}
-        onChange={(e) => onChange(field.name, e.target.value)}
-        data-testid={`field-${field.name}`}
-        style={{ borderColor: token.border }}
-        onFocus={(e) => e.target.style.borderColor = token.coral}
-        onBlur={(e) => e.target.style.borderColor = token.border}
-      />
+      <div>
+        <textarea
+          id={field.name}
+          rows={4}
+          className={base}
+          value={value || ""}
+          placeholder={field.placeholder}
+          onChange={(e) => onChange(field.name, e.target.value)}
+          data-testid={`field-${field.name}`}
+          style={{ borderColor: isInvalid ? token.coral : token.border }}
+          onFocus={(e) => e.target.style.borderColor = token.coral}
+          onBlur={(e) => e.target.style.borderColor = token.border}
+        />
+        {field.helper && (
+          <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
+            {field.helper}
+          </p>
+        )}
+      </div>
     );
   }
   if (field.type === "select") {
@@ -59,43 +70,98 @@ function FieldRenderer({ field, value, onChange }) {
     const currentSlug =
       (field.options.find((o) => o.label === value) || {}).value || "";
     return (
-      <select
-        className={base}
-        value={currentSlug}
-        onChange={(e) => {
-          const slug = e.target.value;
-          const opt = field.options.find((o) => o.value === slug);
-          // Store the human-readable label so letter templates stay clean
-          onChange(field.name, opt ? opt.label : "");
-        }}
-        data-testid={`field-${field.name}`}
-        style={{ borderColor: token.border }}
-        onFocus={(e) => e.target.style.borderColor = token.coral}
-        onBlur={(e) => e.target.style.borderColor = token.border}
-      >
-        <option value="" disabled>
-          — Sélectionnez —
-        </option>
-        {field.options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
+      <div>
+        <select
+          id={field.name}
+          className={base}
+          value={currentSlug}
+          onChange={(e) => {
+            const slug = e.target.value;
+            const opt = field.options.find((o) => o.value === slug);
+            // Store the human-readable label so letter templates stay clean
+            onChange(field.name, opt ? opt.label : "");
+          }}
+          data-testid={`field-${field.name}`}
+          style={{ borderColor: isInvalid ? token.coral : token.border }}
+          onFocus={(e) => e.target.style.borderColor = token.coral}
+          onBlur={(e) => e.target.style.borderColor = token.border}
+        >
+          <option value="" disabled>
+            — Sélectionnez —
           </option>
-        ))}
-      </select>
+          {field.options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        {field.helper && (
+          <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
+            {field.helper}
+          </p>
+        )}
+      </div>
     );
   }
+
+  if (field.type === "checkboxGroup") {
+    const selectedValues = value || [];
+    
+    return (
+      <div>
+        <div className="space-y-3">
+          {field.options.map((option) => (
+            <label key={option.value} className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                id={option.value}
+                checked={selectedValues.includes(option.value)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    onChange(field.name, [...selectedValues, option.value]);
+                  } else {
+                    onChange(field.name, selectedValues.filter(v => v !== option.value));
+                  }
+                }}
+                className="w-4 h-4 text-coral border border-border rounded focus:outline-none focus:ring-2 focus:ring-coral/20"
+              />
+              <span className="text-sm">{option.label}</span>
+            </label>
+          ))}
+        </div>
+        {field.helper && (
+          <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
+            {field.helper}
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <input
-      type={field.type || "text"}
-      className={base}
-      value={value || ""}
-      placeholder={field.placeholder}
-      onChange={(e) => onChange(field.name, e.target.value)}
-      data-testid={`field-${field.name}`}
-      style={{ borderColor: token.border }}
-      onFocus={(e) => e.target.style.borderColor = token.coral}
-      onBlur={(e) => e.target.style.borderColor = token.border}
-    />
+    <div>
+      <input
+        id={field.name}
+        type={field.type || "text"}
+        className={base}
+        value={value || ""}
+        placeholder={field.placeholder}
+        onChange={(e) => onChange(field.name, e.target.value)}
+        data-testid={`field-${field.name}`}
+        style={{ borderColor: isInvalid ? token.coral : token.border }}
+        onFocus={(e) => e.target.style.borderColor = token.coral}
+        onBlur={(e) => e.target.style.borderColor = token.border}
+        {...(field.type === "date" && {
+          min: "1900-01-01",
+          max: new Date().toISOString().split("T")[0],
+        })}
+      />
+      {field.helper && (
+        <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
+          {field.helper}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -106,6 +172,7 @@ export default function Builder() {
   const [data, setData] = useState({});
   const [stepIndex, setStepIndex] = useState(0);
   const [hasDraftForCase, setHasDraftForCase] = useState(false);
+  const [attempted, setAttempted] = useState(false);
 
   // If no case selected, show case picker
   const c = selectedCase ? getCase(selectedCase) : null;
@@ -125,7 +192,7 @@ export default function Builder() {
 
   const allSteps = useMemo(() => {
     if (!selectedCase) return [];
-    return [...(CASE_STEPS[selectedCase] || []), RECIPIENT_STEP, USER_STEP];
+    return [...(CASE_STEPS[selectedCase] || []), RECIPIENT_STEP, ATTACHMENTS_STEP, USER_STEP];
   }, [selectedCase]);
 
   const totalSteps = allSteps.length;
@@ -164,13 +231,24 @@ export default function Builder() {
   };
 
   const next = () => {
-    if (!isStepValid()) return;
+    if (!isStepValid()) {
+      setAttempted(true);
+      return;
+    }
+    setAttempted(false);
     if (stepIndex < totalSteps - 1) {
       setStepIndex((i) => i + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
+      // Final validation before generating
+      const missing = validateLetterData(selectedCase, data);
+      if (missing.length > 0) {
+        toast.error("Certaines informations obligatoires sont manquantes.");
+        return;
+      }
+
       // Persist + navigate to result
-      sessionStorage.setItem("clameo:result", JSON.stringify({ caseId: selectedCase, data }));
+      setResult({ caseId: selectedCase, data });
       navigate("/result");
     }
   };
@@ -178,6 +256,7 @@ export default function Builder() {
   const prev = () => {
     if (stepIndex === 0) {
       setSelectedCase(null);
+      setData({});
       setStepIndex(0);
       navigate("/builder");
     } else {
@@ -197,7 +276,7 @@ export default function Builder() {
             <ArrowLeft size={16} /> Retour à l'accueil
           </Link>
           <p className="builder-eyebrow">Étape 1</p>
-          <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] tracking-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] font-black tracking-[-0.04em]">
             Choisissez votre <em className="italic">situation</em>
           </h1>
 
@@ -210,6 +289,7 @@ export default function Builder() {
                   type="button"
                   onClick={() => {
                     setSelectedCase(cs.id);
+                    setData({});
                     setStepIndex(0);
                     navigate(`/builder/${cs.id}`);
                   }}
@@ -219,7 +299,7 @@ export default function Builder() {
                 >
                   <Icon size={20} strokeWidth={1.6} style={{ color: token.text }} />
                   <div>
-                    <p className="font-serif-display text-[20px] leading-tight">{cs.title}</p>
+                    <p className="text-[20px] leading-tight font-bold tracking-tight">{cs.title}</p>
                     <p className="text-sm mt-1.5" style={{ color: token.muted }}>{cs.short}</p>
                   </div>
                 </button>
@@ -265,7 +345,7 @@ export default function Builder() {
 
         <div className="mt-10">
           <p className="builder-eyebrow">{c.title}</p>
-          <h1 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl mt-3 leading-[1.05] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl mt-3 leading-[1.05] font-black tracking-[-0.04em]">
             {currentStep.title}
           </h1>
         </div>
@@ -277,7 +357,7 @@ export default function Builder() {
                 {f.label}
                 {f.required ? <span style={{ color: token.coral }}> *</span> : null}
               </label>
-              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} />
+              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} />
             </div>
           ))}
         </div>
@@ -345,7 +425,7 @@ export default function Builder() {
           >
             {stepIndex === totalSteps - 1 ? (
               <>
-                Générer ma lettre <Check size={16} />
+                Générer ma lettre prête à envoyer <Check size={16} />
               </>
             ) : (
               <>

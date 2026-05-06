@@ -6,6 +6,7 @@ import Builder from "./pages/Builder";
 import Result from "./pages/Result";
 import MentionsLegales from "./pages/MentionsLegales";
 import Confidentialite from "./pages/Confidentialite";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/result" element={<Result />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />
           <Route path="/confidentialite" element={<Confidentialite />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </BrowserRouter>
     </div>

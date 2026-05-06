@@ -364,24 +364,73 @@ export const CASE_STEPS = {
   ],
 };
 
+// Attachments step is shared
+export const ATTACHMENTS_STEP = {
+  title: "Documents à joindre",
+  fields: [
+    {
+      name: "attachmentsList",
+      label: "Documents à joindre",
+      type: "checkboxGroup",
+      options: [
+        { label: "Facture", value: "facture" },
+        { label: "Confirmation de commande", value: "confirmation" },
+        { label: "Capture d'écran", value: "capture" },
+        { label: "Email ou échange écrit", value: "email" },
+        { label: "Photo", value: "photo" },
+        { label: "Contrat", value: "contrat" },
+        { label: "Justificatif de paiement", value: "paiement" },
+        { label: "Autre document", value: "autre" },
+      ],
+    },
+    {
+      name: "attachmentsOther",
+      label: "Autre document (optionnel)",
+      type: "textarea",
+      placeholder: "Décrivez le document à joindre...",
+    },
+  ],
+};
+
 // Final user info step is shared
 export const USER_STEP = {
   title: "Vos informations",
   fields: [
     { name: "userFullName", label: "Nom et prénom", required: true },
-    { name: "userAddress", label: "Adresse", required: true },
+    { name: "userAddress", label: "Adresse postale", required: true },
     { name: "userPostalCity", label: "Code postal et ville", placeholder: "Ex : 75011 Paris", required: true },
-    { name: "userEmail", label: "Email (facultatif)", type: "email" },
-    { name: "userPhone", label: "Téléphone (facultatif)" },
-    { name: "attachments", label: "Pièces jointes / preuves utiles (facultatif)", type: "textarea", placeholder: "Ex : facture, capture d'écran, email de confirmation, photo, contrat, justificatif de paiement…" },
+    { name: "userEmail", label: "Email facultatif", type: "email" },
+    { name: "userPhone", label: "Téléphone facultatif", type: "tel" },
   ],
 };
 
 export const RECIPIENT_STEP = {
   title: "Coordonnées du destinataire",
   fields: [
-    { name: "recipientName", label: "Nom du destinataire / société", required: true },
-    { name: "recipientAddress", label: "Adresse postale du destinataire", required: true, type: "textarea" },
-    { name: "city", label: "Votre ville (pour la lettre)", placeholder: "Ex : Paris", required: true },
+    {
+      name: "recipientName",
+      label: "Nom du destinataire / société",
+      placeholder: "Ex : Service client Exemple",
+      required: true,
+    },
+    {
+      name: "recipientStreet",
+      label: "Adresse du destinataire",
+      placeholder: "Ex : 12 rue de la Paix",
+      required: true,
+    },
+    {
+      name: "recipientPostalCity",
+      label: "Code postal et ville du destinataire",
+      placeholder: "Ex : 75008 Paris",
+      required: true,
+    },
+    {
+      name: "city",
+      label: "Fait à",
+      placeholder: "Ex : Paris",
+      helper: "Cette ville apparaîtra avant la date dans votre lettre.",
+      required: true,
+    },
   ],
 };

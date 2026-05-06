@@ -19,12 +19,12 @@ export default function Footer() {
           <div className="lg:col-span-3">
             <p className="eyebrow text-white/50 mb-4">Modèles</p>
             <ul className="space-y-2 text-sm text-white/80">
-              <li>Remboursement</li>
-              <li>Logement</li>
-              <li>Non livré</li>
-              <li>Mise en demeure</li>
-              <li>Employeur</li>
-              <li>RGPD</li>
+              <li><Link to="/builder/remboursement" className="hover:text-coral transition">Remboursement</Link></li>
+              <li><Link to="/builder/logement" className="hover:text-coral transition">Logement</Link></li>
+              <li><Link to="/builder/non-livre" className="hover:text-coral transition">Non livré</Link></li>
+              <li><Link to="/builder/mise-en-demeure" className="hover:text-coral transition">Mise en demeure</Link></li>
+              <li><Link to="/builder/employeur" className="hover:text-coral transition">Employeur</Link></li>
+              <li><Link to="/builder/rgpd" className="hover:text-coral transition">RGPD</Link></li>
             </ul>
           </div>
 
@@ -33,7 +33,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-white/80">
               <li><Link to="/mentions-legales" className="hover:text-coral transition" data-testid="footer-legal">Mentions légales</Link></li>
               <li><Link to="/confidentialite" className="hover:text-coral transition" data-testid="footer-privacy">Confidentialité</Link></li>
-              <li><a href="mailto:contact@clameo.fr" className="hover:text-coral transition">Contact</a></li>
+              <li><Link to="/contact" className="hover:text-coral transition" data-testid="footer-contact">Contact</Link></li>
             </ul>
           </div>
         </div>

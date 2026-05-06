@@ -1,4 +1,4 @@
-import { getCase, CASE_STEPS, RECIPIENT_STEP, USER_STEP } from "./letterCases";
+import { getCase, CASE_STEPS, RECIPIENT_STEP, ATTACHMENTS_STEP, USER_STEP } from "./letterCases";
 
 const formatDate = (value) => {
   if (!value) return "";
@@ -68,15 +68,42 @@ const senderAddress = (d) =>
 const senderContact = (d) =>
   [d.userEmail, d.userPhone].map(clean).filter(Boolean).join(" — ");
 
-const recipientAddress = (d) =>
-  [d.recipientName, d.recipientAddress].map(clean).filter(Boolean).join("\n");
+const recipientAddress = (d) => {
+  const street = d.recipientStreet || d.recipientAddress;
+  const postalCity = d.recipientPostalCity || "";
+  
+  const addressLines = [d.recipientName, street, postalCity]
+    .map(clean)
+    .filter(Boolean);
+    
+  return addressLines.join("\n");
+};
 
 const attachmentsLine = (d) => {
-  const items = clean(d.attachments);
-  if (!items) return "";
-
+  const attachmentsList = d.attachmentsList || [];
+  const otherText = d.attachmentsOther ? clean(d.attachmentsOther) : "";
+  
+  const documentLabels = {
+    facture: "Facture",
+    confirmation: "Confirmation de commande", 
+    capture: "Capture d'écran",
+    email: "Email de confirmation",
+    photo: "Photo",
+    contrat: "Contrat",
+    paiement: "Justificatif de paiement",
+    autre: "Autre document"
+  };
+  
+  const selectedDocs = attachmentsList
+    .map(value => documentLabels[value] || value)
+    .filter(Boolean);
+    
+  const allDocs = [...selectedDocs, otherText].filter(Boolean);
+  
+  if (allDocs.length === 0) return "";
+  
   return compact(`Pièces jointes :
-${items}`);
+${allDocs.join("\n- ")}`);
 };
 
 const signatureBlock = (d) => {
@@ -114,7 +141,7 @@ const bodies = {
 
 Je vous adresse la présente au sujet de l'achat effectué le ${purchaseDate} auprès de ${merchant}${orderRef ? `, sous la référence ${orderRef}` : ""}, pour un montant de ${amount}.
 
-${reason ? `Ma demande est motivée par le motif suivant : ${lowerFirst(reason)}.` : "Malgré mes démarches, la situation n'a pas été régularisée à ce jour."}
+${reason ? `Cette demande est liée au motif suivant : ${lowerFirst(reason)}.` : "Malgré mes démarches, la situation n'a pas été régularisée à ce jour."}
 ${details ? `\n${details}` : ""}
 
 En conséquence, je vous demande de bien vouloir procéder au remboursement de ${amount}, ou de me transmettre une réponse écrite et motivée, dans un délai de quatorze (14) jours à compter de la réception du présent courrier.
@@ -123,6 +150,7 @@ En conséquence, je vous demande de bien vouloir procéder au remboursement de $
   },
 
   logement: (d) => {
+    const landlord = fallbackName(d.landlordName, d.recipientName, "votre propriétaire");
     const address = clean(d.propertyAddress) || "l'adresse du logement concerné";
     const issueType = clean(d.issueType);
     const details = clean(d.details);
@@ -131,7 +159,7 @@ En conséquence, je vous demande de bien vouloir procéder au remboursement de $
 
     return compact(`Madame, Monsieur,
 
-Locataire du logement situé ${address}${leaseStart ? ` depuis le ${leaseStart}` : ""}, je vous adresse la présente concernant ${issueType ? lowerFirst(issueType) : "un litige relatif au logement"}.
+Locataire du logement situé ${address}${leaseStart ? ` depuis le ${leaseStart}` : ""}, je vous adresse la présente concernant ${landlord} concernant ${issueType ? lowerFirst(issueType) : "un litige relatif au logement"}.
 
 ${details || "La situation signalée nécessite une régularisation ou une intervention de votre part."}
 ${amount ? `\nLe montant concerné par ce litige est de ${amount}.` : ""}
@@ -282,7 +310,7 @@ Je vous demande de bien vouloir prendre les mesures nécessaires afin de faire c
 
     return compact(`Madame, Monsieur,
 
-Je suis titulaire d'un compte auprès de ${bank}${accountRef ? `, sous la référence ${accountRef}` : ""}, je vous adresse la présente afin de contester ${issueType ? lowerFirst(issueType) : "une opération ou une situation relative à mon compte"}.
+Je suis titulaire d'un compte auprès de ${bank}${accountRef ? `, sous la référence ${accountRef}` : ""}, et je vous adresse la présente afin de contester ${issueType ? lowerFirst(issueType) : "une opération ou une situation relative à mon compte"}.
 
 ${operationDate ? `Date de l'opération ou de l'événement concerné : ${operationDate}.` : ""}
 ${amount ? `Montant concerné : ${amount}.` : ""}
@@ -298,7 +326,7 @@ Si la situation concerne une opération non autorisée ou une erreur de traiteme
 
 const requiredFieldsForCase = (caseId) => {
   const caseSteps = CASE_STEPS[caseId] || [];
-  const allSteps = [...caseSteps, RECIPIENT_STEP, USER_STEP];
+  const allSteps = [...caseSteps, RECIPIENT_STEP, ATTACHMENTS_STEP, USER_STEP];
 
   return allSteps.flatMap((step) =>
     (step.fields || [])

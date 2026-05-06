@@ -1,44 +1,40 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   ArrowLeft, Copy, Download, Printer, Check, FileText,
-  Pencil, RotateCcw, Eye, Send, Lock,
+  Pencil, RotateCcw, Eye, Lock,
 } from "lucide-react";
 import jsPDF from "jspdf";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { buildLetter } from "../lib/letterTemplates";
 import { getCase } from "../lib/letterCases";
-import { encodeShare, decodeShare } from "../lib/share";
+import { getResult } from "../lib/resultStore";
 import { toast, Toaster } from "sonner";
 
-const LRAR_URL = process.env.REACT_APP_LRAR_URL || "#";
+const LRAR_URL = process.env.REACT_APP_LRAR_URL || "";
 
 export default function Result() {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [payload, setPayload] = useState(null);
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editedText, setEditedText] = useState(null);
 
-  // Load from sessionStorage
+  // Load from result store
   useEffect(() => {
-    const raw = sessionStorage.getItem("clameo:result");
-    if (!raw) {
-      navigate("/builder");
-      return;
-    }
-    try {
-      setPayload(JSON.parse(raw));
-    } catch {
-      navigate("/builder");
-    }
-  }, [navigate]);
+    const result = getResult();
+    setPayload(result || null);
+  }, []);
 
   const generatedText = useMemo(() => {
     if (!payload) return "";
-    return buildLetter(payload.caseId, payload.data);
+
+    try {
+      return buildLetter(payload.caseId, payload.data);
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }, [payload]);
 
   const baseText = editedText !== null ? editedText : generatedText;
@@ -47,6 +43,10 @@ export default function Result() {
 
   // === Actions ===
   const handleCopy = async () => {
+    if (!baseText.trim()) {
+      toast.error("La lettre est vide. Veuillez revenir au générateur.");
+      return;
+    }
     try {
       await navigator.clipboard.writeText(baseText);
       setCopied(true);
@@ -57,23 +57,44 @@ export default function Result() {
     }
   };
 
-  const handlePrint = () => window.print();
+  const handlePrint = () => {
+  if (!baseText.trim()) {
+    toast.error("La lettre est vide. Veuillez revenir au générateur.");
+    return;
+  }
+
+  window.print();
+};
 
   const handlePDF = () => {
+    if (!baseText.trim()) {
+      toast.error("La lettre est vide. Veuillez revenir au générateur.");
+      return;
+    }
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const margin = 56;
-    const maxW = 595 - margin * 2;
-    doc.setFont("courier", "normal");
-    doc.setFontSize(11);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const maxW = pageWidth - margin * 2;
+    const lineHeight = 15;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10.5);
+
     const lines = doc.splitTextToSize(baseText, maxW);
     let y = margin;
-    const lineHeight = 14;
-    lines.forEach((ln) => {
-      if (y > 800) { doc.addPage(); y = margin; }
-      doc.text(ln, margin, y);
+
+    lines.forEach((line) => {
+      if (y + lineHeight > pageHeight - margin) {
+        doc.addPage();
+        y = margin;
+      }
+
+      doc.text(line, margin, y);
       y += lineHeight;
     });
-    const fileName = `clameo-${payload.caseId}.pdf`;
+
+    const fileName = `clameo-${payload.caseId}-${new Date().toISOString().slice(0, 10)}.pdf`;
     doc.save(fileName);
     toast.success("PDF téléchargé");
   };
@@ -85,14 +106,27 @@ export default function Result() {
     toast.success("Texte réinitialisé");
   };
 
-  // Loading guard
+  // Fallback guard
   if (!payload || !c) {
     return (
       <div className="min-h-screen bg-background text-foreground">
+        <Toaster position="top-center" />
         <Header />
-        <div className="max-w-xl mx-auto py-32 text-center">
-          <p className="text-foreground/60">Chargement…</p>
-        </div>
+        <section className="max-w-xl mx-auto px-6 py-32 text-center">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-[-0.04em] mb-4">
+            Votre lettre n'est plus disponible
+          </h1>
+          <p className="text-foreground/70 mb-8">
+            Retournez au générateur pour créer une nouvelle lettre.
+          </p>
+          <Link
+            to="/builder"
+            className="btn-coral inline-flex items-center gap-2 px-6 py-3 rounded-[14px] text-sm font-semibold"
+          >
+            <ArrowLeft size={16} /> Créer une lettre
+          </Link>
+        </section>
+        <Footer />
       </div>
     );
   }
@@ -115,10 +149,10 @@ export default function Result() {
         <div className="no-print">
           <p className="eyebrow text-foreground/60">Votre lettre</p>
           <h1
-            className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] tracking-tight"
+            className="text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] font-black tracking-[-0.04em]"
             data-testid="result-title"
           >
-            Prête à <em className="italic">envoyer</em>
+            Prêt à <em className="italic text-[#e8502a]">envoyer</em>
           </h1>
           <p className="mt-4 text-foreground/70 max-w-xl">
             Relisez, ajustez le texte directement si nécessaire, puis téléchargez votre lettre.
@@ -143,7 +177,6 @@ export default function Result() {
                   type="button"
                   onClick={stopEdit}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border border-border hover:border-foreground transition"
-                  data-testid="action-preview"
                 >
                   <Eye size={14} /> Aperçu
                 </button>
@@ -159,8 +192,12 @@ export default function Result() {
                 </button>
               )}
               {isEdited && (
-                <span className="text-xs text-trust font-medium" data-testid="edited-badge">
-                  • Texte modifié
+                <span
+                  className="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
+                  style={{ borderColor: "#e5e7eb", color: "#e8502a" }}
+                  data-testid="edited-badge"
+                >
+                  Modifié
                 </span>
               )}
             </div>
@@ -175,13 +212,13 @@ export default function Result() {
                 <textarea
                   value={baseText}
                   onChange={(e) => setEditedText(e.target.value)}
-                  className="w-full p-8 sm:p-12 font-mono-letter text-[13px] sm:text-[14px] leading-[1.7] text-foreground bg-white outline-none resize-none border-0 focus:ring-0"
+                  className="w-full p-6 sm:p-9 font-mono-letter text-[13px] sm:text-[14px] leading-[1.7] text-foreground bg-white outline-none resize-none border-0 focus:ring-0"
                   style={{ minHeight: "70vh" }}
                   data-testid="result-editor"
                   spellCheck={true}
                 />
               ) : (
-                <pre className="p-8 sm:p-12 font-mono-letter text-[13px] sm:text-[14px] leading-[1.7] text-foreground whitespace-pre-wrap">
+                <pre className="p-6 sm:p-9 font-mono-letter text-[13px] sm:text-[14px] leading-[1.7] text-foreground whitespace-pre-wrap">
                   {baseText}
                 </pre>
               )}
@@ -189,10 +226,10 @@ export default function Result() {
           </div>
 
           {/* Actions sidebar */}
-          <aside className="no-print lg:col-span-4 space-y-3">
+          <aside className="no-print lg:col-span-4 space-y-3 mt-6 lg:mt-0">
             <div className="rounded-lg border border-border bg-card p-6">
               <p className="font-semibold text-xl">Actions</p>
-              <p className="text-sm text-foreground/60 mt-1">Téléchargez, copiez ou partagez votre lettre.</p>
+              <p className="text-sm text-foreground/60 mt-1">Téléchargez, copiez ou imprimez votre lettre.</p>
 
               <div className="mt-5 space-y-2.5">
                 <button
@@ -223,8 +260,7 @@ export default function Result() {
               </div>
             </div>
 
-            
-            <div className="rounded-lg border border-border bg-secondary p-6">
+            <div className="rounded-lg border border-border bg-card p-6">
               <div className="flex items-start gap-3">
                 <Lock size={18} className="text-trust shrink-0 mt-0.5" />
                 <div>
@@ -236,19 +272,43 @@ export default function Result() {
               </div>
             </div>
 
-            {!isShareMode && (
-              <div className="rounded-lg border border-border bg-secondary p-6">
-                <div className="flex items-start gap-3">
-                  <FileText size={18} className="text-trust shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold">Conseil pratique</p>
-                    <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
-                      Pour une mise en demeure, privilégiez l'envoi en lettre recommandée avec accusé de réception.
-                    </p>
-                  </div>
+            <div className="rounded-lg border border-border bg-card p-6">
+              <p className="text-sm font-semibold">Envoyer en recommandé</p>
+              <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
+                Votre lettre est prête. Vous pouvez l'envoyer en recommandé avec accusé de réception via un service d'envoi en ligne.
+              </p>
+
+              {LRAR_URL ? (
+                <a
+                  href={LRAR_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border hover:border-foreground transition"
+                >
+                  Envoyer en recommandé →
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border opacity-50 cursor-not-allowed"
+                >
+                  Partenaire bientôt disponible
+                </button>
+              )}
+            </div>
+
+            <div className="rounded-lg border border-border bg-card p-6">
+              <div className="flex items-start gap-3">
+                <FileText size={18} className="text-trust shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold">Conseil pratique</p>
+                  <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
+                    Pour une mise en demeure, privilégiez l'envoi en lettre recommandée avec accusé de réception.
+                  </p>
                 </div>
               </div>
-            )}
+            </div>
           </aside>
         </div>
       </section>

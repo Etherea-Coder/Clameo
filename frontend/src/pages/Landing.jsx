@@ -1007,7 +1007,7 @@ export default function Landing() {
       )}
 
       <main className="section-light">
-        <section id="modeles" data-testid="usecases-section" style={{ padding: "112px 0" }}>
+        <section id="modeles" data-testid="usecases-section" style={{ padding: "112px 0", scrollMarginTop: 80 }}>
           <div className="clameo-container">
             <div style={{ maxWidth: 760, marginBottom: 54 }}>
               <div className="section-eyebrow">Nos modèles</div>
@@ -1260,6 +1260,7 @@ export default function Landing() {
           data-testid="faq-section"
           style={{
             padding: "0 0 112px",
+            scrollMarginTop: 80,
           }}
         >
           <div className="clameo-container">
