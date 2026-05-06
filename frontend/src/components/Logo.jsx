@@ -4,7 +4,7 @@ import React from "react";
  * Clameo Logo
  * Concept: a small 2-paper-tabs side outweighing a single bigger block on the other,
  * representing "small letter restoring balance against bigger power".
- * Navy line-art with one small amber detail (the dot after the "o" and the fulcrum dot).
+ * Navy line-art with one small coral detail (the dot after the "o" and the fulcrum dot).
  */
 export const ClameoMark = ({ size = 28, className = "" }) => {
   return (
@@ -28,24 +28,24 @@ export const ClameoMark = ({ size = 28, className = "" }) => {
       <line x1="39" y1="17.5" x2="39" y2="22" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
 
       {/* Left side: TWO small papers (stacked) — the "letters" */}
-      <rect x="4.5" y="20" width="9" height="6" rx="0.6" stroke="currentColor" strokeWidth="1.4" fill="hsl(var(--paper))" />
-      <rect x="6" y="22.5" width="9" height="6" rx="0.6" stroke="currentColor" strokeWidth="1.4" fill="hsl(var(--paper))" />
+      <rect x="4.5" y="20" width="9" height="6" rx="0.6" stroke="currentColor" strokeWidth="1.4" fill="hsl(var(--background))" />
+      <rect x="6" y="22.5" width="9" height="6" rx="0.6" stroke="currentColor" strokeWidth="1.4" fill="hsl(var(--background))" />
 
       {/* Right side: ONE bigger block — the "power/institution" */}
       <rect x="33" y="22" width="12" height="9" rx="0.6" stroke="currentColor" strokeWidth="1.4" fill="none" />
 
-      {/* Fulcrum amber dot */}
-      <circle cx="24" cy="16" r="1.7" fill="hsl(var(--amber))" />
+      {/* Fulcrum coral dot */}
+      <circle cx="24" cy="16" r="1.7" fill="hsl(var(--coral))" />
     </svg>
   );
 };
 
 export const ClameoLogo = ({ size = 28, className = "", textClass = "text-2xl" }) => {
   return (
-    <div className={`flex items-center gap-2 text-ink ${className}`}>
+    <div className={`flex items-center gap-2 text-foreground ${className}`}>
       <ClameoMark size={size} />
-      <span className={`font-serif-display ${textClass} leading-none`}>
-        Clameo<span className="text-amber-brand">.</span>
+      <span className={`font-semibold ${textClass} leading-none`}>
+        Clameo<span className="text-coral">•</span>
       </span>
     </div>
   );

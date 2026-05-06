@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight, CheckCircle2, Clock, Lock, Trash2 } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  CheckCircle2,
+  Clock,
+  Lock,
+  Trash2,
+  FileText,
+  HelpCircle,
+  Sparkles,
+} from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import LetterPreview from "../components/LetterPreview";
 import { CASES, getCase } from "../lib/letterCases";
 import { loadDraft, clearDraft } from "../lib/share";
 import {
@@ -14,9 +23,21 @@ import {
 } from "../components/ui/accordion";
 
 const STEPS = [
-  { num: "01", title: "Choisissez votre situation", desc: "Sélectionnez le thème qui correspond à votre problème." },
-  { num: "02", title: "Répondez à quelques questions", desc: "Nous adaptons la lettre à votre situation en quelques étapes." },
-  { num: "03", title: "Téléchargez votre lettre", desc: "Recevez votre lettre prête à imprimer ou à envoyer par email." },
+  {
+    num: "01",
+    title: "Choisissez votre situation",
+    desc: "Sélectionnez le thème qui correspond à votre problème.",
+  },
+  {
+    num: "02",
+    title: "Répondez à quelques questions",
+    desc: "Clameo structure votre démarche en quelques étapes simples.",
+  },
+  {
+    num: "03",
+    title: "Téléchargez votre lettre",
+    desc: "Votre courrier est prêt à copier, imprimer ou envoyer.",
+  },
 ];
 
 const FAQ = [
@@ -26,11 +47,11 @@ const FAQ = [
   },
   {
     q: "Mes données sont-elles stockées ?",
-    a: "Non. Pour cette version MVP, vos informations restent dans votre navigateur. Aucun envoi vers un serveur, aucune base de données, aucun cookie marketing.",
+    a: "Non. Vos informations restent dans votre navigateur. Aucun envoi vers un serveur, aucune base de données, aucun cookie marketing.",
   },
   {
     q: "Combien de temps pour générer une lettre ?",
-    a: "Environ 2 minutes. Vous répondez à quelques questions ciblées par cas, puis votre lettre s'affiche, prête à être téléchargée en PDF, copiée, ou imprimée.",
+    a: "Environ 2 minutes. Vous répondez à quelques questions ciblées, puis votre lettre s'affiche, prête à être téléchargée, copiée ou imprimée.",
   },
   {
     q: "Clameo remplace-t-il un avocat ?",
@@ -38,11 +59,751 @@ const FAQ = [
   },
 ];
 
+const token = {
+  ink: "#0e0e0e",
+  ink2: "#161616",
+  ink3: "#202020",
+  coral: "#e8502a",
+  coralHover: "#d4441e",
+  coralSoft: "rgba(232,80,42,0.12)",
+  blue: "#2563eb",
+  light: "#fbfaf7",
+  white: "#ffffff",
+  text: "#111827",
+  muted: "#667085",
+  border: "#e5e7eb",
+  darkText: "#f6f1ea",
+  darkMuted: "rgba(246,241,234,0.62)",
+  darkDim: "rgba(246,241,234,0.38)",
+};
+
+function InjectLandingStyles() {
+  return (
+    <style>{`
+      @keyframes clameoFloat {
+        0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+        50% { transform: translateY(-10px) rotate(0.5deg); }
+      }
+
+      @keyframes clameoPulse {
+        0%, 100% { opacity: 0.55; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.08); }
+      }
+
+      @keyframes clameoSlideIn {
+        from { opacity: 0; transform: translateY(18px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      @keyframes clameoBalance {
+        0%, 100% { transform: rotate(-1.2deg); }
+        50% { transform: rotate(1deg); }
+      }
+
+      .clameo-container {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+
+      .clameo-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 14% 12%, rgba(232,80,42,0.18), transparent 32%),
+          radial-gradient(circle at 86% 8%, rgba(37,99,235,0.10), transparent 28%),
+          linear-gradient(135deg, #0b0b0d 0%, #111111 48%, #16120f 100%);
+        color: ${token.darkText};
+      }
+
+      .clameo-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: 52px 52px;
+        mask-image: linear-gradient(to bottom, black, transparent 88%);
+        pointer-events: none;
+      }
+
+      .clameo-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.18'/%3E%3C/svg%3E");
+        opacity: 0.22;
+        pointer-events: none;
+      }
+
+      .clameo-hero-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+        gap: 72px;
+        align-items: center;
+        padding-top: 110px;
+        padding-bottom: 92px;
+      }
+
+      .clameo-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: ${token.coral};
+      }
+
+      .clameo-eyebrow::before {
+        content: "";
+        width: 34px;
+        height: 2px;
+        border-radius: 99px;
+        background: ${token.coral};
+      }
+
+      .clameo-hero-title {
+        margin: 24px 0 0;
+        max-width: 720px;
+        font-family: "DM Serif Display", Georgia, serif;
+        font-size: clamp(58px, 7.4vw, 104px);
+        line-height: 0.92;
+        letter-spacing: -0.055em;
+        font-weight: 400;
+      }
+
+      .clameo-hero-title em {
+        color: ${token.coral};
+        font-style: italic;
+      }
+
+      .clameo-hero-subtitle {
+        margin: 28px 0 0;
+        max-width: 570px;
+        color: ${token.darkMuted};
+        font-size: 18px;
+        line-height: 1.72;
+      }
+
+      .clameo-hero-actions {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .clameo-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 0 24px;
+        border-radius: 16px;
+        background: ${token.coral};
+        color: #fff;
+        font-size: 15px;
+        font-weight: 800;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 18px 52px rgba(232,80,42,0.28);
+        transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      }
+
+      .clameo-btn-primary:hover {
+        background: ${token.coralHover};
+        transform: translateY(-2px);
+        box-shadow: 0 22px 60px rgba(232,80,42,0.34);
+      }
+
+      .clameo-btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.045);
+        color: ${token.darkText};
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.12);
+        transition: border-color 180ms ease, background 180ms ease;
+      }
+
+      .clameo-btn-secondary:hover {
+        border-color: rgba(232,80,42,0.5);
+        background: rgba(232,80,42,0.08);
+      }
+
+      .clameo-privacy-line {
+        margin-top: 26px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.045);
+        border: 1px solid rgba(255,255,255,0.09);
+        color: ${token.darkMuted};
+        font-size: 13px;
+      }
+
+      .clameo-visual {
+        position: relative;
+        min-height: 560px;
+      }
+
+      .balance-stage {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: min(560px, 100%);
+        height: 500px;
+        transform: translate(-50%, -50%);
+      }
+
+      .balance-beam {
+        position: absolute;
+        left: 10%;
+        right: 10%;
+        top: 55%;
+        height: 3px;
+        border-radius: 99px;
+        background: linear-gradient(90deg, rgba(246,241,234,0.18), rgba(232,80,42,0.75), rgba(246,241,234,0.18));
+        transform-origin: center;
+        animation: clameoBalance 7s ease-in-out infinite;
+      }
+
+      .balance-pivot {
+        position: absolute;
+        left: 50%;
+        top: calc(55% - 2px);
+        width: 72px;
+        height: 72px;
+        border-left: 1px solid rgba(246,241,234,0.18);
+        border-bottom: 1px solid rgba(246,241,234,0.18);
+        transform: translateX(-50%) rotate(-45deg);
+        border-radius: 6px;
+      }
+
+      .big-block {
+        position: absolute;
+        right: 0;
+        top: 132px;
+        width: 210px;
+        min-height: 168px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #242424, #171717);
+        border: 1px solid rgba(255,255,255,0.09);
+        box-shadow: 0 28px 88px rgba(0,0,0,0.34);
+        padding: 22px;
+        animation: clameoSlideIn 700ms ease both;
+      }
+
+      .big-block-label {
+        color: ${token.darkDim};
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 10px;
+        font-weight: 800;
+        margin-bottom: 18px;
+      }
+
+      .big-block p {
+        margin: 10px 0;
+        color: ${token.darkMuted};
+        font-size: 13px;
+      }
+
+      .problem-note {
+        position: absolute;
+        left: 8px;
+        top: 72px;
+        width: 232px;
+        border-radius: 22px;
+        background: #fff7ef;
+        color: ${token.text};
+        border: 1px solid rgba(232,80,42,0.20);
+        box-shadow: 0 28px 80px rgba(0,0,0,0.25);
+        padding: 18px;
+        transform: rotate(-4deg);
+        animation: clameoSlideIn 700ms 120ms ease both;
+      }
+
+      .problem-note span {
+        display: inline-flex;
+        margin-bottom: 12px;
+        color: ${token.coral};
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .problem-note p {
+        margin: 8px 0;
+        font-size: 13px;
+        color: #303030;
+      }
+
+      .process-card {
+        position: absolute;
+        left: 112px;
+        top: 218px;
+        width: 188px;
+        border-radius: 22px;
+        background: #111827;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 26px 78px rgba(0,0,0,0.34);
+        padding: 18px;
+        transform: rotate(3deg);
+        animation: clameoSlideIn 700ms 240ms ease both;
+      }
+
+      .process-card strong {
+        display: block;
+        font-size: 26px;
+        line-height: 1;
+        margin-bottom: 14px;
+      }
+
+      .process-card p {
+        display: flex;
+        justify-content: space-between;
+        margin: 9px 0;
+        color: rgba(255,255,255,0.64);
+        font-size: 12px;
+      }
+
+      .process-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: ${token.coral};
+        box-shadow: 0 0 0 7px rgba(232,80,42,0.12);
+      }
+
+      .final-letter {
+        position: absolute;
+        right: 38px;
+        bottom: 6px;
+        width: 330px;
+        min-height: 390px;
+        border-radius: 26px;
+        background: ${token.white};
+        color: ${token.text};
+        border: 1px solid rgba(255,255,255,0.9);
+        box-shadow:
+          0 34px 90px rgba(0,0,0,0.38),
+          0 0 0 1px rgba(17,24,39,0.08);
+        overflow: hidden;
+        animation: clameoFloat 7s ease-in-out infinite;
+      }
+
+      .final-letter-top {
+        height: 8px;
+        background: ${token.coral};
+      }
+
+      .final-letter-inner {
+        padding: 24px;
+      }
+
+      .letter-kicker {
+        color: ${token.coral};
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .letter-object {
+        margin-top: 14px;
+        font-size: 19px;
+        line-height: 1.24;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .fake-line {
+        height: 8px;
+        border-radius: 99px;
+        background: #e8e8e8;
+        margin-top: 12px;
+      }
+
+      .fake-line.dark {
+        background: #d4d4d4;
+      }
+
+      .ready-badge {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: #ecfdf3;
+        color: #027a48;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .ready-badge i {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #12b76a;
+        animation: clameoPulse 2.2s ease-in-out infinite;
+      }
+
+      .section-light {
+        background: ${token.light};
+        color: ${token.text};
+      }
+
+      .section-card {
+        background: ${token.white};
+        border: 1px solid ${token.border};
+        border-radius: 24px;
+        box-shadow: 0 18px 54px rgba(17,24,39,0.04);
+      }
+
+      .section-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: ${token.coral};
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .section-eyebrow::before {
+        content: "";
+        width: 32px;
+        height: 2px;
+        background: ${token.coral};
+        border-radius: 999px;
+      }
+
+      .section-title {
+        margin: 16px 0 0;
+        font-family: "DM Sans", system-ui, sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.055em;
+        line-height: 0.98;
+        font-size: clamp(38px, 5vw, 68px);
+        color: ${token.text};
+      }
+
+      .usecase-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+
+      .usecase-card {
+        position: relative;
+        min-height: 220px;
+        padding: 28px;
+        border-radius: 24px;
+        background: ${token.white};
+        border: 1px solid ${token.border};
+        text-decoration: none;
+        color: ${token.text};
+        overflow: hidden;
+        transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      }
+
+      .usecase-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 24px;
+        bottom: 24px;
+        width: 4px;
+        border-radius: 0 99px 99px 0;
+        background: ${token.coral};
+        opacity: 0;
+        transform: scaleY(0.4);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .usecase-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(232,80,42,0.38);
+        box-shadow: 0 24px 70px rgba(17,24,39,0.08);
+      }
+
+      .usecase-card:hover::before {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+
+      .ticker {
+        border-top: 1px solid rgba(255,255,255,0.10);
+        border-bottom: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.025);
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .ticker-inner {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .ticker-label {
+        flex: 0 0 auto;
+        background: ${token.coral};
+        color: #fff;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 14px 22px;
+      }
+
+      .ticker-item {
+        flex: 0 0 auto;
+        padding: 14px 24px;
+        color: ${token.darkMuted};
+        border-left: 1px solid rgba(255,255,255,0.10);
+        font-size: 13px;
+      }
+
+      @media (max-width: 1024px) {
+        .clameo-hero-grid {
+          grid-template-columns: 1fr;
+          gap: 48px;
+          padding-top: 82px;
+        }
+
+        .clameo-visual {
+          min-height: 520px;
+        }
+
+        .balance-stage {
+          left: 50%;
+          width: min(540px, 100%);
+        }
+
+        .usecase-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .clameo-container {
+          padding-left: 22px;
+          padding-right: 22px;
+        }
+
+        .clameo-hero-grid {
+          padding-top: 56px;
+          padding-bottom: 64px;
+        }
+
+        .clameo-hero-title {
+          font-size: clamp(48px, 15vw, 68px);
+        }
+
+        .clameo-hero-subtitle {
+          font-size: 16px;
+        }
+
+        .clameo-privacy-line {
+          border-radius: 18px;
+          align-items: flex-start;
+        }
+
+        .clameo-visual {
+          min-height: 460px;
+          transform: scale(0.9);
+          transform-origin: center top;
+          margin-bottom: -42px;
+        }
+
+        .balance-stage {
+          width: 100%;
+        }
+
+        .big-block {
+          right: 4px;
+          width: 178px;
+        }
+
+        .problem-note {
+          left: 0;
+          width: 200px;
+        }
+
+        .process-card {
+          left: 70px;
+        }
+
+        .final-letter {
+          right: 0;
+          width: 286px;
+        }
+
+        .usecase-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    `}</style>
+  );
+}
+
+function HeroVisual() {
+  return (
+    <div className="clameo-visual" aria-hidden="true">
+      <div className="balance-stage">
+        <div className="balance-beam" />
+        <div className="balance-pivot" />
+
+        <div className="big-block">
+          <div className="big-block-label">En face</div>
+          <p>Entreprise</p>
+          <p>Propriétaire</p>
+          <p>Employeur</p>
+          <p>Service client</p>
+        </div>
+
+        <div className="problem-note">
+          <span>Problème brut</span>
+          <p>Commande non reçue</p>
+          <p>Dépôt non rendu</p>
+          <p>Données personnelles</p>
+        </div>
+
+        <div className="process-card">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <strong>3</strong>
+            <span className="process-dot" />
+          </div>
+          <p>
+            <span>Situation</span>
+            <span>01</span>
+          </p>
+          <p>
+            <span>Détails</span>
+            <span>02</span>
+          </p>
+          <p>
+            <span>Ton</span>
+            <span>03</span>
+          </p>
+        </div>
+
+        <div className="final-letter">
+          <div className="final-letter-top" />
+          <div className="final-letter-inner">
+            <div className="letter-kicker">Objet</div>
+            <div className="letter-object">Demande de remboursement</div>
+
+            <div style={{ marginTop: 26 }}>
+              <div className="fake-line dark" style={{ width: "72%" }} />
+              <div className="fake-line" style={{ width: "92%" }} />
+              <div className="fake-line" style={{ width: "84%" }} />
+              <div className="fake-line" style={{ width: "66%" }} />
+            </div>
+
+            <div style={{ marginTop: 30 }}>
+              <div className="fake-line dark" style={{ width: "54%" }} />
+              <div className="fake-line" style={{ width: "88%" }} />
+              <div className="fake-line" style={{ width: "76%" }} />
+            </div>
+
+            <div style={{ marginTop: 34, display: "flex", gap: 10 }}>
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 999,
+                  background: token.coralSoft,
+                  display: "grid",
+                  placeItems: "center",
+                  color: token.coral,
+                }}
+              >
+                <FileText size={18} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div className="fake-line dark" style={{ width: "52%", marginTop: 4 }} />
+                <div className="fake-line" style={{ width: "82%" }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="ready-badge">
+            <i />
+            Prêt à envoyer
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ModelTicker() {
+  const items = [
+    "Remboursement",
+    "Logement",
+    "Non-livraison",
+    "Mise en demeure",
+    "Travail",
+    "RGPD",
+  ];
+
+  return (
+    <div className="ticker">
+      <div className="ticker-inner">
+        <span className="ticker-label">Modèles</span>
+        {items.map((item) => (
+          <span key={item} className="ticker-item">
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Landing() {
   const [draft, setDraft] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   useEffect(() => {
     setDraft(loadDraft());
+
+    if (!document.getElementById("clameo-fonts")) {
+      const link = document.createElement("link");
+      link.id = "clameo-fonts";
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700;800;900&display=swap";
+      document.head.appendChild(link);
+    }
   }, []);
 
   const draftCase = draft ? getCase(draft.caseId) : null;
@@ -53,231 +814,404 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div style={{ minHeight: "100vh", background: token.light, color: token.text, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <InjectLandingStyles />
+
       <Header />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden" data-testid="hero-section">
-        <div className="paper-grain absolute inset-0 opacity-40 pointer-events-none" />
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-12 pt-16 lg:pt-24 pb-20 lg:pb-28 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative">
-          {/* Left */}
-          <div className="lg:col-span-7 fade-up">
-            <div className="flex items-center gap-3">
-              <span className="block w-8 h-px bg-amber-brand" />
-              <p className="eyebrow text-ink/70" data-testid="hero-eyebrow">
-                Des lettres qui rétablissent l'équilibre
-              </p>
-            </div>
+      <section className="clameo-hero" data-testid="hero-section">
+        <div className="clameo-container clameo-hero-grid">
+          <div>
+            <div className="clameo-eyebrow">Clameo rétablit la forme</div>
 
-            <h1
-              className="font-serif-display text-[44px] sm:text-6xl lg:text-7xl xl:text-[88px] leading-[1.02] mt-6 tracking-tight"
-              data-testid="hero-headline"
-            >
-              Générez votre <em className="italic">lettre</em><br className="hidden sm:block" /> en 2 minutes
+            <h1 className="clameo-hero-title" data-testid="hero-headline">
+              Une lettre peut changer <em>l’équilibre.</em>
             </h1>
 
-            <p className="mt-7 text-lg lg:text-xl text-ink/70 max-w-xl leading-relaxed" data-testid="hero-subtitle">
-              Réclamation, remboursement, logement, travail, RGPD… sans écrire une seule ligne.
+            <p className="clameo-hero-subtitle" data-testid="hero-subtitle">
+              Remboursement, logement, livraison, travail, RGPD… Clameo transforme
+              votre problème en courrier clair, structuré et prêt à envoyer.
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-5">
-              <Link
-                to="/builder"
-                className="btn-amber inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full text-base font-semibold"
-                data-testid="hero-cta"
-              >
-                Créer ma lettre <ArrowRight size={18} />
+            <div className="clameo-hero-actions">
+              <Link to="/builder" className="clameo-btn-primary" data-testid="hero-cta">
+                Créer ma lettre <ArrowRight size={17} />
               </Link>
-              <p className="text-sm text-ink/60">Simple, clair, prêt à envoyer.</p>
+
+              <Link to="#modeles" className="clameo-btn-secondary">
+                Voir les modèles <ArrowRight size={15} />
+              </Link>
             </div>
 
-            <div className="mt-10 flex items-center gap-3 text-sm text-ink/60">
-              <CheckCircle2 size={16} className="text-sage" />
-              <span>Plus de 250 000 lettres générées avec succès</span>
+            <div className="clameo-privacy-line">
+              <Lock size={15} style={{ color: token.coral, flexShrink: 0 }} />
+              <span>
+                Aucune inscription. Aucune donnée envoyée. Votre lettre reste sur votre appareil.
+              </span>
             </div>
           </div>
 
-          {/* Right — letter preview */}
-          <div className="lg:col-span-5 fade-up fade-up-delay-2">
-            <LetterPreview className="max-w-[440px] mx-auto lg:mx-0 lg:ml-auto" />
-          </div>
+          <HeroVisual />
         </div>
+
+        <ModelTicker />
       </section>
 
-      {/* TRUST STRIP */}
-      <section className="bg-deep text-on-deep" data-testid="trust-strip">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-12 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
-          {[
-            { t: "Conforme droit français", s: "Modèles rédigés et mis à jour par des juristes." },
-            { t: "Lettre prête à envoyer", s: "Personnalisée, claire et complète." },
-            { t: "2 minutes seulement", s: "Rapide, simple et efficace." },
-          ].map((item, i) => (
-            <div
-              key={item.t}
-              className={`px-6 lg:px-10 ${i !== 0 ? "md:border-l border-[#f7f5f0]/15" : ""}`}
-            >
-              <p className="font-serif-display text-2xl md:text-[26px] tracking-tight">{item.t}</p>
-              <p className="mt-2 text-sm text-[#f7f5f0]/70 leading-relaxed">{item.s}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* RESUME DRAFT BANNER (only if a draft exists) */}
       {draft && draftCase && (
-        <section className="border-b border-ink/10" data-testid="resume-banner">
-          <div className="max-w-[1320px] mx-auto px-6 lg:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-start sm:items-center gap-3">
-              <Lock size={16} className="text-sage shrink-0 mt-1 sm:mt-0" />
+        <section
+          data-testid="resume-banner"
+          style={{
+            background: "#fff4ef",
+            borderBottom: `1px solid rgba(232,80,42,0.18)`,
+          }}
+        >
+          <div
+            className="clameo-container"
+            style={{
+              paddingTop: 18,
+              paddingBottom: 18,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <Lock size={15} style={{ color: token.coral }} />
               <div>
-                <p className="text-sm text-ink">
-                  Vous avez un brouillon enregistré sur cet appareil — <span className="font-semibold">{draftCase.title}</span>.
+                <p style={{ fontSize: 14, margin: 0, fontWeight: 800 }}>
+                  Brouillon enregistré — {draftCase.title}
                 </p>
-                <p className="text-xs text-ink/60">Aucune donnée n'a été envoyée à un serveur.</p>
+                <p style={{ fontSize: 13, color: token.muted, margin: 0 }}>
+                  Aucune donnée n'a été envoyée à un serveur.
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Link
                 to={`/builder/${draft.caseId}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border border-ink hover:bg-ink hover:text-paper transition"
                 data-testid="resume-cta"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  border: `1px solid ${token.border}`,
+                  background: token.white,
+                  color: token.text,
+                  textDecoration: "none",
+                  fontSize: 13,
+                  fontWeight: 800,
+                }}
               >
-                Reprendre mon brouillon <ArrowRight size={14} />
+                Reprendre <ArrowRight size={14} />
               </Link>
+
               <button
                 type="button"
                 onClick={onClearDraft}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-ink/60 hover:text-ink transition"
                 data-testid="resume-clear"
                 aria-label="Effacer mes données"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  border: `1px solid ${token.border}`,
+                  background: token.white,
+                  color: token.muted,
+                  cursor: "pointer",
+                  display: "grid",
+                  placeItems: "center",
+                }}
               >
-                <Trash2 size={14} />
+                <Trash2 size={15} />
               </button>
             </div>
           </div>
         </section>
       )}
 
-      {/* USE CASES */}
-      <section className="py-24 lg:py-32" id="modeles" data-testid="usecases-section">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-12">
-          <div className="max-w-2xl">
-            <p className="eyebrow text-ink/60">Nos modèles</p>
-            <h2 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] tracking-tight">
-              Quel est votre <em className="italic">problème</em> ?
-            </h2>
-          </div>
+      <main className="section-light">
+        <section id="modeles" data-testid="usecases-section" style={{ padding: "112px 0" }}>
+          <div className="clameo-container">
+            <div style={{ maxWidth: 760, marginBottom: 54 }}>
+              <div className="section-eyebrow">Nos modèles</div>
+              <h2 className="section-title">
+                Choisissez votre situation.
+              </h2>
+              <p style={{ marginTop: 20, color: token.muted, fontSize: 17, lineHeight: 1.7, maxWidth: 620 }}>
+                Chaque modèle part d’un problème concret et vous guide vers une lettre claire, utilisable tout de suite.
+              </p>
+            </div>
 
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-            {CASES.map((c) => {
-              const Icon = c.Icon;
-              return (
-                <Link
-                  key={c.id}
-                  to={`/builder/${c.id}`}
-                  className="use-card group flex items-start gap-5 p-6 lg:p-7 rounded-md border border-ink/15 bg-card"
-                  data-testid={`usecase-${c.id}`}
+            <div className="usecase-grid">
+              {CASES.map((c) => {
+                const Icon = c.Icon;
+                const isHovered = hoveredCard === c.id;
+
+                return (
+                  <Link
+                    key={c.id}
+                    to={`/builder/${c.id}`}
+                    data-testid={`usecase-${c.id}`}
+                    className="usecase-card"
+                    onMouseEnter={() => setHoveredCard(c.id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+                      <div
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 16,
+                          background: token.coralSoft,
+                          color: token.coral,
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
+                        <Icon size={20} strokeWidth={1.8} />
+                      </div>
+
+                      <ArrowUpRight
+                        size={18}
+                        style={{
+                          color: isHovered ? token.coral : "#98a2b3",
+                          transition: "color 180ms ease",
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ marginTop: 24 }}>
+                      <p
+                        style={{
+                          margin: "0 0 12px",
+                          color: token.blue,
+                          fontSize: 11,
+                          fontWeight: 900,
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {c.category}
+                      </p>
+
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: 22,
+                          lineHeight: 1.18,
+                          fontWeight: 900,
+                          letterSpacing: "-0.035em",
+                        }}
+                      >
+                        {c.title}
+                      </h3>
+
+                      <p style={{ margin: "14px 0 0", color: token.muted, fontSize: 14, lineHeight: 1.7 }}>
+                        {c.short}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section
+          data-testid="how-section"
+          style={{
+            padding: "100px 0",
+            background: token.white,
+            borderTop: `1px solid ${token.border}`,
+            borderBottom: `1px solid ${token.border}`,
+          }}
+        >
+          <div className="clameo-container">
+            <div style={{ maxWidth: 760, marginBottom: 64 }}>
+              <div className="section-eyebrow">La transformation</div>
+              <h2 className="section-title">
+                Du problème au courrier.
+              </h2>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
+              {STEPS.map((s, i) => (
+                <div
+                  key={s.num}
+                  style={{
+                    padding: i === 0 ? "0 44px 0 0" : "0 44px",
+                    borderLeft: i === 0 ? "none" : `1px solid ${token.border}`,
+                  }}
                 >
-                  <div className="shrink-0 mt-0.5 w-10 h-10 flex items-center justify-center rounded-md border border-ink/15 bg-paper-2">
-                    <Icon size={20} strokeWidth={1.6} className="text-ink" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-serif-display text-[22px] leading-tight">{c.title}</p>
-                    <p className="text-sm text-ink/60 mt-1.5 leading-relaxed">{c.short}</p>
-                  </div>
-                  <ArrowUpRight size={20} className="use-arrow text-ink/40 mt-1" />
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+                  <span
+                    style={{
+                      display: "block",
+                      color: token.coral,
+                      fontSize: 56,
+                      lineHeight: 1,
+                      fontWeight: 900,
+                      letterSpacing: "-0.07em",
+                      opacity: 0.28,
+                    }}
+                  >
+                    {s.num}
+                  </span>
 
-      {/* HOW IT WORKS */}
-      <section className="py-24 lg:py-32 bg-paper-2 border-y border-ink/10" data-testid="how-section">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-12">
-          <div className="max-w-2xl mb-16">
-            <p className="eyebrow text-ink/60">Démarche</p>
-            <h2 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] tracking-tight">
-              Comment ça <em className="italic">marche</em> ?
-            </h2>
-          </div>
+                  <h3 style={{ margin: "24px 0 12px", fontSize: 24, fontWeight: 900, letterSpacing: "-0.04em" }}>
+                    {s.title}
+                  </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0">
-            {STEPS.map((s, i) => (
-              <div
-                key={s.num}
-                className={`relative px-0 md:px-10 ${i !== 0 ? "md:border-l border-ink/15" : ""}`}
-              >
-                <p className="step-num">{s.num}</p>
-                <p className="font-serif-display text-2xl mt-6 leading-tight">{s.title}</p>
-                <p className="text-sm text-ink/60 mt-3 max-w-[28ch] leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* REASSURANCE */}
-      <section className="py-24 lg:py-32" data-testid="reassurance-section">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-5">
-            <p className="eyebrow text-ink/60">Promesse</p>
-            <h2 className="font-serif-display text-4xl sm:text-5xl lg:text-[56px] mt-3 leading-[1.05] tracking-tight">
-              Simple, <em className="italic">clair</em>,<br />prêt à envoyer
-            </h2>
-            <p className="mt-6 text-ink/70 leading-relaxed max-w-md">
-              Clameo vous aide à faire valoir vos droits avec des lettres efficaces, sans remplacer un professionnel du droit.
-            </p>
-          </div>
-
-          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { Icon: CheckCircle2, t: "Des modèles fiables", s: "Rédigés par des juristes, conformes au droit français et régulièrement mis à jour." },
-              { Icon: Clock, t: "Gain de temps", s: "En 2 minutes, obtenez une lettre complète et personnalisée." },
-              { Icon: Lock, t: "Vos données privées", s: "Vos informations restent sur votre appareil. Rien n'est revendu." },
-            ].map(({ Icon, t, s }) => (
-              <div key={t} className="flex flex-col gap-3">
-                <div className="w-10 h-10 rounded-full border border-sage/30 bg-sage/10 flex items-center justify-center">
-                  <Icon size={18} strokeWidth={1.6} className="text-sage" />
+                  <p style={{ margin: 0, color: token.muted, fontSize: 14, lineHeight: 1.7 }}>
+                    {s.desc}
+                  </p>
                 </div>
-                <p className="font-serif-display text-xl mt-1">{t}</p>
-                <p className="text-sm text-ink/60 leading-relaxed">{s}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ */}
-      <section className="pb-24 lg:pb-32" id="faq" data-testid="faq-section">
-        <div className="max-w-[920px] mx-auto px-6 lg:px-12">
-          <div className="max-w-2xl mb-10">
-            <p className="eyebrow text-ink/60">Questions fréquentes</p>
-            <h2 className="font-serif-display text-4xl sm:text-5xl mt-3 leading-[1.05] tracking-tight">
-              Vous vous <em className="italic">demandez</em> ?
-            </h2>
+        <section data-testid="reassurance-section" style={{ padding: "112px 0" }}>
+          <div
+            className="clameo-container"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "0.92fr 1.08fr",
+              gap: 56,
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <div className="section-eyebrow">Promesse</div>
+              <h2 className="section-title">
+                Clair. Rapide. Privé.
+              </h2>
+              <p style={{ marginTop: 22, color: token.muted, fontSize: 17, lineHeight: 1.72, maxWidth: 460 }}>
+                Clameo vous aide à faire valoir vos droits avec des lettres efficaces,
+                sans remplacer un professionnel du droit.
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
+              {[
+                {
+                  Icon: CheckCircle2,
+                  t: "Modèles utiles",
+                  s: "Des lettres pensées pour les démarches fréquentes.",
+                },
+                {
+                  Icon: Clock,
+                  t: "2 minutes",
+                  s: "Un parcours court, clair et sans jargon inutile.",
+                },
+                {
+                  Icon: Lock,
+                  t: "Données privées",
+                  s: "Vos informations restent sur votre appareil.",
+                },
+              ].map(({ Icon, t, s }) => (
+                <div key={t} className="section-card" style={{ padding: 24 }}>
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 16,
+                      background: token.coralSoft,
+                      color: token.coral,
+                      display: "grid",
+                      placeItems: "center",
+                      marginBottom: 18,
+                    }}
+                  >
+                    <Icon size={19} />
+                  </div>
+
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, letterSpacing: "-0.03em" }}>
+                    {t}
+                  </h3>
+
+                  <p style={{ margin: "10px 0 0", color: token.muted, fontSize: 13, lineHeight: 1.65 }}>
+                    {s}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
+        </section>
 
-          <Accordion type="single" collapsible className="border-t border-ink/10">
-            {FAQ.map((item, idx) => (
-              <AccordionItem
-                key={idx}
-                value={`item-${idx}`}
-                className="border-b border-ink/10"
-                data-testid={`faq-item-${idx}`}
+        <section
+          id="faq"
+          data-testid="faq-section"
+          style={{
+            padding: "0 0 112px",
+          }}
+        >
+          <div className="clameo-container">
+            <div
+              className="section-card"
+              style={{
+                maxWidth: 920,
+                margin: "0 auto",
+                padding: "54px 56px",
+              }}
+            >
+              <div className="section-eyebrow">Questions fréquentes</div>
+              <h2
+                style={{
+                  margin: "16px 0 38px",
+                  fontSize: "clamp(34px, 4vw, 56px)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.055em",
+                  fontWeight: 900,
+                }}
               >
-                <AccordionTrigger className="py-6 text-left font-serif-display text-xl hover:no-underline">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-ink/70 pb-6 leading-relaxed">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+                Avant de commencer.
+              </h2>
+
+              <Accordion type="single" collapsible style={{ borderTop: `1px solid ${token.border}` }}>
+                {FAQ.map((item, idx) => (
+                  <AccordionItem
+                    key={idx}
+                    value={`item-${idx}`}
+                    data-testid={`faq-item-${idx}`}
+                    style={{ borderBottom: `1px solid ${token.border}` }}
+                  >
+                    <AccordionTrigger
+                      style={{
+                        padding: "24px 0",
+                        fontSize: 17,
+                        fontWeight: 900,
+                        color: token.text,
+                        textAlign: "left",
+                      }}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
+                        <HelpCircle size={18} style={{ color: token.coral }} />
+                        {item.q}
+                      </span>
+                    </AccordionTrigger>
+
+                    <AccordionContent
+                      style={{
+                        fontSize: 14,
+                        color: token.muted,
+                        lineHeight: 1.75,
+                        paddingBottom: 24,
+                      }}
+                    >
+                      {item.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </div>

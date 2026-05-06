@@ -41,7 +41,7 @@ export default function Header() {
 
   return (
     <header
-      className="w-full border-b border-ink/10 bg-paper/80 backdrop-blur-sm sticky top-0 z-40"
+      className="w-full border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-40"
       data-testid="site-header"
     >
       <div className="max-w-[1320px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
@@ -54,8 +54,8 @@ export default function Header() {
             <Link
               key={n.to}
               to={n.to}
-              className={`nav-link text-[15px] text-ink/80 hover:text-ink ${
-                isActive(n.to) ? "active text-ink" : ""
+              className={`nav-link text-[15px] text-foreground/80 hover:text-foreground ${
+                isActive(n.to) ? "active text-foreground" : ""
               }`}
               data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
             >
@@ -69,17 +69,17 @@ export default function Header() {
             type="button"
             onClick={() => setDark((d) => !d)}
             aria-label="Basculer le thème"
-            className="hidden sm:inline-flex items-center gap-2 px-2 py-1.5 rounded-full border border-ink/20 hover:border-ink/40 transition"
+            className="hidden sm:inline-flex items-center gap-2 px-2 py-1.5 rounded-[14px] border border-border hover:border-foreground/40 transition"
             data-testid="theme-toggle"
           >
             <Sun size={14} className={dark ? "opacity-40" : "opacity-100"} />
             <span
               className={`relative w-8 h-4 rounded-full transition ${
-                dark ? "bg-ink" : "bg-ink/20"
+                dark ? "bg-foreground" : "bg-foreground/20"
               }`}
             >
               <span
-                className={`absolute top-0.5 ${dark ? "left-4" : "left-0.5"} w-3 h-3 rounded-full bg-paper transition-all`}
+                className={`absolute top-0.5 ${dark ? "left-4" : "left-0.5"} w-3 h-3 rounded-full bg-background transition-all`}
               />
             </span>
             <Moon size={14} className={dark ? "opacity-100" : "opacity-40"} />
@@ -88,7 +88,7 @@ export default function Header() {
           <button
             type="button"
             onClick={() => navigate("/builder")}
-            className="btn-amber hidden md:inline-flex items-center px-5 py-2.5 rounded-full text-sm font-semibold"
+            className="btn-coral hidden md:inline-flex items-center px-5 py-2.5 rounded-[14px] text-sm font-semibold"
             data-testid="header-cta"
           >
             Créer ma lettre
@@ -108,14 +108,14 @@ export default function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-ink/10 bg-paper" data-testid="mobile-menu">
+        <div className="md:hidden border-t border-border bg-background" data-testid="mobile-menu">
           <div className="px-6 py-6 flex flex-col gap-4">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 onClick={() => setOpen(false)}
-                className="text-ink text-base"
+                className="text-foreground text-base"
                 data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
               >
                 {n.label}
@@ -127,7 +127,7 @@ export default function Header() {
                 setOpen(false);
                 navigate("/builder");
               }}
-              className="btn-amber inline-flex items-center justify-center px-5 py-3 rounded-full text-sm font-semibold mt-2"
+              className="btn-coral inline-flex items-center justify-center px-5 py-3 rounded-[14px] text-sm font-semibold mt-2"
               data-testid="mobile-cta"
             >
               Créer ma lettre
