@@ -1033,59 +1033,59 @@ export default function Landing() {
                     onMouseEnter={() => setHoveredCard(c.id)}
                     onMouseLeave={() => setHoveredCard(null)}
                   >
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-                      <div
+                    <div style={{ position: "relative" }}>
+                      <Icon
+                        size={16}
+                        strokeWidth={1.5}
                         style={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: 12,
-                          border: `1.5px solid ${token.border}`,
-                          color: token.text,
-                          display: "grid",
-                          placeItems: "center",
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          color: "rgba(17,24,39,0.15)",
                         }}
-                      >
-                        <Icon size={20} strokeWidth={1.8} />
+                      />
+
+                      <div style={{ marginTop: 24 }}>
+                        <p
+                          style={{
+                            margin: "0 0 12px",
+                            color: token.coral,
+                            fontSize: 11,
+                            fontWeight: 900,
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {c.category}
+                        </p>
+
+                        <h3
+                          style={{
+                            margin: 0,
+                            fontSize: 22,
+                            lineHeight: 1.18,
+                            fontWeight: 900,
+                            letterSpacing: "-0.035em",
+                          }}
+                        >
+                          {c.title}
+                        </h3>
+
+                        <p style={{ margin: "14px 0 0", color: token.muted, fontSize: 14, lineHeight: 1.7 }}>
+                          {c.short}
+                        </p>
                       </div>
 
                       <ArrowUpRight
                         size={18}
                         style={{
+                          position: "absolute",
+                          bottom: 28,
+                          right: 28,
                           color: isHovered ? token.coral : "#98a2b3",
                           transition: "color 180ms ease",
                         }}
                       />
-                    </div>
-
-                    <div style={{ marginTop: 24 }}>
-                      <p
-                        style={{
-                          margin: "0 0 12px",
-                          color: token.coral,
-                          fontSize: 11,
-                          fontWeight: 900,
-                          letterSpacing: "0.12em",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {c.category}
-                      </p>
-
-                      <h3
-                        style={{
-                          margin: 0,
-                          fontSize: 22,
-                          lineHeight: 1.18,
-                          fontWeight: 900,
-                          letterSpacing: "-0.035em",
-                        }}
-                      >
-                        {c.title}
-                      </h3>
-
-                      <p style={{ margin: "14px 0 0", color: token.muted, fontSize: 14, lineHeight: 1.7 }}>
-                        {c.short}
-                      </p>
                     </div>
                   </Link>
                 );
