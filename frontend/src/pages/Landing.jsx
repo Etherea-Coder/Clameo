@@ -142,7 +142,7 @@ function InjectLandingStyles() {
         position: relative;
         z-index: 1;
         display: grid;
-        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+        grid-template-columns: minmax(0, 0.45fr) minmax(420px, 0.55fr);
         gap: 72px;
         align-items: center;
         padding-top: 110px;
@@ -287,13 +287,23 @@ function InjectLandingStyles() {
       .balance-pivot {
         position: absolute;
         left: 50%;
-        top: calc(55% - 2px);
-        width: 72px;
-        height: 72px;
-        border-left: 1px solid rgba(246,241,234,0.18);
-        border-bottom: 1px solid rgba(246,241,234,0.18);
-        transform: translateX(-50%) rotate(-45deg);
-        border-radius: 6px;
+        top: 55%;
+        width: 3px;
+        height: 90px;
+        background: linear-gradient(to bottom, rgba(246,241,234,0.18), rgba(232,80,42,0.35));
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+
+      .balance-base {
+        position: absolute;
+        left: 50%;
+        top: calc(55% + 88px);
+        width: 48px;
+        height: 4px;
+        background: rgba(246,241,234,0.25);
+        transform: translateX(-50%);
+        border-radius: 2px;
       }
 
       .big-block {
@@ -680,6 +690,7 @@ function HeroVisual() {
       <div className="balance-stage">
         <div className="balance-beam" />
         <div className="balance-pivot" />
+        <div className="balance-base" />
 
         <div className="big-block">
           <div className="big-block-label">En face</div>
@@ -735,19 +746,6 @@ function HeroVisual() {
             </div>
 
             <div style={{ marginTop: 34, display: "flex", gap: 10 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 999,
-                  background: token.coralSoft,
-                  display: "grid",
-                  placeItems: "center",
-                  color: token.coral,
-                }}
-              >
-                <FileText size={18} />
-              </div>
               <div style={{ flex: 1 }}>
                 <div className="fake-line dark" style={{ width: "52%", marginTop: 4 }} />
                 <div className="fake-line" style={{ width: "82%" }} />
@@ -779,9 +777,10 @@ function ModelTicker() {
     <div className="ticker">
       <div className="ticker-inner">
         <span className="ticker-label">Modèles</span>
-        {items.map((item) => (
+        {items.map((item, index) => (
           <span key={item} className="ticker-item">
             {item}
+            {index < items.length - 1 && <span style={{ marginLeft: "12px", color: "rgba(255,255,255,0.3)" }}>•</span>}
           </span>
         ))}
       </div>
@@ -966,9 +965,9 @@ export default function Landing() {
                         style={{
                           width: 48,
                           height: 48,
-                          borderRadius: 16,
-                          background: token.coralSoft,
-                          color: token.coral,
+                          borderRadius: 12,
+                          border: `1.5px solid ${token.border}`,
+                          color: token.text,
                           display: "grid",
                           placeItems: "center",
                         }}
@@ -989,7 +988,7 @@ export default function Landing() {
                       <p
                         style={{
                           margin: "0 0 12px",
-                          color: token.blue,
+                          color: token.coral,
                           fontSize: 11,
                           fontWeight: 900,
                           letterSpacing: "0.12em",
@@ -1033,8 +1032,7 @@ export default function Landing() {
         >
           <div className="clameo-container">
             <div style={{ maxWidth: 760, marginBottom: 64 }}>
-              <div className="section-eyebrow">La transformation</div>
-              <h2 className="section-title">
+              <h2 style={{ margin: 0, fontSize: "clamp(38px, 5vw, 68px)", lineHeight: 0.98, letterSpacing: "-0.055em", fontWeight: 900 }}>
                 Du problème au courrier.
               </h2>
             </div>
@@ -1052,11 +1050,11 @@ export default function Landing() {
                     style={{
                       display: "block",
                       color: token.coral,
-                      fontSize: 56,
+                      fontSize: 72,
                       lineHeight: 1,
                       fontWeight: 900,
-                      letterSpacing: "-0.07em",
-                      opacity: 0.28,
+                      letterSpacing: "-0.08em",
+                      opacity: 0.5,
                     }}
                   >
                     {s.num}
@@ -1076,69 +1074,61 @@ export default function Landing() {
         </section>
 
         <section data-testid="reassurance-section" style={{ padding: "112px 0" }}>
-          <div
-            className="clameo-container"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "0.92fr 1.08fr",
-              gap: 56,
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <div className="section-eyebrow">Promesse</div>
-              <h2 className="section-title">
-                Clair. Rapide. Privé.
-              </h2>
-              <p style={{ marginTop: 22, color: token.muted, fontSize: 17, lineHeight: 1.72, maxWidth: 460 }}>
-                Clameo vous aide à faire valoir vos droits avec des lettres efficaces,
-                sans remplacer un professionnel du droit.
-              </p>
-            </div>
+          <div className="clameo-container">
+            <div
+              className="section-card"
+              style={{
+                padding: "48px 52px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 64,
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+                  <Lock size={20} style={{ color: token.coral }} />
+                  <span style={{ color: token.coral, fontSize: 11, fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                    Privé par défaut
+                  </span>
+                </div>
+                <h2 style={{ margin: "0 0 16px", fontSize: "clamp(32px, 4vw, 48px)", lineHeight: 1.05, letterSpacing: "-0.05em", fontWeight: 900 }}>
+                  Vos données restent sur votre appareil.
+                </h2>
+                <p style={{ margin: 0, color: token.muted, fontSize: 17, lineHeight: 1.72, maxWidth: 420 }}>
+                  Aucune inscription. Aucun compte. Aucune donnée envoyée à un serveur. Clameo fonctionne entièrement dans votre navigateur.
+                </p>
+              </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
-              {[
-                {
-                  Icon: CheckCircle2,
-                  t: "Modèles utiles",
-                  s: "Des lettres pensées pour les démarches fréquentes.",
-                },
-                {
-                  Icon: Clock,
-                  t: "2 minutes",
-                  s: "Un parcours court, clair et sans jargon inutile.",
-                },
-                {
-                  Icon: Lock,
-                  t: "Données privées",
-                  s: "Vos informations restent sur votre appareil.",
-                },
-              ].map(({ Icon, t, s }) => (
-                <div key={t} className="section-card" style={{ padding: 24 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {[
+                  { Icon: CheckCircle2, t: "Modèles juridiques", s: "Rédigés par des juristes, conformes au droit français." },
+                  { Icon: Clock, t: "2 minutes", s: "Un parcours court, clair et sans jargon inutile." },
+                ].map(({ Icon, t, s }) => (
                   <div
+                    key={t}
                     style={{
-                      width: 44,
-                      height: 44,
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 14,
+                      padding: "18px 20px",
                       borderRadius: 16,
-                      background: token.coralSoft,
-                      color: token.coral,
-                      display: "grid",
-                      placeItems: "center",
-                      marginBottom: 18,
+                      border: `1px solid ${token.border}`,
+                      background: token.white,
                     }}
                   >
-                    <Icon size={19} />
+                    <Icon size={18} style={{ color: token.text, flexShrink: 0, marginTop: 2 }} />
+                    <div>
+                      <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 900, letterSpacing: "-0.02em" }}>
+                        {t}
+                      </h3>
+                      <p style={{ margin: 0, color: token.muted, fontSize: 14, lineHeight: 1.6 }}>
+                        {s}
+                      </p>
+                    </div>
                   </div>
-
-                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, letterSpacing: "-0.03em" }}>
-                    {t}
-                  </h3>
-
-                  <p style={{ margin: "10px 0 0", color: token.muted, fontSize: 13, lineHeight: 1.65 }}>
-                    {s}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -1189,10 +1179,7 @@ export default function Landing() {
                         textAlign: "left",
                       }}
                     >
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
-                        <HelpCircle size={18} style={{ color: token.coral }} />
-                        {item.q}
-                      </span>
+                      {item.q}
                     </AccordionTrigger>
 
                     <AccordionContent
