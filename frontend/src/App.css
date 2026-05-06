@@ -1,0 +1,5 @@
+/* Clameo-specific App overrides */
+.App {
+    min-height: 100vh;
+    background: hsl(var(--background));
+}

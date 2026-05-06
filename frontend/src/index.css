@@ -1,0 +1,344 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Google Fonts: Instrument Serif (display), Plus Jakarta Sans (UI), Courier Prime (mono) */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap");
+
+@layer base {
+    :root {
+        /* Clameo brand tokens */
+        --paper: 41 33% 95%; /* #f7f5f0 */
+        --ink: 222 24% 14%; /* #1a1f2e */
+        --amber: 36 81% 52%; /* #e8a020 */
+        --sage: 137 25% 39%; /* #4a7c59 */
+        --paper-2: 41 30% 92%;
+        --ink-soft: 222 18% 22%;
+
+        /* shadcn mappings (light/paper) */
+        --background: 41 33% 95%;
+        --foreground: 222 24% 14%;
+        --card: 41 33% 97%;
+        --card-foreground: 222 24% 14%;
+        --popover: 41 33% 97%;
+        --popover-foreground: 222 24% 14%;
+        --primary: 36 81% 52%;
+        --primary-foreground: 222 24% 14%;
+        --secondary: 41 30% 92%;
+        --secondary-foreground: 222 24% 14%;
+        --muted: 41 20% 88%;
+        --muted-foreground: 222 12% 38%;
+        --accent: 36 81% 52%;
+        --accent-foreground: 222 24% 14%;
+        --destructive: 0 70% 45%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 222 16% 82%;
+        --input: 222 16% 82%;
+        --ring: 36 81% 52%;
+        --radius: 0.5rem;
+    }
+    .dark {
+        --paper: 222 25% 8%;
+        --paper-2: 222 22% 12%;
+        --ink: 41 30% 92%;
+        --ink-soft: 41 15% 75%;
+
+        --background: 222 25% 8%;
+        --foreground: 41 30% 92%;
+        --card: 222 22% 12%;
+        --card-foreground: 41 30% 92%;
+        --popover: 222 22% 12%;
+        --popover-foreground: 41 30% 92%;
+        --primary: 36 81% 56%;
+        --primary-foreground: 222 25% 8%;
+        --secondary: 222 18% 16%;
+        --secondary-foreground: 41 30% 92%;
+        --muted: 222 18% 16%;
+        --muted-foreground: 41 15% 70%;
+        --accent: 36 81% 56%;
+        --accent-foreground: 222 25% 8%;
+        --border: 222 15% 22%;
+        --input: 222 15% 22%;
+        --ring: 36 81% 56%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    html {
+        background-color: hsl(var(--background));
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-family:
+            "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+            sans-serif;
+        font-feature-settings:
+            "ss01" on,
+            "cv11" on;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+    .font-serif-display {
+        font-family: "Instrument Serif", "Times New Roman", serif;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+    }
+    .font-mono-letter {
+        font-family: "Courier Prime", "Courier New", monospace;
+    }
+}
+
+/* Selection */
+::selection {
+    background: hsl(var(--amber));
+    color: hsl(var(--ink));
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Utility classes for brand tokens */
+.bg-paper {
+    background-color: hsl(var(--paper));
+}
+.bg-paper-2 {
+    background-color: hsl(var(--paper-2));
+}
+.bg-ink {
+    background-color: hsl(var(--ink));
+}
+.bg-amber-brand {
+    background-color: hsl(var(--amber));
+}
+.bg-sage {
+    background-color: hsl(var(--sage));
+}
+.text-ink {
+    color: hsl(var(--ink));
+}
+.text-paper {
+    color: hsl(var(--paper));
+}
+.text-amber-brand {
+    color: hsl(var(--amber));
+}
+.text-sage {
+    color: hsl(var(--sage));
+}
+.border-ink {
+    border-color: hsl(var(--ink));
+}
+.border-amber-brand {
+    border-color: hsl(var(--amber));
+}
+
+/* Fixed deep navy + cream — used on the trust strip and footer regardless of theme */
+.bg-deep {
+    background-color: #1a1f2e;
+}
+.text-on-deep {
+    color: #f7f5f0;
+}
+
+/* Eyebrow uppercase label */
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+/* Floating letter mockup shadow */
+.letter-shadow {
+    box-shadow:
+        0 1px 1px rgba(26, 31, 46, 0.04),
+        0 8px 24px rgba(26, 31, 46, 0.08),
+        0 32px 64px -16px rgba(26, 31, 46, 0.18);
+}
+
+/* Hover transitions */
+.use-card {
+    transition:
+        border-color 240ms ease,
+        transform 240ms ease,
+        box-shadow 240ms ease;
+    position: relative;
+}
+.use-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14%;
+    bottom: 14%;
+    width: 2px;
+    background: hsl(var(--amber));
+    opacity: 0;
+    transform: scaleY(0.4);
+    transform-origin: center;
+    transition:
+        opacity 240ms ease,
+        transform 320ms ease;
+}
+.use-card:hover::before {
+    opacity: 1;
+    transform: scaleY(1);
+}
+.use-card:hover {
+    border-color: hsl(var(--ink));
+    transform: translateY(-2px);
+}
+.use-card:hover .use-arrow {
+    transform: translateX(4px);
+    color: hsl(var(--amber));
+}
+.use-arrow {
+    transition:
+        transform 240ms ease,
+        color 240ms ease;
+}
+
+/* Amber CTA button */
+.btn-amber {
+    background: hsl(var(--amber));
+    color: hsl(var(--ink));
+    transition:
+        transform 200ms ease,
+        background-color 200ms ease,
+        box-shadow 200ms ease;
+}
+.btn-amber:hover {
+    background: #d28e16;
+    box-shadow: 0 6px 20px -8px rgba(232, 160, 32, 0.6);
+}
+.btn-amber:active {
+    transform: translateY(1px);
+}
+
+/* Header underline for active nav */
+.nav-link {
+    position: relative;
+    padding-bottom: 4px;
+}
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: hsl(var(--amber));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms ease;
+}
+.nav-link.active::after,
+.nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* Subtle paper grain overlay — auto-adapts to theme */
+.paper-grain {
+    background-image:
+        radial-gradient(
+            circle at 1px 1px,
+            rgba(26, 31, 46, 0.04) 1px,
+            transparent 0
+        );
+    background-size: 24px 24px;
+}
+.dark .paper-grain {
+    background-image:
+        radial-gradient(
+            circle at 1px 1px,
+            rgba(247, 245, 240, 0.05) 1px,
+            transparent 0
+        );
+}
+
+/* Vertical divider */
+.v-divider {
+    width: 1px;
+    background: rgba(247, 245, 240, 0.18);
+}
+
+/* Letter mockup blurred lines */
+.blur-line {
+    height: 8px;
+    background: rgba(26, 31, 46, 0.18);
+    border-radius: 2px;
+    filter: blur(2px);
+}
+
+/* Step number large */
+.step-num {
+    font-family: "Instrument Serif", serif;
+    font-size: clamp(48px, 5.5vw, 72px);
+    line-height: 1;
+    color: hsl(var(--amber));
+}
+
+/* Reveal animation */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.fade-up {
+    animation: fadeUp 700ms ease both;
+}
+.fade-up-delay-1 {
+    animation-delay: 80ms;
+}
+.fade-up-delay-2 {
+    animation-delay: 160ms;
+}
+.fade-up-delay-3 {
+    animation-delay: 240ms;
+}
+
+/* Floating subtle motion */
+@keyframes letterFloat {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(0.3deg);
+    }
+}
+.letter-float {
+    animation: letterFloat 7s ease-in-out infinite;
+}
+
+/* Print-only for letter result */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+    }
+    .printable-letter {
+        box-shadow: none !important;
+        border: none !important;
+        background: white !important;
+    }
+}
+
+/* Focus rings */
+*:focus-visible {
+    outline: 2px solid hsl(var(--amber));
+    outline-offset: 3px;
+    border-radius: 4px;
+}
