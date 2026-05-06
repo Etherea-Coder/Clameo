@@ -898,7 +898,7 @@ export default function Landing() {
               </Link>
 
               <Link to="#modeles" className="clameo-btn-secondary">
-                Créer ma lettre <ArrowRight size={15} />
+                Voir les modèles <ArrowRight size={15} />
               </Link>
             </div>
 

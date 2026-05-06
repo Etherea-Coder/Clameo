@@ -7,9 +7,37 @@ import Footer from "../components/Footer";
 import { CASES, CASE_STEPS, RECIPIENT_STEP, USER_STEP, getCase } from "../lib/letterCases";
 import { saveDraft, loadDraft, clearDraft } from "../lib/share";
 
+const token = {
+  light: "#fbfaf7",
+  text: "#111827",
+  coral: "#e8502a",
+  border: "#e5e7eb",
+  muted: "#6b7280",
+  white: "#ffffff",
+};
+
+function InjectBuilderStyles() {
+  return (
+    <style>{`
+      .builder-section {
+        background: ${token.light};
+        color: ${token.text};
+        font-family: 'DM Sans', system-ui, sans-serif;
+      }
+      .builder-eyebrow {
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: "0.16em";
+        text-transform: uppercase;
+        color: ${token.coral};
+        margin-bottom: 8px;
+      }
+    `}</style>
+  );
+}
+
 function FieldRenderer({ field, value, onChange }) {
-  const base =
-    "w-full px-4 py-3 bg-card border border-ink/20 rounded-md focus:border-ink focus:outline-none transition text-ink placeholder:text-ink/40";
+  const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
 
   if (field.type === "textarea") {
     return (
@@ -20,6 +48,9 @@ function FieldRenderer({ field, value, onChange }) {
         placeholder={field.placeholder}
         onChange={(e) => onChange(field.name, e.target.value)}
         data-testid={`field-${field.name}`}
+        style={{ borderColor: token.border }}
+        onFocus={(e) => e.target.style.borderColor = token.coral}
+        onBlur={(e) => e.target.style.borderColor = token.border}
       />
     );
   }
@@ -38,6 +69,9 @@ function FieldRenderer({ field, value, onChange }) {
           onChange(field.name, opt ? opt.label : "");
         }}
         data-testid={`field-${field.name}`}
+        style={{ borderColor: token.border }}
+        onFocus={(e) => e.target.style.borderColor = token.coral}
+        onBlur={(e) => e.target.style.borderColor = token.border}
       >
         <option value="" disabled>
           — Sélectionnez —
@@ -58,6 +92,9 @@ function FieldRenderer({ field, value, onChange }) {
       placeholder={field.placeholder}
       onChange={(e) => onChange(field.name, e.target.value)}
       data-testid={`field-${field.name}`}
+      style={{ borderColor: token.border }}
+      onFocus={(e) => e.target.style.borderColor = token.coral}
+      onBlur={(e) => e.target.style.borderColor = token.border}
     />
   );
 }
@@ -152,13 +189,14 @@ export default function Builder() {
   // CASE PICKER
   if (!c) {
     return (
-      <div className="min-h-screen bg-paper text-ink">
+      <div className="min-h-screen builder-section">
+        <InjectBuilderStyles />
         <Header />
         <section className="max-w-[1100px] mx-auto px-6 lg:px-12 py-16 lg:py-24" data-testid="builder-picker">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-ink/60 hover:text-ink mb-8" data-testid="back-home">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm hover:text-[#111827] mb-8" style={{ color: token.muted }} data-testid="back-home">
             <ArrowLeft size={16} /> Retour à l'accueil
           </Link>
-          <p className="eyebrow text-ink/60">Étape 1</p>
+          <p className="builder-eyebrow">Étape 1</p>
           <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] tracking-tight">
             Choisissez votre <em className="italic">situation</em>
           </h1>
@@ -175,15 +213,14 @@ export default function Builder() {
                     setStepIndex(0);
                     navigate(`/builder/${cs.id}`);
                   }}
-                  className="use-card text-left flex items-start gap-5 p-6 rounded-md border border-ink/15 bg-card"
+                  className="use-card text-left flex items-start gap-5 p-6 rounded-[16px] border bg-white"
+                  style={{ borderColor: token.border }}
                   data-testid={`pick-${cs.id}`}
                 >
-                  <div className="shrink-0 mt-0.5 w-10 h-10 flex items-center justify-center rounded-md border border-ink/15 bg-paper-2">
-                    <Icon size={20} strokeWidth={1.6} />
-                  </div>
+                  <Icon size={20} strokeWidth={1.6} style={{ color: token.text }} />
                   <div>
                     <p className="font-serif-display text-[20px] leading-tight">{cs.title}</p>
-                    <p className="text-sm text-ink/60 mt-1.5">{cs.short}</p>
+                    <p className="text-sm mt-1.5" style={{ color: token.muted }}>{cs.short}</p>
                   </div>
                 </button>
               );
@@ -197,7 +234,8 @@ export default function Builder() {
 
   // STEP FORM
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen builder-section">
+      <InjectBuilderStyles />
       <Toaster position="top-center" />
       <Header />
       <section className="max-w-[820px] mx-auto px-6 lg:px-12 py-12 lg:py-20" data-testid="builder-form">
@@ -206,26 +244,27 @@ export default function Builder() {
           <button
             type="button"
             onClick={prev}
-            className="inline-flex items-center gap-2 text-sm text-ink/60 hover:text-ink"
+            className="inline-flex items-center gap-2 text-sm"
+            style={{ color: token.muted }}
             data-testid="builder-prev"
           >
             <ArrowLeft size={16} />
             {stepIndex === 0 ? "Changer de situation" : "Précédent"}
           </button>
-          <p className="text-sm text-ink/60" data-testid="builder-step-count">
+          <p className="text-sm" style={{ color: token.muted }} data-testid="builder-step-count">
             Étape {stepIndex + 1} / {totalSteps}
           </p>
         </div>
 
-        <div className="h-[3px] bg-ink/10 rounded-full overflow-hidden" data-testid="builder-progress">
+        <div className="h-[3px] rounded-full overflow-hidden" style={{ background: token.border }} data-testid="builder-progress">
           <div
-            className="h-full bg-amber-brand transition-all duration-500"
-            style={{ width: `${progress}%` }}
+            className="h-full transition-all duration-500"
+            style={{ width: `${progress}%`, background: token.coral }}
           />
         </div>
 
         <div className="mt-10">
-          <p className="eyebrow text-ink/60">{c.title}</p>
+          <p className="builder-eyebrow">{c.title}</p>
           <h1 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl mt-3 leading-[1.05] tracking-tight">
             {currentStep.title}
           </h1>
@@ -234,9 +273,9 @@ export default function Builder() {
         <div className="mt-10 space-y-6">
           {currentStep.fields.map((f) => (
             <div key={f.name} className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-ink/80" htmlFor={f.name}>
+              <label className="text-sm font-medium" style={{ color: token.text }} htmlFor={f.name}>
                 {f.label}
-                {f.required ? <span className="text-amber-brand"> *</span> : null}
+                {f.required ? <span style={{ color: token.coral }}> *</span> : null}
               </label>
               <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} />
             </div>
@@ -244,10 +283,10 @@ export default function Builder() {
         </div>
 
         {/* Privacy + explicit draft actions */}
-        <div className="mt-10 rounded-md border border-ink/10 bg-paper-2 p-5" data-testid="draft-panel">
+        <div className="mt-10 rounded-[16px] border p-5" style={{ background: token.white, borderColor: token.border }} data-testid="draft-panel">
           <div className="flex items-start gap-3">
-            <Lock size={16} className="text-sage shrink-0 mt-0.5" />
-            <p className="text-xs text-ink/70 leading-relaxed">
+            <Lock size={16} style={{ color: token.coral, flexShrink: 0, marginTop: 2 }} />
+            <p className="text-xs leading-relaxed" style={{ color: token.muted }}>
               Vos informations restent uniquement dans votre navigateur. Clameo ne les envoie pas à un serveur.
             </p>
           </div>
@@ -255,7 +294,8 @@ export default function Builder() {
             <button
               type="button"
               onClick={onSaveDraft}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium border border-ink/20 hover:border-ink transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border transition"
+              style={{ borderColor: token.border }}
               data-testid="draft-save"
             >
               <Save size={14} /> Sauvegarder ce brouillon sur cet appareil
@@ -265,7 +305,8 @@ export default function Builder() {
                 <button
                   type="button"
                   onClick={onRestoreDraft}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium border border-ink/20 hover:border-ink transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border transition"
+                  style={{ borderColor: token.border }}
                   data-testid="draft-restore"
                 >
                   Reprendre mon brouillon
@@ -273,7 +314,8 @@ export default function Builder() {
                 <button
                   type="button"
                   onClick={onClearDraft}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium border border-ink/20 hover:border-ink/60 text-ink/60 hover:text-ink transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border transition"
+                  style={{ borderColor: token.border, color: token.muted }}
                   data-testid="draft-clear"
                 >
                   <Trash2 size={14} /> Effacer mes données
@@ -283,11 +325,12 @@ export default function Builder() {
           </div>
         </div>
 
-        <div className="mt-12 flex items-center justify-between border-t border-ink/10 pt-8">
+        <div className="mt-12 flex items-center justify-between pt-8" style={{ borderTop: `1px solid ${token.border}` }}>
           <button
             type="button"
             onClick={prev}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium border border-ink/20 hover:border-ink transition"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-[14px] text-sm font-medium border transition"
+            style={{ borderColor: token.border }}
             data-testid="builder-back"
           >
             <ArrowLeft size={16} /> Précédent
@@ -296,7 +339,8 @@ export default function Builder() {
             type="button"
             onClick={next}
             disabled={!isStepValid()}
-            className="btn-amber inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[14px] text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: token.coral, color: token.white }}
             data-testid="builder-next"
           >
             {stepIndex === totalSteps - 1 ? (

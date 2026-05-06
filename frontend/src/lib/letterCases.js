@@ -371,8 +371,9 @@ export const USER_STEP = {
     { name: "userFullName", label: "Nom et prénom", required: true },
     { name: "userAddress", label: "Adresse", required: true },
     { name: "userPostalCity", label: "Code postal et ville", placeholder: "Ex : 75011 Paris", required: true },
-    { name: "userEmail", label: "Email", type: "email", required: true },
+    { name: "userEmail", label: "Email (facultatif)", type: "email" },
     { name: "userPhone", label: "Téléphone (facultatif)" },
+    { name: "attachments", label: "Pièces jointes / preuves utiles (facultatif)", type: "textarea", placeholder: "Ex : facture, capture d'écran, email de confirmation, photo, contrat, justificatif de paiement…" },
   ],
 };
 
