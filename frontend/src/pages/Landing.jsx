@@ -7,9 +7,6 @@ import {
   Clock,
   Lock,
   Trash2,
-  FileText,
-  HelpCircle,
-  Sparkles,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -601,6 +598,17 @@ function InjectLandingStyles() {
         font-size: 13px;
       }
 
+      @media (max-width: 640px) {
+        .ticker-label {
+          padding: 12px 16px;
+          font-size: 10px;
+        }
+        .ticker-item {
+          padding: 12px 18px;
+          font-size: 12px;
+        }
+      }
+
       @media (max-width: 1024px) {
         .clameo-hero-grid {
           grid-template-columns: 1fr;
@@ -678,6 +686,58 @@ function InjectLandingStyles() {
 
         .usecase-grid {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .clameo-hero-title {
+          font-size: clamp(40px, 12vw, 56px);
+        }
+
+        .clameo-hero-subtitle {
+          font-size: 15px;
+        }
+
+        .clameo-visual {
+          transform: scale(0.85);
+          min-height: 420px;
+        }
+
+        .big-block {
+          width: 160px;
+          min-height: 140px;
+        }
+
+        .problem-note {
+          width: 180px;
+        }
+
+        .final-letter {
+          width: 260px;
+          min-height: 340px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .section-title {
+          font-size: clamp(32px, 5vw, 48px);
+        }
+
+        .section-card {
+          padding: 32px 28px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .clameo-hero-actions {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .clameo-btn-primary,
+        .clameo-btn-secondary {
+          width: 100%;
+          justify-content: center;
         }
       }
     `}</style>
@@ -876,6 +936,19 @@ export default function Landing() {
               flexWrap: "wrap",
             }}
           >
+            <style>{`
+              @media (max-width: 640px) {
+                [data-testid="resume-banner"] > div {
+                  flex-direction: column;
+                  align-items: flex-start;
+                  gap: 16px;
+                }
+                [data-testid="resume-banner"] > div > div:last-child {
+                  width: 100%;
+                  justify-content: flex-start;
+                }
+              }
+            `}</style>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <Lock size={15} style={{ color: token.coral }} />
               <div>
@@ -942,7 +1015,7 @@ export default function Landing() {
                 Choisissez votre situation.
               </h2>
               <p style={{ marginTop: 20, color: token.muted, fontSize: 17, lineHeight: 1.7, maxWidth: 620 }}>
-                Chaque modèle part d’un problème concret et vous guide vers une lettre claire, utilisable tout de suite.
+                Chaque modèle part d'un problème concret et vous guide vers une lettre claire, utilisable tout de suite.
               </p>
             </div>
 
@@ -1018,6 +1091,17 @@ export default function Landing() {
                 );
               })}
             </div>
+
+            <style>{`
+              @media (max-width: 768px) {
+                [data-testid="usecases-section"] {
+                  padding: 64px 0;
+                }
+                [data-testid="usecases-section"] > div > div:first-child {
+                  margin-bottom: 36px;
+                }
+              }
+            `}</style>
           </div>
         </section>
 
@@ -1050,7 +1134,7 @@ export default function Landing() {
                     style={{
                       display: "block",
                       color: token.coral,
-                      fontSize: 72,
+                      fontSize: "clamp(48px, 8vw, 72px)",
                       lineHeight: 1,
                       fontWeight: 900,
                       letterSpacing: "-0.08em",
@@ -1060,7 +1144,7 @@ export default function Landing() {
                     {s.num}
                   </span>
 
-                  <h3 style={{ margin: "24px 0 12px", fontSize: 24, fontWeight: 900, letterSpacing: "-0.04em" }}>
+                  <h3 style={{ margin: "24px 0 12px", fontSize: "clamp(20px, 4vw, 24px)", fontWeight: 900, letterSpacing: "-0.04em" }}>
                     {s.title}
                   </h3>
 
@@ -1070,6 +1154,31 @@ export default function Landing() {
                 </div>
               ))}
             </div>
+
+            <style>{`
+              @media (max-width: 768px) {
+                [data-testid="how-section"] {
+                  padding: 64px 0;
+                }
+                [data-testid="how-section"] > div > div:first-child {
+                  margin-bottom: 40px;
+                }
+                [data-testid="how-section"] > div > div:last-child {
+                  grid-template-columns: 1fr;
+                  gap: 32px;
+                }
+                [data-testid="how-section"] > div > div:last-child > div {
+                  padding: 0 !important;
+                  border-left: none !important;
+                  border-bottom: 1px solid ${token.border};
+                  padding-bottom: 32px;
+                }
+                [data-testid="how-section"] > div > div:last-child > div:last-child {
+                  border-bottom: none;
+                  padding-bottom: 0;
+                }
+              }
+            `}</style>
           </div>
         </section>
 
@@ -1102,7 +1211,7 @@ export default function Landing() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {[
-                  { Icon: CheckCircle2, t: "Modèles juridiques", s: "Rédigés par des juristes, conformes au droit français." },
+                  { Icon: CheckCircle2, t: "Modèles structurés", s: "Pensés pour les démarches courantes du droit français." },
                   { Icon: Clock, t: "2 minutes", s: "Un parcours court, clair et sans jargon inutile." },
                 ].map(({ Icon, t, s }) => (
                   <div
@@ -1130,6 +1239,19 @@ export default function Landing() {
                 ))}
               </div>
             </div>
+
+            <style>{`
+              @media (max-width: 768px) {
+                [data-testid="reassurance-section"] {
+                  padding: 64px 0;
+                }
+                [data-testid="reassurance-section"] > div > div {
+                  grid-template-columns: 1fr;
+                  gap: 40px;
+                  padding: 32px 28px;
+                }
+              }
+            `}</style>
           </div>
         </section>
 
@@ -1163,6 +1285,19 @@ export default function Landing() {
               </h2>
 
               <Accordion type="single" collapsible style={{ borderTop: `1px solid ${token.border}` }}>
+              <style>{`
+                @media (max-width: 768px) {
+                  [data-testid="faq-section"] {
+                    padding: 0 0 64px;
+                  }
+                  [data-testid="faq-section"] > div > div {
+                    padding: 32px 24px;
+                  }
+                  [data-testid="faq-section"] > div > div > h2 {
+                    margin-bottom: 28px;
+                  }
+                }
+              `}</style>
                 {FAQ.map((item, idx) => (
                   <AccordionItem
                     key={idx}
