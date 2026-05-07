@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Save, Trash2, Lock } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import Header from "../components/Header";
@@ -44,9 +44,10 @@ function InjectBuilderStyles() {
   );
 }
 
-function FileUploadField({ field, value, onChange, data, setData, uploadFile, deleteFile }) {
+function FileUploadField({ field, value, onChange, data, setData, uploadFile, deleteFile, caseSessionId }) {
   const [uploading, setUploading] = useState(false);
   const uploadedFiles = value || [];
+  const sessionReady = !!caseSessionId;
 
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -101,14 +102,14 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
             id={field.name}
             accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
             onChange={handleFileUpload}
-            disabled={uploading}
+            disabled={!sessionReady || uploading}
             className="hidden"
             data-testid={`field-${field.name}`}
           />
           
           <label
             htmlFor={field.name}
-            className={`cursor-pointer flex flex-col items-center justify-center gap-3 text-foreground/70 hover:text-foreground transition ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`cursor-pointer flex flex-col items-center justify-center gap-3 text-foreground/70 hover:text-foreground transition ${!sessionReady || uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <div className="w-12 h-12 rounded-full bg-coral/10 flex items-center justify-center">
               {uploading ? (
@@ -123,7 +124,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
               )}
             </div>
             <span className="text-sm font-medium">
-              {uploading ? 'Téléchargement en cours...' : 'Ajouter un fichier'}
+              {!sessionReady ? 'Initialisation...' : uploading ? 'Téléchargement en cours...' : 'Ajouter un fichier'}
             </span>
             <span className="text-xs">PDF, PNG, JPG, DOC ou DOCX — 10 Mo maximum par fichier.</span>
           </label>
@@ -169,7 +170,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
   );
 }
 
-function FieldRenderer({ field, value, onChange, attempted, data, setData, uploadFile, deleteFile }) {
+function FieldRenderer({ field, value, onChange, attempted, data, setData, uploadFile, deleteFile, caseSessionId }) {
   const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
   const isInvalid = attempted && field.required && !value;
 
@@ -270,7 +271,7 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
   }
 
   if (field.type === "fileUpload") {
-    return <FileUploadField field={field} value={value} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} />;
+    return <FileUploadField field={field} value={value} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />;
   }
 
   return (
@@ -597,7 +598,7 @@ export default function Builder() {
                 {f.label}
                 {f.required ? <span style={{ color: token.coral }}> *</span> : null}
               </label>
-              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} />
+              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />
             </div>
           ))}
         </div>
