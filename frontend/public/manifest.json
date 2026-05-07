@@ -1,0 +1,27 @@
+{
+  "name": "Clameo — Votre lettre, prête en 2 minutes",
+  "short_name": "Clameo",
+  "description": "Générez en 2 minutes une lettre française prête à envoyer : remboursement, logement, mise en demeure, RGPD, banque, voisinage et plus.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e8502a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "fr"
+}

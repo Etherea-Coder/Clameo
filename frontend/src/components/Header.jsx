@@ -5,8 +5,8 @@ import ClameoLogo from "./Logo";
 
 const NAV = [
   { label: "Accueil", to: "/" },
-  { label: "Nos modèles", to: "/#modeles" },
-  { label: "FAQ", to: "/#faq" },
+  { label: "Nos modèles", to: "#modeles", isHash: true },
+  { label: "FAQ", to: "#faq", isHash: true },
 ];
 
 export default function Header() {
@@ -31,16 +31,29 @@ export default function Header() {
 
         <nav className="hidden md:flex items-center gap-10">
           {NAV.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={`nav-link text-[15px] ${isLanding ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground"} ${
-                isActive(n.to) ? "active" : ""
-              }`}
-              data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-            >
-              {n.label}
-            </Link>
+            n.isHash ? (
+              <a
+                key={n.to}
+                href={n.to}
+                className={`nav-link text-[15px] ${isLanding ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground"} ${
+                  location.hash === n.to ? "active" : ""
+                }`}
+                data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
+              >
+                {n.label}
+              </a>
+            ) : (
+              <Link
+                key={n.to}
+                to={n.to}
+                className={`nav-link text-[15px] ${isLanding ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground"} ${
+                  isActive(n.to) ? "active" : ""
+                }`}
+                data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
+              >
+                {n.label}
+              </Link>
+            )
           ))}
         </nav>
 
@@ -76,15 +89,27 @@ export default function Header() {
         >
           <div className="px-6 py-6 flex flex-col gap-4">
             {NAV.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setOpen(false)}
-                className={`text-base ${isLanding ? "text-white" : "text-foreground"}`}
-                data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-              >
-                {n.label}
-              </Link>
+              n.isHash ? (
+                <a
+                  key={n.to}
+                  href={n.to}
+                  onClick={() => setOpen(false)}
+                  className={`text-base ${isLanding ? "text-white" : "text-foreground"}`}
+                  data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
+                >
+                  {n.label}
+                </a>
+              ) : (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className={`text-base ${isLanding ? "text-white" : "text-foreground"}`}
+                  data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
+                >
+                  {n.label}
+                </Link>
+              )
             ))}
             <button
               type="button"

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 import Landing from "./pages/Landing";
 import Builder from "./pages/Builder";
 import Result from "./pages/Result";
@@ -9,9 +10,24 @@ import Confidentialite from "./pages/Confidentialite";
 import Contact from "./pages/Contact";
 
 function App() {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('Service Worker registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('Service Worker registration failed: ', registrationError);
+          });
+      });
+    }
+  }, []);
+
   return (
     <div className="App">
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/builder" element={<Builder />} />
