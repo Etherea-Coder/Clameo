@@ -1,10 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, AlertTriangle, FileText, Shield, Send } from "lucide-react";
+import { toast } from "sonner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { supabase } from "../lib/supabaseClient";
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    requestType: '',
+    subject: '',
+    message: '',
+    consent: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.email || !formData.requestType || !formData.subject || !formData.message || !formData.consent) {
+      toast.error('Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    if (!formData.email.includes('@')) {
+      toast.error('Veuillez entrer une adresse email valide.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            request_type: formData.requestType,
+            subject: formData.subject,
+            message: formData.message,
+            consent: formData.consent
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast.success('Message envoyé. Nous vous répondrons dès que possible.');
+      setFormData({
+        name: '',
+        email: '',
+        requestType: '',
+        subject: '',
+        message: '',
+        consent: false
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Erreur lors de l\'envoi du message. Veuillez réessayer ou nous contacter directement par email.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -69,28 +137,175 @@ export default function Contact() {
               <div>
                 <h2 className="text-xl font-semibold text-foreground">Confidentialité</h2>
                 <p className="mt-1.5 text-sm text-foreground/70 leading-relaxed">
-                  Les informations que vous envoyez par email servent uniquement à répondre à votre demande. Clameo ne stocke aucune donnée personnelle sur ses serveurs.
+                  Les informations envoyées via ce formulaire servent uniquement à répondre à votre demande.
                 </p>
               </div>
             </div>
           </section>
         </div>
 
-        {/* Contact Button */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-foreground/70 mb-4">
-            Pour toute question, écrivez-nous à : 
-          </p>
-          <p className="text-lg font-medium text-foreground mb-6">
-            hello@clameo.fr
-          </p>
-          <a 
-            href="mailto:hello@clameo.fr"
-            className="btn-coral inline-flex items-center px-6 py-3 rounded-[14px] text-sm font-semibold"
-          >
-            <Mail size={16} className="mr-2" />
-            Écrire à Clameo
-          </a>
+        {/* Contact Form */}
+        <div className="mt-12 rounded-lg border border-border bg-card p-6 lg:p-8">
+          <h2 className="text-2xl font-semibold text-foreground mb-6">Formulaire de contact</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                Nom <span className="text-[#e8502a]">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Votre nom"
+                required
+                className="w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]"
+                style={{ borderColor: 'var(--border)' }}
+                onFocus={(e) => e.target.style.borderColor = '#e8502a'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                Email <span className="text-[#e8502a]">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="votre@email.com"
+                required
+                className="w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]"
+                style={{ borderColor: 'var(--border)' }}
+                onFocus={(e) => e.target.style.borderColor = '#e8502a'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+              />
+            </div>
+
+            {/* Request Type */}
+            <div>
+              <label htmlFor="requestType" className="block text-sm font-medium text-foreground mb-2">
+                Type de demande <span className="text-[#e8502a]">*</span>
+              </label>
+              <select
+                id="requestType"
+                name="requestType"
+                value={formData.requestType}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333]"
+                style={{ borderColor: 'var(--border)' }}
+                onFocus={(e) => e.target.style.borderColor = '#e8502a'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+              >
+                <option value="">Sélectionnez un type</option>
+                <option value="Question générale">Question générale</option>
+                <option value="Signaler une erreur">Signaler une erreur</option>
+                <option value="Partenariat">Partenariat</option>
+                <option value="Confidentialité">Confidentialité</option>
+              </select>
+            </div>
+
+            {/* Subject */}
+            <div>
+              <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
+                Sujet <span className="text-[#e8502a]">*</span>
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                placeholder="Sujet de votre message"
+                required
+                className="w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]"
+                style={{ borderColor: 'var(--border)' }}
+                onFocus={(e) => e.target.style.borderColor = '#e8502a'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+              />
+            </div>
+
+            {/* Message */}
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
+                Message <span className="text-[#e8502a]">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Décrivez votre demande..."
+                rows={5}
+                required
+                className="w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999] resize-none"
+                style={{ borderColor: 'var(--border)' }}
+                onFocus={(e) => e.target.style.borderColor = '#e8502a'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+              />
+            </div>
+
+            {/* Consent */}
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                id="consent"
+                name="consent"
+                checked={formData.consent}
+                onChange={handleChange}
+                required
+                className="mt-1 w-4 h-4 text-[#e8502a] border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#e8502a]/20"
+                style={{ borderColor: 'var(--border)' }}
+              />
+              <label htmlFor="consent" className="text-sm text-foreground/70 leading-relaxed">
+                J'accepte que mes informations soient utilisées pour répondre à ma demande. <span className="text-[#e8502a]">*</span>
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn-coral w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[14px] text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="animate-spin">⟳</span>
+                  Envoi en cours...
+                </>
+              ) : (
+                <>
+                  <Send size={16} />
+                  Envoyer le message
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Fallback Email */}
+          <div className="mt-8 pt-6 border-t border-border">
+            <p className="text-sm text-foreground/70 mb-4">
+              Préférez-vous nous contacter directement par email ?
+            </p>
+            <p className="text-lg font-medium text-foreground mb-4">
+              hello@clameo.fr
+            </p>
+            <a 
+              href="mailto:hello@clameo.fr"
+              className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground transition"
+            >
+              <Mail size={16} />
+              Ouvrir votre client email
+            </a>
+          </div>
         </div>
       </section>
 
