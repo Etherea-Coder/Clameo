@@ -390,10 +390,10 @@ export const ATTACHMENTS_STEP = {
       placeholder: "Décrivez le document à joindre...",
     },
     {
-      name: "uploadedFiles",
-      label: "Fichiers téléchargés",
+      name: "uploadedAttachments",
+      label: "Fichiers à joindre",
       type: "fileUpload",
-      helper: "Ces fichiers servent uniquement à préparer votre dossier. Ils ne sont pas envoyés automatiquement au destinataire.",
+      helper: "PDF, PNG, JPG, DOC ou DOCX — 10 Mo maximum par fichier.",
     },
   ],
 };

@@ -44,7 +44,132 @@ function InjectBuilderStyles() {
   );
 }
 
-function FieldRenderer({ field, value, onChange, attempted }) {
+function FileUploadField({ field, value, onChange, data, setData, uploadFile, deleteFile }) {
+  const [uploading, setUploading] = useState(false);
+  const uploadedFiles = value || [];
+
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    const file = files[0];
+    
+    // Validate file size (10 MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Le fichier dépasse la limite de 10 Mo');
+      return;
+    }
+
+    // Validate file type
+    const allowedExtensions = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'];
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(extension)) {
+      toast.error('Type de fichier non autorisé. Formats acceptés : PDF, PNG, JPG, DOC, DOCX');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      await uploadFile(file);
+      // Update data with uploaded file names
+      const newAttachmentNames = [...(data.uploadedAttachmentNames || []), file.name];
+      setData(prev => ({ ...prev, uploadedAttachmentNames: newAttachmentNames }));
+    } finally {
+      setUploading(false);
+    }
+    // Reset input
+    e.target.value = '';
+  };
+
+  const handleFileDelete = async (attachmentId, fileName) => {
+    try {
+      await deleteFile(attachmentId);
+      // Update data by removing the file name
+      const newAttachmentNames = (data.uploadedAttachmentNames || []).filter(name => name !== fileName);
+      setData(prev => ({ ...prev, uploadedAttachmentNames: newAttachmentNames }));
+    } catch (error) {
+      console.error('Delete error:', error);
+    }
+  };
+
+  return (
+    <div>
+      <div className="border-2 border-dashed border-border rounded-[14px] p-6">
+        <div className="text-center">
+          <input
+            type="file"
+            id={field.name}
+            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+            onChange={handleFileUpload}
+            disabled={uploading}
+            className="hidden"
+            data-testid={`field-${field.name}`}
+          />
+          
+          <label
+            htmlFor={field.name}
+            className={`cursor-pointer flex flex-col items-center justify-center gap-3 text-foreground/70 hover:text-foreground transition ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <div className="w-12 h-12 rounded-full bg-coral/10 flex items-center justify-center">
+              {uploading ? (
+                <svg className="w-6 h-6 text-coral animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                <svg className="w-6 h-6 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 0 1 4 4 0 1-4 4-4zm0 0h14a7 7 0 0 1 7 7 0 1-7-7-7h-1v10h-2v-10h-1z"/>
+                </svg>
+              )}
+            </div>
+            <span className="text-sm font-medium">
+              {uploading ? 'Téléchargement en cours...' : 'Ajouter un fichier'}
+            </span>
+            <span className="text-xs">PDF, PNG, JPG, DOC ou DOCX — 10 Mo maximum par fichier.</span>
+          </label>
+        </div>
+        
+        {uploadedFiles.length > 0 && (
+          <div className="mt-4 space-y-2">
+            <p className="text-sm font-medium text-foreground">Fichiers téléchargés:</p>
+            {uploadedFiles.map((file, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-background rounded-lg border">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-coral/10 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{file.file_name}</p>
+                    <p className="text-xs text-foreground/60">{(file.file_size / 1024 / 1024).toFixed(1)} MB</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleFileDelete(file.id, file.file_name)}
+                  className="text-red-500 hover:text-red-700 text-sm font-medium transition"
+                >
+                  Supprimer
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {field.helper && (
+        <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
+          {field.helper}
+        </p>
+      )}
+      <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
+        Ces fichiers servent uniquement à préparer votre dossier. Ils ne sont pas envoyés automatiquement au destinataire.
+      </p>
+    </div>
+  );
+}
+
+function FieldRenderer({ field, value, onChange, attempted, data, setData, uploadFile, deleteFile }) {
   const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
   const isInvalid = attempted && field.required && !value;
 
@@ -145,79 +270,7 @@ function FieldRenderer({ field, value, onChange, attempted }) {
   }
 
   if (field.type === "fileUpload") {
-    const uploadedFiles = value || [];
-    
-    return (
-      <div>
-        <div className="border-2 border-dashed border-border rounded-[14px] p-6">
-          <div className="text-center">
-            <input
-              type="file"
-              id={field.name}
-              multiple
-              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
-              onChange={(e) => {
-                const files = Array.from(e.target.files);
-                if (files.length > 0) {
-                  onChange(field.name, [...uploadedFiles, ...files]);
-                }
-              }}
-              className="hidden"
-              data-testid={`field-${field.name}`}
-            />
-            
-            <label
-              htmlFor={field.name}
-              className="cursor-pointer flex flex-col items-center justify-center gap-3 text-foreground/70 hover:text-foreground transition"
-            >
-              <div className="w-12 h-12 rounded-full bg-coral/10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 0 1 4 4 0 1-4 4-4zm0 0h14a7 7 0 0 1 7 7 0 1-7-7-7h-1v10h-2v-10h-1z"/>
-                </svg>
-              </div>
-              <span className="text-sm font-medium">Cliquez pour télécharger des fichiers</span>
-              <span className="text-xs">PDF, PNG, JPG, DOC, DOCX (max 10 MB)</span>
-            </label>
-          </div>
-          
-          {uploadedFiles.length > 0 && (
-            <div className="mt-4 space-y-2">
-              <p className="text-sm font-medium text-foreground">Fichiers téléchargés:</p>
-              {uploadedFiles.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-background rounded-lg border">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-coral/10 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{file.name}</p>
-                      <p className="text-xs text-foreground/60">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newFiles = uploadedFiles.filter((_, i) => i !== index);
-                      onChange(field.name, newFiles);
-                    }}
-                    className="text-red-500 hover:text-red-700 text-sm font-medium transition"
-                  >
-                    Supprimer
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {field.helper && (
-          <p className="mt-2 text-xs text-foreground/60" style={{ paddingLeft: "16px" }}>
-            {field.helper}
-          </p>
-        )}
-      </div>
-    );
+    return <FileUploadField field={field} value={value} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} />;
   }
 
   return (
@@ -352,6 +405,11 @@ export default function Builder() {
       const result = await response.json();
       if (result.ok) {
         setUploadedFiles(prev => [...prev, result.attachment]);
+        // Update data with uploaded attachments
+        setData(prev => ({ 
+          ...prev, 
+          uploadedAttachments: [...(prev.uploadedAttachments || []), result.attachment]
+        }));
         toast.success('Fichier téléchargé avec succès');
       } else {
         toast.error(result.error || 'Erreur lors du téléchargement');
@@ -370,12 +428,17 @@ export default function Builder() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ attachmentId }),
+        body: JSON.stringify({ caseSessionId, attachmentId }),
       });
 
       const result = await response.json();
       if (result.ok) {
         setUploadedFiles(prev => prev.filter(f => f.id !== attachmentId));
+        // Update data by removing from uploadedAttachments
+        setData(prev => ({ 
+          ...prev, 
+          uploadedAttachments: (prev.uploadedAttachments || []).filter(f => f.id !== attachmentId)
+        }));
         toast.success('Fichier supprimé');
       } else {
         toast.error(result.error || 'Erreur lors de la suppression');
@@ -534,7 +597,7 @@ export default function Builder() {
                 {f.label}
                 {f.required ? <span style={{ color: token.coral }}> *</span> : null}
               </label>
-              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} />
+              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} />
             </div>
           ))}
         </div>
