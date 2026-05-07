@@ -389,6 +389,12 @@ export const ATTACHMENTS_STEP = {
       type: "textarea",
       placeholder: "Décrivez le document à joindre...",
     },
+    {
+      name: "uploadedFiles",
+      label: "Fichiers téléchargés",
+      type: "fileUpload",
+      helper: "Ces fichiers servent uniquement à préparer votre dossier. Ils ne sont pas envoyés automatiquement au destinataire.",
+    },
   ],
 };
 
