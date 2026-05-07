@@ -2,8 +2,8 @@ const CACHE_NAME = 'clameo-v1';
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/icon-192.svg',
+  '/icon-512.svg'
 ];
 
 self.addEventListener('install', (event) => {
