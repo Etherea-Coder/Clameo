@@ -4,7 +4,6 @@ import { Mail, Phone, MapPin, AlertTriangle, FileText, Shield, Send } from "luci
 import { toast } from "sonner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { supabase } from "../lib/supabaseClient";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -33,20 +32,29 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            request_type: formData.requestType,
-            subject: formData.subject,
-            message: formData.message,
-            consent: formData.consent
-          }
-        ]);
+      const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+      const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-      if (error) throw error;
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Configuration Supabase manquante');
+      }
+
+      const functionUrl = `${supabaseUrl}/functions/v1/contact-submit`;
+
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'envoi');
+      }
 
       toast.success('Message envoyé. Nous vous répondrons dès que possible.');
       setFormData({
@@ -59,7 +67,7 @@ export default function Contact() {
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error('Erreur lors de l\'envoi du message. Veuillez réessayer ou nous contacter directement par email.');
+      toast.error(error.message || 'Erreur lors de l\'envoi du message. Veuillez réessayer ou nous contacter directement par email.');
     } finally {
       setIsSubmitting(false);
     }
