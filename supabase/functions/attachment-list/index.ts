@@ -10,12 +10,13 @@ const allowedOrigins = new Set([
 
 function corsHeaders(req: Request) {
   const origin = req.headers.get("origin") || "";
-  const allowOrigin = allowedOrigins.has(origin) ? origin : "https://clameo.fr";
+  const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(origin);
+  const allowOrigin =
+    allowedOrigins.has(origin) || isVercelPreview ? origin : "https://clameo.fr";
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
-    "Access-Control-Allow-Headers":
-      "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
   };
@@ -31,11 +32,17 @@ function json(req: Request, status: number, body: unknown) {
   });
 }
 
+function clean(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: corsHeaders(req),
-    });
+    return new Response("ok", { headers: corsHeaders(req) });
   }
 
   if (req.method !== "POST") {
@@ -50,10 +57,10 @@ serve(async (req) => {
     return json(req, 400, { ok: false, error: "Invalid JSON body" });
   }
 
-  const caseSessionId = body.caseSessionId;
+  const caseSessionId = clean(body.caseSessionId);
 
-  if (!caseSessionId) {
-    return json(req, 400, { ok: false, error: "Case session ID is required" });
+  if (!caseSessionId || !isUuid(caseSessionId)) {
+    return json(req, 400, { ok: false, error: "Session invalide." });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -69,12 +76,15 @@ serve(async (req) => {
     .from("case_attachments")
     .select("id, file_name, file_type, file_size, created_at")
     .eq("case_session_id", caseSessionId)
-    .order("created_at", "asc");
+    .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("Supabase fetch error:", error);
+    console.error("Attachment list error:", error);
     return json(req, 500, { ok: false, error: "Impossible de récupérer les fichiers." });
   }
 
-  return json(req, 200, { ok: true, attachments: data });
+  return json(req, 200, {
+    ok: true,
+    attachments: data || [],
+  });
 });

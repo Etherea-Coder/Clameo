@@ -1,14 +1,10 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
-const allowedOrigins = new Set([
-  "https://clameo.fr",
-  "https://www.clameo.fr",
-  "http://localhost:3000",
-  "http://localhost:5173",
-]);
+const BUCKET = "case-attachments";
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-const allowedFileTypes = new Set([
+const allowedMimeTypes = new Set([
   "application/pdf",
   "image/png",
   "image/jpeg",
@@ -16,16 +12,24 @@ const allowedFileTypes = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
-const maxFileSize = 10 * 1024 * 1024; // 10 MB
+const allowedExtensions = new Set(["pdf", "png", "jpg", "jpeg", "doc", "docx"]);
+
+const allowedOrigins = new Set([
+  "https://clameo.fr",
+  "https://www.clameo.fr",
+  "http://localhost:3000",
+  "http://localhost:5173",
+]);
 
 function corsHeaders(req: Request) {
   const origin = req.headers.get("origin") || "";
-  const allowOrigin = allowedOrigins.has(origin) ? origin : "https://clameo.fr";
+  const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(origin);
+  const allowOrigin =
+    allowedOrigins.has(origin) || isVercelPreview ? origin : "https://clameo.fr";
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
-    "Access-Control-Allow-Headers":
-      "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
   };
@@ -41,33 +45,35 @@ function json(req: Request, status: number, body: unknown) {
   });
 }
 
-function sanitizeFilename(filename: string): string {
-  return filename
-    .replace(/[^a-zA-Z0-9.-_]/g, "_")
-    .replace(/_{2,}/g, "_")
-    .substring(0, 100);
+function clean(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function getFileExtension(filename: string): string {
-  const parts = filename.split(".");
-  return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : "";
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function sanitizeFileName(name: string) {
+  return name
+    .normalize("NFKD")
+    .replace(/[^\w.\- ]+/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 120);
+}
+
+function getExtension(fileName: string) {
+  const parts = fileName.split(".");
+  return parts.length > 1 ? parts.pop()!.toLowerCase() : "";
 }
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: corsHeaders(req),
-    });
+    return new Response("ok", { headers: corsHeaders(req) });
   }
 
   if (req.method !== "POST") {
     return json(req, 405, { ok: false, error: "Method not allowed" });
-  }
-
-  const contentType = req.headers.get("content-type") || "";
-  
-  if (!contentType.includes("multipart/form-data")) {
-    return json(req, 400, { ok: false, error: "Content-Type must be multipart/form-data" });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -77,78 +83,103 @@ serve(async (req) => {
     return json(req, 500, { ok: false, error: "Configuration serveur incomplète." });
   }
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  let form: FormData;
 
   try {
-    const formData = await req.formData();
-    const caseSessionId = formData.get("caseSessionId");
-    const file = formData.get("file") as File;
+    form = await req.formData();
+  } catch {
+    return json(req, 400, { ok: false, error: "Formulaire invalide." });
+  }
 
-    if (!caseSessionId || !file) {
-      return json(req, 400, { ok: false, error: "caseSessionId and file are required" });
-    }
+  const caseSessionId = clean(form.get("caseSessionId"));
+  const file = form.get("file");
 
-    // Validate file type
-    if (!allowedFileTypes.has(file.type)) {
-      return json(req, 400, { ok: false, error: "Type de fichier non autorisé" });
-    }
+  if (!caseSessionId || !isUuid(caseSessionId)) {
+    return json(req, 400, { ok: false, error: "Session invalide." });
+  }
 
-    // Validate file size
-    if (file.size > maxFileSize) {
-      return json(req, 400, { ok: false, error: "Fichier trop volumineux (max 10 MB)" });
-    }
+  if (!(file instanceof File)) {
+    return json(req, 400, { ok: false, error: "Fichier manquant." });
+  }
 
-    // Validate filename
-    const originalName = sanitizeFilename(file.name);
-    const fileExtension = getFileExtension(originalName);
-    
-    if (!originalName || fileExtension.length === 0) {
-      return json(req, 400, { ok: false, error: "Nom de fichier invalide" });
-    }
+  if (file.size <= 0) {
+    return json(req, 400, { ok: false, error: "Fichier vide." });
+  }
 
-    // Generate unique file ID
-    const fileId = crypto.randomUUID();
-    const storagePath = `${caseSessionId}/${fileId}-${originalName}`;
+  if (file.size > MAX_FILE_SIZE) {
+    return json(req, 400, { ok: false, error: "Le fichier dépasse la limite de 10 Mo." });
+  }
 
-    // Upload to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from("case-attachments")
-      .upload(storagePath, file, {
-        contentType: file.type,
-        upsert: false,
-      });
+  const originalName = sanitizeFileName(file.name || "document");
+  const extension = getExtension(originalName);
+  const mimeType = file.type || "application/octet-stream";
 
-    if (uploadError) {
-      console.error("Storage upload error:", uploadError);
-      return json(req, 500, { ok: false, error: "Impossible d'uploader le fichier" });
-    }
+  if (!allowedExtensions.has(extension) || !allowedMimeTypes.has(mimeType)) {
+    return json(req, 400, {
+      ok: false,
+      error: "Type de fichier non autorisé. Formats acceptés : PDF, PNG, JPG, DOC, DOCX.",
+    });
+  }
 
-    // Insert record in database
-    const { data: insertData, error: insertError } = await supabase
-      .from("case_attachments")
-      .insert({
-        case_session_id: caseSessionId,
-        file_name: originalName,
-        file_path: storagePath,
-        file_type: file.type,
-        file_size: file.size,
-        created_at: new Date().toISOString(),
-      })
-      .select("id, file_name, file_type, file_size")
-      .single();
+  const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    if (insertError) {
-      console.error("Database insert error:", insertError);
-      return json(req, 500, { ok: false, error: "Impossible d'enregistrer le fichier" });
-    }
+  const { data: session, error: sessionError } = await supabase
+    .from("case_sessions")
+    .select("id, expires_at")
+    .eq("id", caseSessionId)
+    .single();
 
-    return json(req, 200, { 
-      ok: true, 
-      attachment: insertData 
+  if (sessionError || !session) {
+    return json(req, 404, { ok: false, error: "Session introuvable." });
+  }
+
+  const now = new Date();
+  const expiresAt = new Date(session.expires_at);
+
+  if (expiresAt.getTime() < now.getTime()) {
+    return json(req, 410, { ok: false, error: "Session expirée." });
+  }
+
+  const fileId = crypto.randomUUID();
+  const filePath = `${caseSessionId}/${fileId}-${originalName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(BUCKET)
+    .upload(filePath, file, {
+      contentType: mimeType,
+      upsert: false,
     });
 
-  } catch (error) {
-    console.error("Upload error:", error);
-    return json(req, 500, { ok: false, error: "Erreur lors de l'upload" });
+  if (uploadError) {
+    console.error("Storage upload error:", uploadError);
+    return json(req, 500, { ok: false, error: "Impossible d’envoyer le fichier." });
   }
+
+  const { data: attachment, error: insertError } = await supabase
+    .from("case_attachments")
+    .insert({
+      case_session_id: caseSessionId,
+      file_name: originalName,
+      file_path: filePath,
+      file_type: mimeType,
+      file_size: file.size,
+    })
+    .select("id, file_name, file_type, file_size, created_at")
+    .single();
+
+  if (insertError) {
+    console.error("Attachment insert error:", insertError);
+
+    await supabase.storage.from(BUCKET).remove([filePath]);
+
+    return json(req, 500, {
+      ok: false,
+      error: "Fichier envoyé, mais impossible de l’enregistrer.",
+    });
+  }
+
+  return json(req, 200, {
+    ok: true,
+    attachment,
+  });
 });

@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
+const BUCKET = "case-attachments";
+
 const allowedOrigins = new Set([
   "https://clameo.fr",
   "https://www.clameo.fr",
@@ -10,12 +12,13 @@ const allowedOrigins = new Set([
 
 function corsHeaders(req: Request) {
   const origin = req.headers.get("origin") || "";
-  const allowOrigin = allowedOrigins.has(origin) ? origin : "https://clameo.fr";
+  const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(origin);
+  const allowOrigin =
+    allowedOrigins.has(origin) || isVercelPreview ? origin : "https://clameo.fr";
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
-    "Access-Control-Allow-Headers":
-      "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
   };
@@ -31,11 +34,17 @@ function json(req: Request, status: number, body: unknown) {
   });
 }
 
+function clean(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: corsHeaders(req),
-    });
+    return new Response("ok", { headers: corsHeaders(req) });
   }
 
   if (req.method !== "POST") {
@@ -50,10 +59,15 @@ serve(async (req) => {
     return json(req, 400, { ok: false, error: "Invalid JSON body" });
   }
 
-  const attachmentId = body.attachmentId;
+  const attachmentId = clean(body.attachmentId);
+  const caseSessionId = clean(body.caseSessionId);
 
-  if (!attachmentId) {
-    return json(req, 400, { ok: false, error: "Attachment ID is required" });
+  if (!attachmentId || !isUuid(attachmentId)) {
+    return json(req, 400, { ok: false, error: "Fichier invalide." });
+  }
+
+  if (!caseSessionId || !isUuid(caseSessionId)) {
+    return json(req, 400, { ok: false, error: "Session invalide." });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -65,36 +79,35 @@ serve(async (req) => {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-  // Get attachment info first
   const { data: attachment, error: fetchError } = await supabase
     .from("case_attachments")
-    .select("file_path")
+    .select("id, file_path")
     .eq("id", attachmentId)
+    .eq("case_session_id", caseSessionId)
     .single();
 
   if (fetchError || !attachment) {
-    return json(req, 404, { ok: false, error: "Fichier non trouvé" });
+    return json(req, 404, { ok: false, error: "Fichier introuvable." });
   }
 
-  // Delete from storage
-  const { error: deleteError } = await supabase.storage
-    .from("case-attachments")
+  const { error: storageError } = await supabase.storage
+    .from(BUCKET)
     .remove([attachment.file_path]);
 
-  if (deleteError) {
-    console.error("Storage delete error:", deleteError);
-    return json(req, 500, { ok: false, error: "Impossible de supprimer le fichier" });
+  if (storageError) {
+    console.error("Storage delete error:", storageError);
+    return json(req, 500, { ok: false, error: "Impossible de supprimer le fichier." });
   }
 
-  // Delete from database
-  const { error: deleteDbError } = await supabase
+  const { error: deleteError } = await supabase
     .from("case_attachments")
     .delete()
-    .eq("id", attachmentId);
+    .eq("id", attachmentId)
+    .eq("case_session_id", caseSessionId);
 
-  if (deleteDbError) {
-    console.error("Database delete error:", deleteDbError);
-    return json(req, 500, { ok: false, error: "Impossible de supprimer l'enregistrement" });
+  if (deleteError) {
+    console.error("Attachment delete error:", deleteError);
+    return json(req, 500, { ok: false, error: "Impossible de supprimer l’entrée fichier." });
   }
 
   return json(req, 200, { ok: true });
