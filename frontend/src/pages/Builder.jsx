@@ -303,7 +303,6 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
 
 export default function Builder() {
   const { caseType } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const [selectedCase, setSelectedCase] = useState(null);
