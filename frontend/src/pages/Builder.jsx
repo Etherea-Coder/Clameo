@@ -100,7 +100,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
         <div className="text-center">
           <input
             type="file"
-            id={field.name}
+            id={`field-${field.name}`}
             accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
             onChange={handleFileUpload}
             disabled={!sessionReady || uploading}
@@ -109,7 +109,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
           />
           
           <label
-            htmlFor={field.name}
+            htmlFor={`field-${field.name}`}
             className={`cursor-pointer flex flex-col items-center justify-center gap-3 text-foreground/70 hover:text-foreground transition ${!sessionReady || uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <div className="w-12 h-12 rounded-full bg-coral/10 flex items-center justify-center">
