@@ -170,7 +170,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
   );
 }
 
-function FieldRenderer({ field, value, onChange, attempted, data, setData, uploadFile, deleteFile, caseSessionId }) {
+function FieldRenderer({ field, value, onChange, attempted, data, setData, uploadFile, deleteFile, caseSessionId, uploadedFiles }) {
   const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
   const isInvalid = attempted && field.required && !value;
 
@@ -271,7 +271,7 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
   }
 
   if (field.type === "fileUpload") {
-    return <FileUploadField field={field} value={value} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />;
+    return <FileUploadField field={field} value={uploadedFiles} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />;
   }
 
   return (
@@ -597,7 +597,7 @@ export default function Builder() {
                 {f.label}
                 {f.required ? <span style={{ color: token.coral }}> *</span> : null}
               </label>
-              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />
+              <FieldRenderer field={f} value={data[f.name]} onChange={handleChange} attempted={attempted} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} uploadedFiles={uploadedFiles} />
             </div>
           ))}
         </div>
