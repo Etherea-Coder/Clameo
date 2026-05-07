@@ -45,6 +45,7 @@ function InjectBuilderStyles() {
 }
 
 function FileUploadField({ field, value, onChange, data, setData, uploadFile, deleteFile, caseSessionId }) {
+  console.log('FileUploadField called - field:', field, 'value:', value, 'caseSessionId:', caseSessionId);
   const [uploading, setUploading] = useState(false);
   const uploadedFiles = value || [];
   const sessionReady = !!caseSessionId;
@@ -174,11 +175,13 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
   const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
   const isInvalid = attempted && field.required && !value;
 
+  console.log('FieldRenderer - field.type:', field.type, 'field.name:', field.name);
+
   if (field.type === "textarea") {
     return (
       <div>
         <textarea
-          id={field.name}
+          id={`field-${field.name}`}
           rows={4}
           className={base}
           value={value || ""}
@@ -204,7 +207,7 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
     return (
       <div>
         <select
-          id={field.name}
+          id={`field-${field.name}`}
           className={base}
           value={currentSlug}
           onChange={(e) => {
@@ -243,10 +246,10 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
       <div>
         <div className="space-y-3">
           {field.options.map((option) => (
-            <label key={option.value} className="flex items-center gap-3 cursor-pointer">
+            <label key={option.value} htmlFor={`${field.name}-${option.value}`} className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                id={option.value}
+                id={`${field.name}-${option.value}`}
                 checked={selectedValues.includes(option.value)}
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -271,13 +274,14 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
   }
 
   if (field.type === "fileUpload") {
+    console.log('Rendering FileUploadField - uploadedFiles:', uploadedFiles, 'caseSessionId:', caseSessionId);
     return <FileUploadField field={field} value={uploadedFiles} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />;
   }
 
   return (
     <div>
       <input
-        id={field.name}
+        id={`field-${field.name}`}
         type={field.type || "text"}
         className={base}
         value={value || ""}
@@ -591,9 +595,10 @@ export default function Builder() {
         </div>
 
         <div className="mt-10 space-y-6">
+          {console.log('currentStep.fields:', currentStep.fields)}
           {currentStep.fields.map((f) => (
             <div key={f.name} className="flex flex-col gap-2">
-              <label className="text-sm font-medium" style={{ color: token.text }} htmlFor={f.name}>
+              <label className="text-sm font-medium" style={{ color: token.text }} htmlFor={`field-${f.name}`}>
                 {f.label}
                 {f.required ? <span style={{ color: token.coral }}> *</span> : null}
               </label>
