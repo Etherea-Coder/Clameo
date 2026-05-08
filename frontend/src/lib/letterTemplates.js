@@ -82,7 +82,7 @@ const recipientAddress = (d) => {
 const attachmentsLine = (d) => {
   const attachmentsList = d.attachmentsList || [];
   const otherText = d.attachmentsOther ? clean(d.attachmentsOther) : "";
-  const uploadedAttachmentNames = d.uploadedAttachmentNames || [];
+  const uploadedAttachmentNames = (d.uploadedAttachments || []).map(a => a.file_name);
   
   const documentLabels = {
     facture: "Facture",
@@ -99,7 +99,8 @@ const attachmentsLine = (d) => {
     .map(value => documentLabels[value] || value)
     .filter(Boolean);
     
-  const allDocs = [...selectedDocs, otherText, ...uploadedAttachmentNames].filter(Boolean);
+  const legacyNames = d.uploadedAttachmentNames || [];
+  const allDocs = [...selectedDocs, otherText, ...uploadedAttachmentNames, ...legacyNames].filter(Boolean);
   
   if (allDocs.length === 0) return "";
   

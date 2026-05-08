@@ -6,12 +6,10 @@ import {
   CheckCircle2,
   Clock,
   Lock,
-  Trash2,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CASES, getCase } from "../lib/letterCases";
-import { loadDraft, clearDraft } from "../lib/share";
 import {
   Accordion,
   AccordionContent,
@@ -44,7 +42,7 @@ const FAQ = [
   },
   {
     q: "Mes données sont-elles stockées ?",
-    a: "Non. Vos informations restent dans votre navigateur. Aucun envoi vers un serveur, aucune base de données, aucun cookie marketing.",
+    a: "Vos informations restent privées. La génération de la lettre est locale. Si vous ajoutez des pièces jointes, elles sont stockées temporairement pour constituer votre dossier, puis supprimées automatiquement après 7 jours.",
   },
   {
     q: "Combien de temps pour générer une lettre ?",
@@ -849,12 +847,9 @@ function ModelTicker() {
 }
 
 export default function Landing() {
-  const [draft, setDraft] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
 
   useEffect(() => {
-    setDraft(loadDraft());
-
     if (!document.getElementById("clameo-fonts")) {
       const link = document.createElement("link");
       link.id = "clameo-fonts";
@@ -864,13 +859,6 @@ export default function Landing() {
       document.head.appendChild(link);
     }
   }, []);
-
-  const draftCase = draft ? getCase(draft.caseId) : null;
-
-  const onClearDraft = () => {
-    clearDraft();
-    setDraft(null);
-  };
 
   return (
     <div style={{ minHeight: "100vh", background: token.light, color: token.text, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
@@ -915,96 +903,6 @@ export default function Landing() {
 
         <ModelTicker />
       </section>
-
-      {draft && draftCase && (
-        <section
-          data-testid="resume-banner"
-          style={{
-            background: "#fff4ef",
-            borderBottom: `1px solid rgba(232,80,42,0.18)`,
-          }}
-        >
-          <div
-            className="clameo-container"
-            style={{
-              paddingTop: 18,
-              paddingBottom: 18,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 16,
-              flexWrap: "wrap",
-            }}
-          >
-            <style>{`
-              @media (max-width: 640px) {
-                [data-testid="resume-banner"] > div {
-                  flex-direction: column;
-                  align-items: flex-start;
-                  gap: 16px;
-                }
-                [data-testid="resume-banner"] > div > div:last-child {
-                  width: 100%;
-                  justify-content: flex-start;
-                }
-              }
-            `}</style>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <Lock size={15} style={{ color: token.coral }} />
-              <div>
-                <p style={{ fontSize: 14, margin: 0, fontWeight: 800 }}>
-                  Brouillon enregistré — {draftCase.title}
-                </p>
-                <p style={{ fontSize: 13, color: token.muted, margin: 0 }}>
-                  Aucune donnée n'a été envoyée à un serveur.
-                </p>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Link
-                to={`/builder/${draft.caseId}`}
-                data-testid="resume-cta"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "10px 14px",
-                  borderRadius: 12,
-                  border: `1px solid ${token.border}`,
-                  background: token.white,
-                  color: token.text,
-                  textDecoration: "none",
-                  fontSize: 13,
-                  fontWeight: 800,
-                }}
-              >
-                Reprendre <ArrowRight size={14} />
-              </Link>
-
-              <button
-                type="button"
-                onClick={onClearDraft}
-                data-testid="resume-clear"
-                aria-label="Effacer mes données"
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 12,
-                  border: `1px solid ${token.border}`,
-                  background: token.white,
-                  color: token.muted,
-                  cursor: "pointer",
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <Trash2 size={15} />
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
 
       <main className="section-light">
         <section id="modeles" data-testid="usecases-section" style={{ padding: "112px 0", scrollMarginTop: 80 }}>
@@ -1205,7 +1103,7 @@ export default function Landing() {
                   Vos données restent sur votre appareil.
                 </h2>
                 <p style={{ margin: 0, color: token.muted, fontSize: 17, lineHeight: 1.72, maxWidth: 420 }}>
-                  Aucune inscription. Aucun compte. Aucune donnée envoyée à un serveur. Clameo fonctionne entièrement dans votre navigateur.
+                  Aucune inscription. Aucun compte. Vos informations restent privées et les pièces jointes sont supprimées automatiquement après 7 jours.
                 </p>
               </div>
 

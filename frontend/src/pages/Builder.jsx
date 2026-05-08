@@ -65,9 +65,6 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
     setUploading(true);
     try {
       await uploadFile(file);
-      // Update data with uploaded file names
-      const newAttachmentNames = [...(data.uploadedAttachmentNames || []), file.name];
-      setData(prev => ({ ...prev, uploadedAttachmentNames: newAttachmentNames }));
     } finally {
       setUploading(false);
     }
@@ -78,9 +75,6 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
   const handleFileDelete = async (attachmentId, fileName) => {
     try {
       await deleteFile(attachmentId);
-      // Update data by removing the file name
-      const newAttachmentNames = (data.uploadedAttachmentNames || []).filter(name => name !== fileName);
-      setData(prev => ({ ...prev, uploadedAttachmentNames: newAttachmentNames }));
     } catch (error) {
       console.error('Delete error:', error);
     }
