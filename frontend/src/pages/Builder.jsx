@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Save, Trash2, Lock } from "lucide-react";
 import { toast, Toaster } from "sonner";
@@ -358,7 +358,7 @@ export default function Builder() {
     toast.success("Données effacées de cet appareil");
   };
 
-  const createCaseSession = async () => {
+  const createCaseSession = useCallback(async () => {
     if (!selectedCase) {
       toast.error('Veuillez d\'abord sélectionner un type de dossier');
       return;
@@ -385,7 +385,7 @@ export default function Builder() {
       console.error('Session creation error:', error);
       toast.error('Erreur lors de la création de session');
     }
-  };
+  }, [selectedCase]);
 
   const uploadFile = async (file) => {
     if (!caseSessionId) {
@@ -455,7 +455,7 @@ export default function Builder() {
 
   useEffect(() => {
     createCaseSession();
-  }, [selectedCase]);
+  }, [selectedCase, createCaseSession]);
 
   const onRestoreDraft = () => {
     const d = loadDraft();
