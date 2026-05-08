@@ -223,6 +223,48 @@ export default function Result() {
                 </pre>
               )}
             </div>
+
+            {/* Attachments section */}
+            {payload?.data?.uploadedAttachments && payload.data.uploadedAttachments.length > 0 && (
+              <div className="no-print mt-8 rounded-lg border border-border bg-card p-6">
+                <p className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <FileText size={20} className="text-coral" />
+                  Pièces jointes
+                </p>
+                <div className="space-y-3">
+                  {payload.data.uploadedAttachments.map((attachment, index) => (
+                    <div
+                      key={attachment.id || index}
+                      className="flex items-center justify-between p-3 rounded-[14px] bg-white border border-border"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center">
+                          <FileText size={20} className="text-coral" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">{attachment.fileName || attachment.name || `Fichier ${index + 1}`}</p>
+                          <p className="text-xs text-foreground/60">
+                            {attachment.fileSize ? `${(attachment.fileSize / 1024 / 1024).toFixed(2)} Mo` : 'PDF'}
+                          </p>
+                        </div>
+                      </div>
+                      <a
+                        href={attachment.fileUrl || attachment.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-coral hover:underline"
+                        download
+                      >
+                        Télécharger
+                      </a>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-foreground/60 mt-4">
+                  Ces fichiers servent à préparer votre dossier. Ils ne sont pas envoyés automatiquement au destinataire.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Actions sidebar */}
