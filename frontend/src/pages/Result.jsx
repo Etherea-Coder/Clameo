@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, Copy, Download, Printer, Check, FileText,
-  Pencil, RotateCcw, Eye, Lock,
+  Pencil, RotateCcw, Eye, Lock, Package, Send,
 } from "lucide-react";
 import jsPDF from "jspdf";
+import JSZip from "jszip";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { buildLetter } from "../lib/letterTemplates";
@@ -19,6 +20,7 @@ export default function Result() {
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editedText, setEditedText] = useState(null);
+  const [zipping, setZipping] = useState(false);
 
   // Load from result store
   useEffect(() => {
@@ -41,36 +43,11 @@ export default function Result() {
   const isEdited = editedText !== null && editedText !== generatedText;
   const c = payload ? getCase(payload.caseId) : null;
 
-  // === Actions ===
-  const handleCopy = async () => {
-    if (!baseText.trim()) {
-      toast.error("La lettre est vide. Veuillez revenir au générateur.");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(baseText);
-      setCopied(true);
-      toast.success("Lettre copiée dans le presse-papiers");
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      toast.error("Impossible de copier");
-    }
-  };
+  const uploadedAttachments = payload?.data?.uploadedAttachments || [];
+  const hasAttachments = uploadedAttachments.length > 0;
 
-  const handlePrint = () => {
-  if (!baseText.trim()) {
-    toast.error("La lettre est vide. Veuillez revenir au générateur.");
-    return;
-  }
-
-  window.print();
-};
-
-  const handlePDF = () => {
-    if (!baseText.trim()) {
-      toast.error("La lettre est vide. Veuillez revenir au générateur.");
-      return;
-    }
+  // === PDF helper ===
+  const buildPDFDoc = () => {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const margin = 56;
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -89,14 +66,108 @@ export default function Result() {
         doc.addPage();
         y = margin;
       }
-
       doc.text(line, margin, y);
       y += lineHeight;
     });
 
+    return doc;
+  };
+
+  // === Actions ===
+  const handleCopy = async () => {
+    if (!baseText.trim()) {
+      toast.error("La lettre est vide. Veuillez revenir au générateur.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(baseText);
+      setCopied(true);
+      toast.success("Lettre copiée dans le presse-papiers");
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      toast.error("Impossible de copier");
+    }
+  };
+
+  const handlePrint = () => {
+    if (!baseText.trim()) {
+      toast.error("La lettre est vide. Veuillez revenir au générateur.");
+      return;
+    }
+    window.print();
+  };
+
+  const handlePDF = () => {
+    if (!baseText.trim()) {
+      toast.error("La lettre est vide. Veuillez revenir au générateur.");
+      return;
+    }
+    const doc = buildPDFDoc();
     const fileName = `clameo-${payload.caseId}-${new Date().toISOString().slice(0, 10)}.pdf`;
     doc.save(fileName);
     toast.success("PDF téléchargé");
+  };
+
+  const handleZipDownload = async () => {
+    if (!baseText.trim()) {
+      toast.error("La lettre est vide. Veuillez revenir au générateur.");
+      return;
+    }
+
+    setZipping(true);
+    try {
+      const zip = new JSZip();
+      const dateStr = new Date().toISOString().slice(0, 10);
+
+      // 1. Add the letter PDF
+      const doc = buildPDFDoc();
+      const pdfBytes = doc.output("arraybuffer");
+      zip.file(`clameo-lettre-${payload.caseId}-${dateStr}.pdf`, pdfBytes);
+
+      // 2. Fetch and add each attachment
+      const fetchErrors = [];
+      await Promise.all(
+        uploadedAttachments.map(async (att, idx) => {
+          const url = att.file_url || att.url;
+          if (!url) {
+            fetchErrors.push(att.file_name || `Fichier ${idx + 1}`);
+            return;
+          }
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const buf = await res.arrayBuffer();
+            const name = att.file_name || `piece-jointe-${idx + 1}`;
+            zip.file(`pieces-jointes/${name}`, buf);
+          } catch (err) {
+            console.error("Attachment fetch error:", err);
+            fetchErrors.push(att.file_name || `Fichier ${idx + 1}`);
+          }
+        })
+      );
+
+      if (fetchErrors.length > 0) {
+        toast.warning(
+          `${fetchErrors.length} pièce(s) jointe(s) n'ont pas pu être incluse(s) dans le dossier. Téléchargez-les séparément.`
+        );
+      }
+
+      // 3. Generate and save ZIP
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(zipBlob);
+      a.download = `clameo-dossier-${payload.caseId}-${dateStr}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      toast.success("Dossier complet téléchargé");
+    } catch (err) {
+      console.error("ZIP error:", err);
+      toast.error("Erreur lors de la création du dossier. Réessayez.");
+    } finally {
+      setZipping(false);
+    }
   };
 
   const startEdit = () => { setEditedText(baseText); setEditing(true); };
@@ -147,15 +218,17 @@ export default function Result() {
         </div>
 
         <div className="no-print">
-          <p className="eyebrow text-foreground/60">Votre lettre</p>
+          <p className="eyebrow text-foreground/60">Votre dossier</p>
           <h1
             className="text-4xl sm:text-5xl lg:text-6xl mt-3 leading-[1.05] font-black tracking-[-0.04em]"
             data-testid="result-title"
           >
-            Prêt à <em className="italic text-[#e8502a]">envoyer</em>
+            Votre dossier est <em className="italic text-[#e8502a]">prêt</em>
           </h1>
           <p className="mt-4 text-foreground/70 max-w-xl">
-            Relisez, ajustez le texte directement si nécessaire, puis téléchargez votre lettre.
+            {hasAttachments
+              ? "Relisez votre lettre, vérifiez les pièces jointes, puis téléchargez votre dossier complet."
+              : "Relisez, ajustez le texte si nécessaire, puis téléchargez votre lettre."}
           </p>
         </div>
 
@@ -225,14 +298,14 @@ export default function Result() {
             </div>
 
             {/* Attachments section */}
-            {payload?.data?.uploadedAttachments && payload.data.uploadedAttachments.length > 0 && (
+            {hasAttachments && (
               <div className="no-print mt-8 rounded-lg border border-border bg-card p-6">
                 <p className="font-semibold text-lg mb-4 flex items-center gap-2">
                   <FileText size={20} className="text-coral" />
                   Pièces jointes
                 </p>
                 <div className="space-y-3">
-                  {payload.data.uploadedAttachments.map((attachment, index) => (
+                  {uploadedAttachments.map((attachment, index) => (
                     <div
                       key={attachment.id || index}
                       className="flex items-center justify-between p-3 rounded-[14px] bg-white border border-border"
@@ -248,15 +321,17 @@ export default function Result() {
                           </p>
                         </div>
                       </div>
-                      <a
-                        href={attachment.file_url || attachment.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium text-coral hover:underline"
-                        download
-                      >
-                        Télécharger
-                      </a>
+                      {(attachment.file_url || attachment.url) && (
+                        <a
+                          href={attachment.file_url || attachment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-coral hover:underline"
+                          download
+                        >
+                          Télécharger
+                        </a>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -269,19 +344,63 @@ export default function Result() {
 
           {/* Actions sidebar */}
           <aside className="no-print lg:col-span-4 space-y-3 mt-6 lg:mt-0">
+            {/* Primary actions card */}
             <div className="rounded-lg border border-border bg-card p-6">
               <p className="font-semibold text-xl">Actions</p>
-              <p className="text-sm text-foreground/60 mt-1">Téléchargez, copiez ou imprimez votre lettre.</p>
+              <p className="text-sm text-foreground/60 mt-1">
+                {hasAttachments
+                  ? "Téléchargez votre dossier, copiez le texte ou imprimez la lettre."
+                  : "Téléchargez, copiez ou imprimez votre lettre."}
+              </p>
 
               <div className="mt-5 space-y-2.5">
-                <button
-                  type="button"
-                  onClick={handlePDF}
-                  className="btn-coral w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-semibold"
-                  data-testid="action-pdf"
-                >
-                  <Download size={16} /> Télécharger en PDF
-                </button>
+                {hasAttachments ? (
+                  <>
+                    {/* Primary: download full dossier as ZIP */}
+                    <button
+                      type="button"
+                      onClick={handleZipDownload}
+                      disabled={zipping}
+                      className="btn-coral w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                      data-testid="action-zip"
+                    >
+                      {zipping ? (
+                        <>
+                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Préparation…
+                        </>
+                      ) : (
+                        <>
+                          <Package size={16} /> Télécharger le dossier complet
+                        </>
+                      )}
+                    </button>
+
+                    {/* Secondary: letter PDF only */}
+                    <button
+                      type="button"
+                      onClick={handlePDF}
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-medium border border-border hover:border-foreground transition"
+                      data-testid="action-pdf"
+                    >
+                      <Download size={16} /> Télécharger la lettre en PDF
+                    </button>
+                  </>
+                ) : (
+                  /* No attachments: PDF is primary */
+                  <button
+                    type="button"
+                    onClick={handlePDF}
+                    className="btn-coral w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-semibold"
+                    data-testid="action-pdf"
+                  >
+                    <Download size={16} /> Télécharger en PDF
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={handleCopy}
@@ -300,8 +419,54 @@ export default function Result() {
                   <Printer size={16} /> Imprimer
                 </button>
               </div>
+
+              {hasAttachments && (
+                <p className="text-xs text-foreground/60 mt-4 leading-relaxed">
+                  Le dossier complet contient votre lettre et les fichiers ajoutés. Vous pourrez ensuite l'envoyer avec le service de votre choix.
+                </p>
+              )}
             </div>
 
+            {/* Send card */}
+            <div className="rounded-lg border border-border bg-card p-6">
+              <div className="flex items-start gap-3 mb-3">
+                <Send size={18} className="text-trust shrink-0 mt-0.5" />
+                <p className="text-sm font-semibold">
+                  {LRAR_URL ? "Envoyer en recommandé" : "Envoyer votre dossier"}
+                </p>
+              </div>
+
+              {LRAR_URL ? (
+                <>
+                  <p className="text-sm text-foreground/65 leading-relaxed">
+                    Envoyez votre lettre en recommandé avec accusé de réception via La Poste. Les pièces jointes devront être ajoutées manuellement selon les options du service.
+                  </p>
+                  <a
+                    href={LRAR_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border hover:border-foreground transition"
+                  >
+                    Envoyer en recommandé →
+                  </a>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-foreground/65 leading-relaxed">
+                    L'envoi direct depuis Clameo arrive bientôt. Pour l'instant, téléchargez votre dossier complet puis envoyez-le avec le service de votre choix.
+                  </p>
+                  <button
+                    type="button"
+                    disabled
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border opacity-50 cursor-not-allowed"
+                  >
+                    Envoi direct bientôt disponible
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Privacy card */}
             <div className="rounded-lg border border-border bg-card p-6">
               <div className="flex items-start gap-3">
                 <Lock size={18} className="text-trust shrink-0 mt-0.5" />
@@ -314,32 +479,7 @@ export default function Result() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-border bg-card p-6">
-              <p className="text-sm font-semibold">Envoyer en recommandé</p>
-              <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
-                Votre lettre est prête. Vous pouvez l'envoyer en recommandé avec accusé de réception via un service d'envoi en ligne.
-              </p>
-
-              {LRAR_URL ? (
-                <a
-                  href={LRAR_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border hover:border-foreground transition"
-                >
-                  Envoyer en recommandé →
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border opacity-50 cursor-not-allowed"
-                >
-                  Partenaire bientôt disponible
-                </button>
-              )}
-            </div>
-
+            {/* Practical advice card */}
             <div className="rounded-lg border border-border bg-card p-6">
               <div className="flex items-start gap-3">
                 <FileText size={18} className="text-trust shrink-0 mt-0.5" />
