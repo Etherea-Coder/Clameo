@@ -242,14 +242,14 @@ export default function Result() {
                           <FileText size={20} className="text-coral" />
                         </div>
                         <div>
-                          <p className="font-medium text-sm">{attachment.fileName || attachment.name || `Fichier ${index + 1}`}</p>
+                          <p className="font-medium text-sm">{attachment.file_name || `Fichier ${index + 1}`}</p>
                           <p className="text-xs text-foreground/60">
-                            {attachment.fileSize ? `${(attachment.fileSize / 1024 / 1024).toFixed(2)} Mo` : 'PDF'}
+                            {attachment.file_size ? `${(attachment.file_size / 1024 / 1024).toFixed(2)} Mo` : 'PDF'}
                           </p>
                         </div>
                       </div>
                       <a
-                        href={attachment.fileUrl || attachment.url}
+                        href={attachment.file_url || attachment.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm font-medium text-coral hover:underline"

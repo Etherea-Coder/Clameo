@@ -178,8 +178,20 @@ serve(async (req) => {
     });
   }
 
+  // Generate a signed URL for downloading the file (valid for 1 hour)
+  const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+    .from(BUCKET)
+    .createSignedUrl(filePath, 3600);
+
+  if (signedUrlError) {
+    console.error("Signed URL error:", signedUrlError);
+  }
+
   return json(req, 200, {
     ok: true,
-    attachment,
+    attachment: {
+      ...attachment,
+      file_url: signedUrlData?.signedUrl || null,
+    },
   });
 });
