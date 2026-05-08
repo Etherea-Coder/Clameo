@@ -142,6 +142,294 @@ export const MODEL_PAGES = {
             },
         ],
     },
+
+    "lettre-mise-en-demeure": {
+        caseType: "mise-en-demeure",
+        title: "Modèle de lettre de mise en demeure",
+        description:
+            "Préparez une mise en demeure claire pour demander l'exécution d'une obligation, le paiement d'une somme ou la régularisation d'une situation.",
+        intro:
+            "La mise en demeure permet de formaliser une demande avant d'envisager d'autres démarches. Clameo vous aide à préparer un courrier structuré, avec un ton ferme mais mesuré.",
+        useCases: [
+            "Demander le paiement d'une somme due",
+            "Exiger l'exécution d'une obligation",
+            "Formaliser un dernier rappel écrit",
+            "Demander une régularisation dans un délai précis",
+            "Conserver une trace claire de votre démarche",
+        ],
+        documents: [
+            "Contrat ou devis",
+            "Facture ou justificatif de paiement",
+            "Échanges écrits précédents",
+            "Relances déjà envoyées",
+            "Tout document prouvant l'obligation concernée",
+        ],
+        mistakes: [
+            "Employer un ton excessivement menaçant",
+            "Ne pas préciser clairement l'obligation demandée",
+            "Oublier le délai accordé au destinataire",
+            "Ne pas garder de preuve d'envoi",
+        ],
+        officialHelp:
+            "Selon la situation, vous pouvez vous renseigner auprès d'un professionnel du droit, d'une association compétente ou d'un service public adapté.",
+        faq: [
+            {
+                question: "Une mise en demeure doit-elle être envoyée en recommandé ?",
+                answer:
+                    "Ce n'est pas toujours obligatoire, mais l'envoi en LRAR peut être utile pour conserver une preuve de dépôt et de réception.",
+            },
+            {
+                question: "Clameo peut-il envoyer la mise en demeure à ma place ?",
+                answer:
+                    "Non. Clameo prépare votre courrier et votre dossier. Vous restez responsable de l'envoi.",
+            },
+            {
+                question: "Est-ce un conseil juridique personnalisé ?",
+                answer:
+                    "Non. Clameo est un outil d'aide à la rédaction administrative et ne remplace pas un avocat.",
+            },
+        ],
+    },
+
+    "lettre-demande-rgpd": {
+        caseType: "rgpd",
+        title: "Modèle de lettre de demande RGPD",
+        description:
+            "Préparez une demande RGPD pour exercer vos droits d'accès, de rectification, d'effacement, de limitation, de portabilité ou d'opposition.",
+        intro:
+            "Vous souhaitez exercer vos droits sur vos données personnelles ? Clameo vous aide à préparer une demande RGPD claire à envoyer à une entreprise ou un organisme.",
+        useCases: [
+            "Demander l'accès à vos données personnelles",
+            "Demander la suppression de données",
+            "Corriger des informations inexactes",
+            "Vous opposer à certains traitements",
+            "Demander la portabilité de vos données",
+        ],
+        documents: [
+            "Identifiant client ou email associé",
+            "Capture d'écran du compte concerné",
+            "Échanges précédents avec l'organisme",
+            "Justificatif d'identité si demandé par l'organisme",
+            "Toute précision permettant d'identifier les données concernées",
+        ],
+        mistakes: [
+            "Ne pas identifier clairement le compte concerné",
+            "Envoyer une demande trop générale",
+            "Oublier de préciser le droit exercé",
+            "Partager plus de données personnelles que nécessaire",
+        ],
+        officialHelp:
+            "En cas d'absence de réponse ou de réponse insuffisante, vous pouvez consulter les ressources de la CNIL.",
+        faq: [
+            {
+                question: "Quel est le délai de réponse à une demande RGPD ?",
+                answer:
+                    "En général, l'organisme doit répondre dans un délai d'un mois, avec certaines possibilités de prolongation selon la complexité.",
+            },
+            {
+                question: "Clameo fait-il la démarche RGPD à ma place ?",
+                answer:
+                    "Non. Clameo prépare votre courrier. Vous gardez le contrôle et envoyez vous-même votre demande.",
+            },
+            {
+                question: "Puis-je utiliser cette lettre pour supprimer mes données ?",
+                answer:
+                    "Oui, si vous choisissez une demande d'effacement ou de suppression lorsque cela correspond à votre situation.",
+            },
+        ],
+    },
+
+    "lettre-litige-employeur": {
+        caseType: "employeur",
+        title: "Modèle de lettre pour litige avec un employeur",
+        description:
+            "Préparez une lettre de réclamation à votre employeur concernant un salaire, un contrat, des heures supplémentaires ou une situation de travail.",
+        intro:
+            "Un désaccord avec un employeur doit souvent être formulé par écrit. Clameo vous aide à préparer une lettre claire, factuelle et exploitable.",
+        useCases: [
+            "Salaire ou prime non versé",
+            "Heures supplémentaires non rémunérées",
+            "Modification du contrat contestée",
+            "Problème de conditions de travail",
+            "Demande de régularisation écrite",
+        ],
+        documents: [
+            "Contrat de travail",
+            "Bulletins de salaire",
+            "Planning ou relevé d'heures",
+            "Échanges avec l'employeur",
+            "Tout justificatif lié à la demande",
+        ],
+        mistakes: [
+            "Rédiger un courrier trop émotionnel",
+            "Ne pas dater précisément les faits",
+            "Oublier les montants ou périodes concernées",
+            "Ne pas conserver de copie du courrier envoyé",
+        ],
+        officialHelp:
+            "En cas de blocage, vous pouvez vous renseigner auprès de l'inspection du travail, d'un syndicat, d'un défenseur syndical ou d'un professionnel compétent.",
+        faq: [
+            {
+                question: "Cette lettre peut-elle servir pour un salaire impayé ?",
+                answer:
+                    "Oui. Elle peut aider à formaliser une demande de paiement ou de régularisation.",
+            },
+            {
+                question: "Dois-je rester factuel dans la lettre ?",
+                answer:
+                    "Oui. Un courrier clair, daté et factuel est généralement plus efficace qu'un texte trop agressif.",
+            },
+            {
+                question: "Clameo remplace-t-il un conseil en droit du travail ?",
+                answer:
+                    "Non. Clameo aide à préparer un courrier, mais ne fournit pas de conseil juridique personnalisé.",
+            },
+        ],
+    },
+
+    "lettre-reclamation-banque": {
+        caseType: "banque",
+        title: "Modèle de lettre de réclamation bancaire",
+        description:
+            "Préparez une lettre pour contester des frais bancaires, une opération non autorisée, une fraude ou une décision de votre banque.",
+        intro:
+            "Un litige bancaire doit être présenté clairement, avec les références utiles. Clameo vous aide à préparer une réclamation structurée à adresser à votre banque.",
+        useCases: [
+            "Frais bancaires contestés",
+            "Opération non autorisée",
+            "Fraude ou paiement suspect",
+            "Rejet de prélèvement contesté",
+            "Clôture de compte ou décision bancaire contestée",
+        ],
+        documents: [
+            "Relevé bancaire",
+            "Référence de compte ou client",
+            "Capture de l'opération contestée",
+            "Échanges avec la banque",
+            "Plainte ou déclaration si applicable",
+        ],
+        mistakes: [
+            "Ne pas identifier l'opération concernée",
+            "Oublier le montant ou la date",
+            "Envoyer une réclamation sans justificatif",
+            "Ne pas demander une réponse écrite",
+        ],
+        officialHelp:
+            "Si la réponse de la banque ne vous satisfait pas, vous pouvez vous orienter vers le service réclamations puis le médiateur bancaire compétent.",
+        faq: [
+            {
+                question: "Puis-je contester une opération non autorisée ?",
+                answer:
+                    "Oui, selon la situation. La lettre permet de formaliser votre contestation auprès de la banque.",
+            },
+            {
+                question: "Quels éléments indiquer dans la lettre ?",
+                answer:
+                    "Indiquez la date, le montant, la référence de compte et décrivez clairement l'opération ou la situation contestée.",
+            },
+            {
+                question: "Clameo contacte-t-il la banque ?",
+                answer:
+                    "Non. Clameo prépare votre dossier. Vous envoyez ensuite la lettre vous-même.",
+            },
+        ],
+    },
+
+    "lettre-trouble-voisinage": {
+        caseType: "voisinage",
+        title: "Modèle de lettre pour trouble de voisinage",
+        description:
+            "Préparez une lettre pour signaler des nuisances sonores, odeurs, comportements gênants ou troubles anormaux de voisinage.",
+        intro:
+            "Avant d'engager une démarche plus formelle, il est souvent utile de signaler un trouble de voisinage par écrit. Clameo vous aide à préparer un courrier calme, précis et documenté.",
+        useCases: [
+            "Bruits répétés ou tapage nocturne",
+            "Odeurs ou fumées gênantes",
+            "Animaux non maîtrisés",
+            "Comportements intrusifs ou agressifs",
+            "Demande amiable avant escalade",
+        ],
+        documents: [
+            "Photos ou vidéos si pertinentes",
+            "Dates et horaires des nuisances",
+            "Témoignages éventuels",
+            "Échanges précédents",
+            "Constat ou signalement si disponible",
+        ],
+        mistakes: [
+            "Employer un ton insultant ou accusatoire",
+            "Ne pas dater les faits",
+            "Rester trop vague sur la nature du trouble",
+            "Menacer sans proposer d'abord une régularisation",
+        ],
+        officialHelp:
+            "En cas de persistance, vous pouvez vous renseigner auprès de votre mairie, de votre bailleur, d'un conciliateur de justice ou des services compétents.",
+        faq: [
+            {
+                question: "Cette lettre est-elle adaptée au bruit ?",
+                answer:
+                    "Oui. Elle peut être utilisée pour des nuisances sonores répétées, en journée ou la nuit.",
+            },
+            {
+                question: "Faut-il joindre des preuves ?",
+                answer:
+                    "C'est recommandé si vous en avez : dates, photos, témoignages ou échanges peuvent renforcer votre dossier.",
+            },
+            {
+                question: "Clameo garantit-il l'arrêt des nuisances ?",
+                answer:
+                    "Non. Clameo vous aide à formaliser votre demande, mais ne garantit pas le résultat.",
+            },
+        ],
+    },
+
+    "lettre-litige-consommation": {
+        caseType: "consommation",
+        title: "Modèle de lettre pour litige de consommation",
+        description:
+            "Préparez une lettre pour un problème de garantie, vice caché, service défaillant, publicité trompeuse ou produit non conforme.",
+        intro:
+            "Un litige de consommation peut concerner un produit, un service ou une garantie. Clameo vous aide à préparer une lettre claire pour demander une réparation, un remplacement ou un remboursement.",
+        useCases: [
+            "Garantie légale de conformité",
+            "Vice caché",
+            "Service incomplet ou mal exécuté",
+            "Publicité trompeuse",
+            "Produit ou prestation non conforme",
+        ],
+        documents: [
+            "Facture ou preuve d'achat",
+            "Contrat ou conditions de vente",
+            "Photos du produit",
+            "Échanges avec le vendeur",
+            "Rapport ou diagnostic si disponible",
+        ],
+        mistakes: [
+            "Ne pas préciser la solution souhaitée",
+            "Confondre garantie commerciale et garantie légale",
+            "Oublier les dates importantes",
+            "Envoyer une demande sans preuve d'achat",
+        ],
+        officialHelp:
+            "En cas d'échec, vous pouvez consulter les ressources publiques comme SignalConso, la DGCCRF ou le médiateur de la consommation compétent.",
+        faq: [
+            {
+                question: "Puis-je demander une réparation ou un remplacement ?",
+                answer:
+                    "Oui, selon la situation. Le générateur vous permet d'indiquer la solution attendue.",
+            },
+            {
+                question: "Cette lettre fonctionne-t-elle pour un service défaillant ?",
+                answer:
+                    "Oui. Elle peut aussi être utilisée pour demander la régularisation d'une prestation de service.",
+            },
+            {
+                question: "Clameo décide-t-il si mon dossier est juridiquement valable ?",
+                answer:
+                    "Non. Clameo vous aide à préparer une lettre claire, mais ne remplace pas une analyse juridique personnalisée.",
+            },
+        ],
+    },
 };
 
 export function getModelPage(slug) {
