@@ -8,6 +8,7 @@ import Result from "./pages/Result";
 import MentionsLegales from "./pages/MentionsLegales";
 import Confidentialite from "./pages/Confidentialite";
 import Contact from "./pages/Contact";
+import ModelPage from "./pages/ModelPage";
 
 function App() {
   useEffect(() => {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/mentions-legales" element={<MentionsLegales />} />
           <Route path="/confidentialite" element={<Confidentialite />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/modeles/:slug" element={<ModelPage />} />
         </Routes>
       </BrowserRouter>
     </div>
