@@ -6,6 +6,8 @@ import {
   CheckCircle2,
   Clock,
   Lock,
+  FileText,
+  ShieldCheck,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -813,7 +815,7 @@ function HeroVisual() {
 
           <div className="ready-badge">
             <i />
-            Prêt à envoyer
+            Dossier prêt
           </div>
         </div>
       </div>
@@ -829,6 +831,7 @@ function ModelTicker() {
     "Mise en demeure",
     "Travail",
     "RGPD",
+    "CAF bientôt",
   ];
 
   return (
@@ -843,6 +846,226 @@ function ModelTicker() {
         ))}
       </div>
     </div>
+  );
+}
+
+function CafComingSoonSection() {
+  return (
+    <section
+      data-testid="caf-coming-section"
+      style={{
+        padding: "0 0 112px",
+        background: token.light,
+      }}
+    >
+      <div className="clameo-container">
+        <div
+          className="section-card"
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            padding: "54px 56px",
+            display: "grid",
+            gridTemplateColumns: "1fr 0.8fr",
+            gap: 56,
+            alignItems: "center",
+            background:
+              "linear-gradient(135deg, #ffffff 0%, #fffaf6 48%, #fff1ea 100%)",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              right: -80,
+              top: -90,
+              width: 260,
+              height: 260,
+              borderRadius: "999px",
+              background: token.coralSoft,
+              pointerEvents: "none",
+            }}
+          />
+
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div className="section-eyebrow">CAF bientôt disponible</div>
+
+            <h2
+              style={{
+                margin: "16px 0 18px",
+                fontSize: "clamp(36px, 5vw, 64px)",
+                lineHeight: 0.98,
+                letterSpacing: "-0.055em",
+                fontWeight: 900,
+                color: token.text,
+              }}
+            >
+              Une section dédiée aux démarches CAF arrive.
+            </h2>
+
+            <p
+              style={{
+                margin: 0,
+                color: token.muted,
+                fontSize: 17,
+                lineHeight: 1.75,
+                maxWidth: 650,
+              }}
+            >
+              Dossier bloqué, paiement suspendu, demande d’explication,
+              contestation d’une décision ou remise de dette : Clameo prépare
+              une section pensée pour aider à structurer un courrier CAF clair
+              et un dossier complet.
+            </p>
+
+            <div
+              style={{
+                marginTop: 28,
+                display: "flex",
+                gap: 14,
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
+              <button
+                type="button"
+                disabled
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 50,
+                  padding: "0 22px",
+                  borderRadius: 16,
+                  border: `1px solid ${token.border}`,
+                  background: "#f2f4f7",
+                  color: "#667085",
+                  fontWeight: 900,
+                  cursor: "not-allowed",
+                }}
+              >
+                Bientôt disponible
+              </button>
+
+              <Link
+                to="/builder"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 9,
+                  minHeight: 50,
+                  padding: "0 20px",
+                  borderRadius: 16,
+                  border: `1px solid ${token.border}`,
+                  background: token.white,
+                  color: token.text,
+                  fontWeight: 900,
+                  textDecoration: "none",
+                }}
+              >
+                Utiliser les modèles actuels <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <p
+              style={{
+                margin: "22px 0 0",
+                color: token.muted,
+                fontSize: 13,
+                lineHeight: 1.7,
+                maxWidth: 680,
+              }}
+            >
+              Clameo n’est pas affilié à la CAF et ne remplace pas un conseiller
+              social. L’objectif est d’aider à préparer un courrier et les
+              pièces utiles.
+            </p>
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              display: "grid",
+              gap: 14,
+            }}
+          >
+            {[
+              {
+                Icon: FileText,
+                t: "Réclamation CAF",
+                s: "Pour demander une explication ou signaler un dossier bloqué.",
+              },
+              {
+                Icon: ShieldCheck,
+                t: "Contestation",
+                s: "Pour préparer un recours clair lorsqu’une décision doit être contestée.",
+              },
+              {
+                Icon: Clock,
+                t: "Remise de dette",
+                s: "Pour structurer une demande de remise gracieuse ou d’échéancier.",
+              },
+            ].map(({ Icon, t, s }) => (
+              <div
+                key={t}
+                style={{
+                  display: "flex",
+                  gap: 14,
+                  padding: "18px 20px",
+                  borderRadius: 18,
+                  border: `1px solid ${token.border}`,
+                  background: "rgba(255,255,255,0.76)",
+                  boxShadow: "0 16px 44px rgba(17,24,39,0.04)",
+                }}
+              >
+                <Icon
+                  size={19}
+                  style={{ color: token.coral, flexShrink: 0, marginTop: 2 }}
+                />
+                <div>
+                  <h3
+                    style={{
+                      margin: "0 0 5px",
+                      fontSize: 16,
+                      fontWeight: 900,
+                      letterSpacing: "-0.025em",
+                      color: token.text,
+                    }}
+                  >
+                    {t}
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      color: token.muted,
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {s}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <style>{`
+          @media (max-width: 768px) {
+            [data-testid="caf-coming-section"] {
+              padding: 0 0 64px;
+            }
+
+            [data-testid="caf-coming-section"] > div > div {
+              grid-template-columns: 1fr !important;
+              gap: 34px !important;
+              padding: 34px 28px !important;
+            }
+          }
+        `}</style>
+      </div>
+    </section>
   );
 }
 
@@ -893,7 +1116,7 @@ export default function Landing() {
             <div className="clameo-privacy-line">
               <Lock size={15} style={{ color: token.coral, flexShrink: 0 }} />
               <span>
-                Aucune inscription. Aucune donnée envoyée. Votre lettre reste sur votre appareil.
+                Aucune inscription. Votre lettre est générée localement ; les pièces jointes sont seulement stockées temporairement pour créer votre dossier.
               </span>
             </div>
           </div>
@@ -1002,6 +1225,8 @@ export default function Landing() {
             `}</style>
           </div>
         </section>
+
+        <CafComingSoonSection />
 
         <section
           data-testid="how-section"
