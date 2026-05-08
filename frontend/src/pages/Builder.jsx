@@ -45,7 +45,6 @@ function InjectBuilderStyles() {
 }
 
 function FileUploadField({ field, value, onChange, data, setData, uploadFile, deleteFile, caseSessionId }) {
-  console.log('FileUploadField called - field:', field, 'value:', value, 'caseSessionId:', caseSessionId);
   const [uploading, setUploading] = useState(false);
   const uploadedFiles = value || [];
   const sessionReady = !!caseSessionId;
@@ -120,7 +119,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
                 </svg>
               ) : (
                 <svg className="w-6 h-6 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 0 1 4 4 0 1-4 4-4zm0 0h14a7 7 0 0 1 7 7 0 1-7-7-7h-1v10h-2v-10h-1z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
               )}
             </div>
@@ -174,8 +173,6 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
 function FieldRenderer({ field, value, onChange, attempted, data, setData, uploadFile, deleteFile, caseSessionId, uploadedFiles }) {
   const base = "w-full px-4 py-3 bg-white border rounded-[14px] focus:outline-none transition text-[#333333] placeholder:text-[#999999]";
   const isInvalid = attempted && field.required && !value;
-
-  console.log('FieldRenderer - field.type:', field.type, 'field.name:', field.name);
 
   if (field.type === "textarea") {
     return (
@@ -274,7 +271,6 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
   }
 
   if (field.type === "fileUpload") {
-    console.log('Rendering FileUploadField - uploadedFiles:', uploadedFiles, 'caseSessionId:', caseSessionId);
     return <FileUploadField field={field} value={uploadedFiles} onChange={onChange} data={data} setData={setData} uploadFile={uploadFile} deleteFile={deleteFile} caseSessionId={caseSessionId} />;
   }
 
@@ -363,27 +359,31 @@ export default function Builder() {
   };
 
   const createCaseSession = async () => {
-    if (!caseSessionId && selectedCase) {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/functions/v1/case-session-create`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ caseId: selectedCase }),
-        });
+    if (!selectedCase) {
+      toast.error('Veuillez d\'abord sélectionner un type de dossier');
+      return;
+    }
 
-        const result = await response.json();
-        if (result.ok) {
-          setCaseSessionId(result.caseSessionId);
-        } else {
-          toast.error('Erreur lors de la création de session');
-        }
-      } catch (error) {
-        console.error('Session creation error:', error);
-        toast.error('Erreur lors de la création de session');
+    try {
+      const response = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/functions/v1/case-session-create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ caseId: selectedCase }),
+      });
+
+      const result = await response.json();
+      if (result.ok) {
+        setCaseSessionId(result.caseSessionId);
+        setData(prev => ({ ...prev, caseSessionId: result.caseSessionId }));
+      } else {
+        toast.error(result.error || 'Erreur lors de la création de session');
       }
+    } catch (error) {
+      console.error('Session creation error:', error);
+      toast.error('Erreur lors de la création de session');
     }
   };
 
@@ -595,7 +595,6 @@ export default function Builder() {
         </div>
 
         <div className="mt-10 space-y-6">
-          {console.log('currentStep.fields:', currentStep.fields)}
           {currentStep.fields.map((f) => (
             <div key={f.name} className="flex flex-col gap-2">
               <label className="text-sm font-medium" style={{ color: token.text }} htmlFor={`field-${f.name}`}>
