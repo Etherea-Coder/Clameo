@@ -19,12 +19,36 @@ export default function Footer() {
           <div className="lg:col-span-3">
             <p className="eyebrow text-white/50 mb-4">Modèles</p>
             <ul className="space-y-2 text-sm text-white/80">
-              <li><Link to="/builder/remboursement" className="hover:text-coral transition">Remboursement</Link></li>
-              <li><Link to="/builder/logement" className="hover:text-coral transition">Logement</Link></li>
-              <li><Link to="/builder/non-livre" className="hover:text-coral transition">Non livré</Link></li>
-              <li><Link to="/builder/mise-en-demeure" className="hover:text-coral transition">Mise en demeure</Link></li>
-              <li><Link to="/builder/employeur" className="hover:text-coral transition">Employeur</Link></li>
-              <li><Link to="/builder/rgpd" className="hover:text-coral transition">RGPD</Link></li>
+              <li>
+                <Link to="/modeles/lettre-demande-remboursement" className="hover:text-coral transition">
+                  Lettre de remboursement
+                </Link>
+              </li>
+              <li>
+                <Link to="/modeles/lettre-produit-non-livre" className="hover:text-coral transition">
+                  Produit non livré
+                </Link>
+              </li>
+              <li>
+                <Link to="/modeles/lettre-litige-logement" className="hover:text-coral transition">
+                  Litige logement
+                </Link>
+              </li>
+              <li>
+                <Link to="/modeles/lettre-mise-en-demeure" className="hover:text-coral transition">
+                  Mise en demeure
+                </Link>
+              </li>
+              <li>
+                <Link to="/modeles/lettre-demande-rgpd" className="hover:text-coral transition">
+                  Demande RGPD
+                </Link>
+              </li>
+              <li>
+                <Link to="/modeles/lettre-reclamation-banque" className="hover:text-coral transition">
+                  Réclamation bancaire
+                </Link>
+              </li>
             </ul>
           </div>
 
