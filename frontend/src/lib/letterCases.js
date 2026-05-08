@@ -9,6 +9,7 @@ import {
   ShoppingBag,
   Volume2,
   Landmark,
+  FileText,
 } from "lucide-react";
 
 export const CASES = [
@@ -83,6 +84,14 @@ export const CASES = [
     category: "Argent",
     Icon: Landmark,
     objet: "Réclamation bancaire",
+  },
+  {
+    id: "caf-reclamation",
+    title: "Réclamation CAF",
+    short: "Dossier bloqué, paiement suspendu, absence de réponse…",
+    category: "CAF",
+    Icon: FileText,
+    objet: "Réclamation auprès de la CAF",
   },
 ];
 
@@ -183,11 +192,13 @@ export const CASE_STEPS = {
     {
       title: "Le destinataire",
       fields: [
-        { name: "recipientType", label: "Type de destinataire", type: "select", options: [
-          { value: "entreprise", label: "Entreprise" },
-          { value: "particulier", label: "Particulier" },
-          { value: "administration", label: "Administration" },
-        ], required: true },
+        {
+          name: "recipientType", label: "Type de destinataire", type: "select", options: [
+            { value: "entreprise", label: "Entreprise" },
+            { value: "particulier", label: "Particulier" },
+            { value: "administration", label: "Administration" },
+          ], required: true
+        },
         { name: "obligation", label: "Obligation à exécuter", type: "textarea", placeholder: "Ex : payer une facture impayée de 1 200 €", required: true },
       ],
     },
@@ -359,6 +370,74 @@ export const CASE_STEPS = {
         { name: "operationDate", label: "Date de l'opération concernée", type: "date" },
         { name: "amount", label: "Montant en jeu (€)", type: "number" },
         { name: "details", label: "Description détaillée", type: "textarea", required: true },
+      ],
+    },
+  ],
+  "caf-reclamation": [
+    {
+      title: "Votre situation CAF",
+      fields: [
+        {
+          name: "cafNumber",
+          label: "Numéro allocataire CAF",
+          placeholder: "Ex : 1234567",
+        },
+        {
+          name: "benefitType",
+          label: "Prestation concernée",
+          type: "select",
+          options: [
+            { value: "aide-logement", label: "Aide au logement / APL" },
+            { value: "rsa", label: "RSA" },
+            { value: "prime-activite", label: "Prime d’activité" },
+            { value: "allocations-familiales", label: "Allocations familiales" },
+            { value: "aah", label: "AAH" },
+            { value: "autre", label: "Autre prestation" },
+          ],
+          required: true,
+        },
+        {
+          name: "issueType",
+          label: "Nature du problème",
+          type: "select",
+          options: [
+            { value: "dossier-bloque", label: "Dossier bloqué ou sans réponse" },
+            { value: "paiement-suspendu", label: "Paiement suspendu ou non reçu" },
+            { value: "document-manquant", label: "Document indiqué comme manquant" },
+            { value: "demande-explication", label: "Demande d’explication" },
+            { value: "erreur-dossier", label: "Erreur dans mon dossier" },
+            { value: "autre", label: "Autre situation" },
+          ],
+          required: true,
+        },
+      ],
+    },
+    {
+      title: "Les faits",
+      fields: [
+        {
+          name: "decisionDate",
+          label: "Date du courrier ou de la notification CAF, si applicable",
+          type: "date",
+        },
+        {
+          name: "lastContactDate",
+          label: "Date de votre dernier échange avec la CAF, si applicable",
+          type: "date",
+        },
+        {
+          name: "amount",
+          label: "Montant concerné, si applicable (€)",
+          type: "number",
+          placeholder: "Ex : 350",
+        },
+        {
+          name: "details",
+          label: "Expliquez la situation",
+          type: "textarea",
+          placeholder: "Décrivez clairement le problème, les dates importantes et ce que vous demandez à la CAF…",
+          required: true,
+        },
       ],
     },
   ],

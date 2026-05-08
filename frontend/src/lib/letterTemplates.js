@@ -82,7 +82,7 @@ const recipientAddress = (d) => {
 const attachmentsLine = (d) => {
   const attachmentsList = d.attachmentsList || [];
   const otherText = d.attachmentsOther ? clean(d.attachmentsOther) : "";
-  const uploadedAttachmentNames = (d.uploadedAttachments || []).map(a => a.file_name);
+  const uploadedAttachmentNames = (d.uploadedAttachments || []).map((a) => a.file_name);
 
   const documentLabels = {
     facture: "Facture",
@@ -92,17 +92,17 @@ const attachmentsLine = (d) => {
     photo: "Photo",
     contrat: "Contrat",
     paiement: "Justificatif de paiement",
-    autre: "Autre document"
+    autre: "Autre document",
   };
 
   const selectedDocs = attachmentsList
-    .map(value => documentLabels[value] || value)
+    .map((value) => documentLabels[value] || value)
     .filter(Boolean);
 
   const legacyNames = d.uploadedAttachmentNames || [];
 
   const allDocs = Array.from(
-    new Set([...selectedDocs, otherText, ...uploadedAttachmentNames, ...legacyNames].filter(Boolean))
+    new Set([...selectedDocs, otherText, ...uploadedAttachmentNames, ...legacyNames].filter(Boolean)),
   );
 
   if (allDocs.length === 0) return "";
@@ -197,7 +197,6 @@ Sans réponse ou solution satisfaisante dans un délai de sept (7) jours à comp
   },
 
   "mise-en-demeure": (d) => {
-    const recipientType = clean(d.recipientType);
     const obligation = clean(d.obligation) || "l'obligation concernée";
     const previousContact = formatDate(d.previousContact);
     const deadlineDays = clean(d.deadlineDays) || "15";
@@ -263,14 +262,12 @@ Je vous remercie de bien vouloir traiter ma demande dans le délai d'un (1) mois
     const details = clean(d.details);
     const expectation = clean(d.expectation);
 
-    // Map the schema values to correct French verb phrases
     const expectationMap = {
       reparation: "procéder à la réparation du produit",
       remplacement: "procéder au remplacement à l'identique",
       remboursement: "procéder au remboursement intégral",
     };
 
-    // Get the correct phrase, or use your excellent fallback
     const expectationPhrase = expectationMap[expectation] || "me proposer une solution adaptée";
 
     return compact(`Madame, Monsieur,
@@ -337,6 +334,55 @@ Si la situation concerne une opération non autorisée ou une erreur de traiteme
 
 À défaut de réponse satisfaisante, je me réserve la possibilité de saisir le service réclamations de votre établissement, le médiateur bancaire compétent ou toute autorité appropriée.`);
   },
+
+  "caf-reclamation": (d) => {
+    const cafNumber = clean(d.cafNumber);
+    const benefitType = clean(d.benefitType);
+    const issueType = clean(d.issueType);
+    const decisionDate = formatDate(d.decisionDate);
+    const lastContactDate = formatDate(d.lastContactDate);
+    const amount = euro(d.amount);
+    const details = clean(d.details);
+
+    const benefitLabels = {
+      "Aide au logement / APL": "l'aide au logement / APL",
+      "RSA": "le RSA",
+      "Prime d’activité": "la prime d'activité",
+      "Allocations familiales": "les allocations familiales",
+      "AAH": "l'AAH",
+      "Autre prestation": "une autre prestation",
+    };
+
+    const issueLabels = {
+      "Dossier bloqué ou sans réponse": "dossier bloqué ou sans réponse",
+      "Paiement suspendu ou non reçu": "paiement suspendu ou non reçu",
+      "Document indiqué comme manquant": "document indiqué comme manquant",
+      "Demande d’explication": "demande d'explication",
+      "Erreur dans mon dossier": "erreur dans mon dossier",
+      "Autre situation": "autre situation",
+    };
+
+    const benefit = benefitLabels[benefitType] || benefitType || "la prestation concernée";
+    const issue = issueLabels[issueType] || issueType || "la situation rencontrée";
+
+    return compact(`Madame, Monsieur,
+
+Je vous adresse la présente réclamation concernant mon dossier CAF${cafNumber ? `, numéro allocataire ${cafNumber}` : ""}.
+
+Cette demande concerne ${benefit} et porte sur la situation suivante : ${issue}.
+
+${decisionDate ? `Le courrier ou la notification concernée date du ${decisionDate}.` : ""}
+${lastContactDate ? `Mon dernier échange avec vos services date du ${lastContactDate}.` : ""}
+${amount ? `Le montant concerné, à ma connaissance, est de ${amount}.` : ""}
+
+${details || "Je souhaite obtenir une explication claire sur la situation de mon dossier et, le cas échéant, sa régularisation."}
+
+En conséquence, je vous remercie de bien vouloir examiner ma situation, m'indiquer les éléments éventuellement manquants ou les raisons du blocage, et me transmettre une réponse écrite.
+
+Je reste disponible pour fournir tout document complémentaire nécessaire à l'instruction de mon dossier.
+
+À défaut de réponse ou de régularisation, je me réserve la possibilité d'effectuer les démarches utiles auprès des services ou organismes compétents.`);
+  },
 };
 
 const requiredFieldsForCase = (caseId) => {
@@ -375,15 +421,13 @@ export function buildLetter(caseId, data = {}) {
     throw new Error(`No template available for case: ${caseId}`);
   }
 
-  // Work on a copy, never mutate the input
   const safeData = { ...data };
 
   const missingFields = validateLetterData(caseId, safeData);
 
-  // Fill missing fields with visible placeholders instead of throwing
   if (missingFields.length > 0) {
     console.warn(`Missing fields: ${missingFields.join(", ")}`);
-    missingFields.forEach(fieldName => {
+    missingFields.forEach((fieldName) => {
       if (!clean(safeData[fieldName])) {
         safeData[fieldName] = `[${fieldName}]`;
       }

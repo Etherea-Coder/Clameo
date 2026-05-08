@@ -831,7 +831,7 @@ function ModelTicker() {
     "Mise en demeure",
     "Travail",
     "RGPD",
-    "CAF bientôt",
+    "CAF",
   ];
 
   return (
@@ -887,7 +887,7 @@ function CafComingSoonSection() {
           />
 
           <div style={{ position: "relative", zIndex: 1 }}>
-            <div className="section-eyebrow">CAF bientôt disponible</div>
+            <div className="section-eyebrow">Section CAF disponible</div>
 
             <h2
               style={{
@@ -899,7 +899,7 @@ function CafComingSoonSection() {
                 color: token.text,
               }}
             >
-              Une section dédiée aux démarches CAF arrive.
+              Prenez en main vos démarches CAF.
             </h2>
 
             <p
@@ -911,10 +911,9 @@ function CafComingSoonSection() {
                 maxWidth: 650,
               }}
             >
-              Dossier bloqué, paiement suspendu, demande d’explication,
-              contestation d’une décision ou remise de dette : Clameo prépare
-              une section pensée pour aider à structurer un courrier CAF clair
-              et un dossier complet.
+              Dossier bloqué, paiement suspendu, demande d’explication ou remise
+              de dette : Clameo vous aide à structurer un courrier clair pour
+              débloquer votre situation et constituer un dossier complet.
             </p>
 
             <div
@@ -926,25 +925,17 @@ function CafComingSoonSection() {
                 alignItems: "center",
               }}
             >
-              <button
-                type="button"
-                disabled
+              <Link
+                to="/builder/caf-reclamation"
+                className="clameo-btn-primary"
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   minHeight: 50,
-                  padding: "0 22px",
+                  padding: "0 24px",
                   borderRadius: 16,
-                  border: `1px solid ${token.border}`,
-                  background: "#f2f4f7",
-                  color: "#667085",
-                  fontWeight: 900,
-                  cursor: "not-allowed",
                 }}
               >
-                Bientôt disponible
-              </button>
+                Générer un courrier CAF <ArrowRight size={17} />
+              </Link>
 
               <Link
                 to="/builder"
@@ -963,7 +954,7 @@ function CafComingSoonSection() {
                   textDecoration: "none",
                 }}
               >
-                Utiliser les modèles actuels <ArrowRight size={16} />
+                Voir tous les modèles <ArrowRight size={16} />
               </Link>
             </div>
 
@@ -976,8 +967,7 @@ function CafComingSoonSection() {
                 maxWidth: 680,
               }}
             >
-              Clameo n’est pas affilié à la CAF et ne remplace pas un conseiller
-              social. L’objectif est d’aider à préparer un courrier et les
+              Clameo n’est pas affilié à la CAF et ne remplace ni un conseiller social, ni un organisme public. L’objectif est d’aider à préparer un courrier et les
               pièces utiles.
             </p>
           </div>

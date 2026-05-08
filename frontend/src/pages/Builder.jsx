@@ -300,7 +300,7 @@ export default function Builder() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   // NOUVEAU : Déterminer si ce litige exige une LRAR
-  const requiresLRAR = selectedCase && ["mise-en-demeure", "logement", "employeur"].includes(selectedCase);
+  const requiresLRAR = selectedCase && ["mise-en-demeure", "logement", "employeur", "caf-reclamation"].includes(selectedCase);
 
   // If no case selected, show case picker
   const c = selectedCase ? getCase(selectedCase) : null;
@@ -575,7 +575,7 @@ export default function Builder() {
               )}
               <div>
                 <p className="text-sm font-bold" style={{ color: token.text }}>
-                  {requiresLRAR ? "À noter : Envoi en recommandé requis" : "Conseil d'envoi"}
+                  {requiresLRAR ? "Conseil : Conserver une preuve d’envoi" : "Conseil d'envoi"}
                 </p>
                 <p className="text-xs leading-relaxed mt-1" style={{ color: token.text }}>
                   {requiresLRAR
