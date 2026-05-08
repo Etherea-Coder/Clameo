@@ -71,11 +71,11 @@ const senderContact = (d) =>
 const recipientAddress = (d) => {
   const street = d.recipientStreet || d.recipientAddress;
   const postalCity = d.recipientPostalCity || "";
-  
+
   const addressLines = [d.recipientName, street, postalCity]
     .map(clean)
     .filter(Boolean);
-    
+
   return addressLines.join("\n");
 };
 
@@ -83,10 +83,10 @@ const attachmentsLine = (d) => {
   const attachmentsList = d.attachmentsList || [];
   const otherText = d.attachmentsOther ? clean(d.attachmentsOther) : "";
   const uploadedAttachmentNames = (d.uploadedAttachments || []).map(a => a.file_name);
-  
+
   const documentLabels = {
     facture: "Facture",
-    confirmation: "Confirmation de commande", 
+    confirmation: "Confirmation de commande",
     capture: "Capture d'écran",
     email: "Email de confirmation",
     photo: "Photo",
@@ -94,16 +94,16 @@ const attachmentsLine = (d) => {
     paiement: "Justificatif de paiement",
     autre: "Autre document"
   };
-  
+
   const selectedDocs = attachmentsList
     .map(value => documentLabels[value] || value)
     .filter(Boolean);
-    
+
   const legacyNames = d.uploadedAttachmentNames || [];
   const allDocs = [...selectedDocs, otherText, ...uploadedAttachmentNames, ...legacyNames].filter(Boolean);
-  
+
   if (allDocs.length === 0) return "";
-  
+
   return compact(`Pièces jointes :
 ${allDocs.join("\n- ")}`);
 };
@@ -161,7 +161,7 @@ En conséquence, je vous demande de bien vouloir procéder au remboursement de $
 
     return compact(`Madame, Monsieur,
 
-Locataire du logement situé ${address}${leaseStart ? ` depuis le ${leaseStart}` : ""}, je vous adresse la présente concernant ${landlord} concernant ${issueType ? lowerFirst(issueType) : "un litige relatif au logement"}.
+Locataire du logement situé ${address}${leaseStart ? ` depuis le ${leaseStart}` : ""}, je vous adresse la présente au sujet de mon contrat de location, afin de vous signaler ${issueType ? lowerFirst(issueType) : "un litige relatif au logement"}.
 
 ${details || "La situation signalée nécessite une régularisation ou une intervention de votre part."}
 ${amount ? `\nLe montant concerné par ce litige est de ${amount}.` : ""}
@@ -202,7 +202,7 @@ Sans réponse ou solution satisfaisante dans un délai de sept (7) jours à comp
 
     return compact(`Madame, Monsieur,
 
-${previousContact ? `Faisant suite à mon précédent rappel du ${previousContact},` : "Malgré mes précédentes démarches,"} je constate que la situation suivante n'a toujours pas été régularisée${recipientType ? ` par le destinataire concerné (${lowerFirst(recipientType)})` : ""} :
+${previousContact ? `Faisant suite à mon précédent rappel du ${previousContact},` : "Malgré mes précédentes démarches,"} je constate que vous n'avez toujours pas régularisé la situation suivante :
 
 ${obligation}.
 
@@ -260,6 +260,16 @@ Je vous remercie de bien vouloir traiter ma demande dans le délai d'un (1) mois
     const details = clean(d.details);
     const expectation = clean(d.expectation);
 
+    // Map the schema values to correct French verb phrases
+    const expectationMap = {
+      reparation: "procéder à la réparation du produit",
+      remplacement: "procéder au remplacement à l'identique",
+      remboursement: "procéder au remboursement intégral",
+    };
+
+    // Get the correct phrase, or use your excellent fallback
+    const expectationPhrase = expectationMap[expectation] || "me proposer une solution adaptée";
+
     return compact(`Madame, Monsieur,
 
 Le ${purchaseDate}, j'ai acquis auprès de ${merchant} le produit ou service suivant : ${product}${amount ? `, pour un montant de ${amount}` : ""}.
@@ -267,7 +277,7 @@ Le ${purchaseDate}, j'ai acquis auprès de ${merchant} le produit ou service sui
 ${issueType ? `Le problème rencontré est le suivant : ${lowerFirst(issueType)}.` : "Ce produit ou service ne donne pas satisfaction au regard des conditions prévues lors de l'achat."}
 ${details ? `\n${details}` : ""}
 
-En conséquence, je vous demande de bien vouloir ${expectation ? lowerFirst(expectation) : "me proposer une solution adaptée"} dans un délai de quinze (15) jours à compter de la réception du présent courrier.
+En conséquence, je vous demande de bien vouloir ${expectationPhrase} dans un délai de quinze (15) jours à compter de la réception du présent courrier.
 
 Lorsque le litige concerne la conformité d'un bien, cette demande s'inscrit notamment dans le cadre de la garantie légale de conformité prévue par le Code de la consommation. Lorsque le litige concerne une prestation de service, je vous demande de procéder à la régularisation de la prestation ou de me proposer une solution équivalente.
 

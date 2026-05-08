@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Lock, AlertTriangle, Lightbulb } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -299,6 +299,9 @@ export default function Builder() {
   const [caseSessionId, setCaseSessionId] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
+  // NOUVEAU : Déterminer si ce litige exige une LRAR
+  const requiresLRAR = selectedCase && ["mise-en-demeure", "logement", "employeur"].includes(selectedCase);
+
   // If no case selected, show case picker
   const c = selectedCase ? getCase(selectedCase) : null;
   useEffect(() => {
@@ -555,8 +558,37 @@ export default function Builder() {
           ))}
         </div>
 
+        {/* LRAR Dynamic Advice (Uniquement affiché à la première étape) */}
+        {stepIndex === 0 && (
+          <div 
+            className="mt-10 rounded-[16px] border p-5" 
+            style={{ 
+              background: requiresLRAR ? '#fff8f6' : '#fffbeb', // Rouge très clair ou Jaune très clair
+              borderColor: requiresLRAR ? '#fcd6cf' : '#fde68a' 
+            }}
+          >
+            <div className="flex items-start gap-3">
+              {requiresLRAR ? (
+                <AlertTriangle size={18} style={{ color: token.coral, flexShrink: 0, marginTop: 2 }} />
+              ) : (
+                <Lightbulb size={18} className="text-amber-600" style={{ flexShrink: 0, marginTop: 2 }} />
+              )}
+              <div>
+                <p className="text-sm font-bold" style={{ color: token.text }}>
+                  {requiresLRAR ? "À noter : Envoi en recommandé requis" : "Conseil d'envoi"}
+                </p>
+                <p className="text-xs leading-relaxed mt-1" style={{ color: token.text }}>
+                  {requiresLRAR
+                    ? "Ce type de démarche exige une preuve légale absolue. Prévoyez d'envoyer votre dossier final en Lettre Recommandée avec Accusé de Réception (LRAR)."
+                    : "Votre dossier final pourra être envoyé simplement par email ou par courrier classique. Le recommandé (LRAR) ne sera utile qu'en cas de litige persistant."}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Privacy notice */}
-        <div className="mt-10 rounded-[16px] border p-5" style={{ background: token.white, borderColor: token.border }}>
+        <div className="mt-4 rounded-[16px] border p-5" style={{ background: token.white, borderColor: token.border }}>
           <div className="flex items-start gap-3">
             <Lock size={16} style={{ color: token.coral, flexShrink: 0, marginTop: 2 }} />
             <p className="text-xs leading-relaxed" style={{ color: token.muted }}>

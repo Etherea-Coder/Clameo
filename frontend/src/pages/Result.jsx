@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, Copy, Download, Printer, Check, FileText,
-  Pencil, RotateCcw, Eye, Lock, Package, Send,
+  Pencil, RotateCcw, Eye, Lock, Package, Send, AlertTriangle, Lightbulb
 } from "lucide-react";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
@@ -13,7 +13,8 @@ import { getCase } from "../lib/letterCases";
 import { getResult } from "../lib/resultStore";
 import { toast, Toaster } from "sonner";
 
-const LRAR_URL = process.env.REACT_APP_LRAR_URL || "";
+// Plus tard, vous pourrez remplacer cette URL par votre lien d'affiliation Merci-Facteur
+const LRAR_URL = process.env.REACT_APP_LRAR_URL || "https://www.laposte.fr/lettre-recommandee-en-ligne";
 
 export default function Result() {
   const [payload, setPayload] = useState(null);
@@ -45,6 +46,9 @@ export default function Result() {
 
   const uploadedAttachments = payload?.data?.uploadedAttachments || [];
   const hasAttachments = uploadedAttachments.length > 0;
+
+  // Déterminer si ce type de lettre nécessite formellement une LRAR
+  const requiresLRAR = payload && ["mise-en-demeure", "logement", "employeur"].includes(payload.caseId);
 
   // === PDF helper ===
   const buildPDFDoc = () => {
@@ -344,6 +348,7 @@ export default function Result() {
 
           {/* Actions sidebar */}
           <aside className="no-print lg:col-span-4 space-y-3 mt-6 lg:mt-0">
+
             {/* Primary actions card */}
             <div className="rounded-lg border border-border bg-card p-6">
               <p className="font-semibold text-xl">Actions</p>
@@ -356,13 +361,11 @@ export default function Result() {
               <div className="mt-5 space-y-2.5">
                 {hasAttachments ? (
                   <>
-                    {/* Primary: download full dossier as ZIP */}
                     <button
                       type="button"
                       onClick={handleZipDownload}
                       disabled={zipping}
                       className="btn-coral w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
-                      data-testid="action-zip"
                     >
                       {zipping ? (
                         <>
@@ -379,23 +382,19 @@ export default function Result() {
                       )}
                     </button>
 
-                    {/* Secondary: letter PDF only */}
                     <button
                       type="button"
                       onClick={handlePDF}
                       className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-medium border border-border hover:border-foreground transition"
-                      data-testid="action-pdf"
                     >
                       <Download size={16} /> Télécharger la lettre en PDF
                     </button>
                   </>
                 ) : (
-                  /* No attachments: PDF is primary */
                   <button
                     type="button"
                     onClick={handlePDF}
                     className="btn-coral w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-semibold"
-                    data-testid="action-pdf"
                   >
                     <Download size={16} /> Télécharger en PDF
                   </button>
@@ -405,65 +404,64 @@ export default function Result() {
                   type="button"
                   onClick={handleCopy}
                   className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-medium border border-border hover:border-foreground transition"
-                  data-testid="action-copy"
                 >
                   {copied ? <Check size={16} className="text-success" /> : <Copy size={16} />}
                   {copied ? "Copié !" : "Copier le texte"}
                 </button>
+
                 <button
                   type="button"
                   onClick={handlePrint}
                   className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-medium border border-border hover:border-foreground transition"
-                  data-testid="action-print"
                 >
                   <Printer size={16} /> Imprimer
                 </button>
               </div>
-
-              {hasAttachments && (
-                <p className="text-xs text-foreground/60 mt-4 leading-relaxed">
-                  Le dossier complet contient votre lettre et les fichiers ajoutés. Vous pourrez ensuite l'envoyer avec le service de votre choix.
-                </p>
-              )}
             </div>
 
-            {/* Send card */}
+            {/* UPSELL PARTENAIRE: Send card */}
             <div className="rounded-lg border border-border bg-card p-6">
               <div className="flex items-start gap-3 mb-3">
-                <Send size={18} className="text-trust shrink-0 mt-0.5" />
+                <Send size={18} className="text-coral shrink-0 mt-0.5" />
                 <p className="text-sm font-semibold">
-                  {LRAR_URL ? "Envoyer en recommandé" : "Envoyer votre dossier"}
+                  Pas d'imprimante ?
                 </p>
               </div>
 
-              {LRAR_URL ? (
-                <>
-                  <p className="text-sm text-foreground/65 leading-relaxed">
-                    Envoyez votre lettre en recommandé avec accusé de réception via La Poste. Les pièces jointes devront être ajoutées manuellement selon les options du service.
+              <p className="text-sm text-foreground/65 leading-relaxed">
+                Envoyez votre courrier sans vous déplacer. Téléchargez votre PDF ci-dessus, puis importez-le sur le service sécurisé de notre partenaire pour un envoi postal le jour même.
+              </p>
+
+              <a
+                href={LRAR_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border hover:border-foreground transition bg-white"
+              >
+                Envoyer en Recommandé →
+              </a>
+            </div>
+
+            {/* DYNAMIC Practical advice card */}
+            <div className="rounded-lg border border-border bg-card p-6">
+              <div className="flex items-start gap-3">
+                {requiresLRAR ? (
+                  <AlertTriangle size={18} className="text-[#e8502a] shrink-0 mt-0.5" />
+                ) : (
+                  <Lightbulb size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                )}
+
+                <div>
+                  <p className="text-sm font-semibold">
+                    {requiresLRAR ? "Attention (Important)" : "Conseil pratique"}
                   </p>
-                  <a
-                    href={LRAR_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border hover:border-foreground transition"
-                  >
-                    Envoyer en recommandé →
-                  </a>
-                </>
-              ) : (
-                <>
-                  <p className="text-sm text-foreground/65 leading-relaxed">
-                    L'envoi direct depuis Clameo arrive bientôt. Pour l'instant, téléchargez votre dossier complet puis envoyez-le avec le service de votre choix.
+                  <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
+                    {requiresLRAR
+                      ? "Dans le cadre de cette démarche, la loi exige de pouvoir prouver la réception. L'envoi en Lettre Recommandée (LRAR) est indispensable."
+                      : "Vous pouvez d'abord envoyer ce courrier par email ou lettre simple. Si vos demandes restent sans réponse, utilisez la Lettre Recommandée (LRAR) pour acter le litige."}
                   </p>
-                  <button
-                    type="button"
-                    disabled
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border opacity-50 cursor-not-allowed"
-                  >
-                    Envoi direct bientôt disponible
-                  </button>
-                </>
-              )}
+                </div>
+              </div>
             </div>
 
             {/* Privacy card */}
@@ -482,18 +480,6 @@ export default function Result() {
               </div>
             </div>
 
-            {/* Practical advice card */}
-            <div className="rounded-lg border border-border bg-card p-6">
-              <div className="flex items-start gap-3">
-                <FileText size={18} className="text-trust shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-semibold">Conseil pratique</p>
-                  <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
-                    Pour une mise en demeure, privilégiez l'envoi en lettre recommandée avec accusé de réception.
-                  </p>
-                </div>
-              </div>
-            </div>
           </aside>
         </div>
       </section>
