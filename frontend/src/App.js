@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
 import Landing from "./pages/Landing";
 import Builder from "./pages/Builder";
@@ -27,19 +28,21 @@ function App() {
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/builder" element={<Builder />} />
-          <Route path="/builder/:caseType" element={<Builder />} />
-          <Route path="/result" element={<Result />} />
-          <Route path="/mentions-legales" element={<MentionsLegales />} />
-          <Route path="/confidentialite" element={<Confidentialite />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/modeles/:slug" element={<ModelPage />} />
-        </Routes>
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/builder" element={<Builder />} />
+            <Route path="/builder/:caseType" element={<Builder />} />
+            <Route path="/result" element={<Result />} />
+            <Route path="/mentions-legales" element={<MentionsLegales />} />
+            <Route path="/confidentialite" element={<Confidentialite />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/modeles/:slug" element={<ModelPage />} />
+          </Routes>
+        </BrowserRouter>
+      </HelmetProvider>
     </div>
   );
 }

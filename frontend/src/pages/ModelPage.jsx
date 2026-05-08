@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowRight, CheckCircle2, FileText, AlertTriangle, HelpCircle } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getModelPage } from "@/data/modelPages";
@@ -15,6 +16,12 @@ export default function ModelPage() {
 
   return (
     <>
+      <Helmet>
+        <title>{page.title} | Clameo</title>
+        <meta name="description" content={page.description} />
+        <link rel="canonical" href={`https://clameo.fr/modeles/${slug}`} />
+      </Helmet>
+
       <div className="min-h-screen bg-slate-50 text-slate-950">
         <Header />
 
