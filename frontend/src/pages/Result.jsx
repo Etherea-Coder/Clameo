@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, Copy, Download, Printer, Check, FileText,
-  Pencil, RotateCcw, Eye, Lock, Package, Send, AlertTriangle, Lightbulb
+  Pencil, RotateCcw, Eye, Lock, Package, Send, AlertTriangle, Lightbulb, ShieldCheck, ArrowRight
 } from "lucide-react";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
@@ -14,7 +14,7 @@ import { getResult } from "../lib/resultStore";
 import { toast, Toaster } from "sonner";
 
 // Plus tard, vous pourrez remplacer cette URL par votre lien d'affiliation Merci-Facteur
-const LRAR_URL = process.env.REACT_APP_LRAR_URL || "https://www.laposte.fr/lettre-recommandee-en-ligne";
+const LRAR_URL = "https://www.merci-facteur.com#p_ref=173";
 
 export default function Result() {
   const [payload, setPayload] = useState(null);
@@ -419,27 +419,41 @@ export default function Result() {
               </div>
             </div>
 
-            {/* UPSELL PARTENAIRE: Send card */}
-            <div className="rounded-lg border border-border bg-card p-6">
-              <div className="flex items-start gap-3 mb-3">
-                <Send size={18} className="text-coral shrink-0 mt-0.5" />
-                <p className="text-sm font-semibold">
-                  Pas d'imprimante ?
-                </p>
+            {/* UPSELL PARTENAIRE: Send card (Haute Conversion) */}
+            <div 
+              className="rounded-lg p-6 relative overflow-hidden transition-all"
+              style={{ 
+                backgroundColor: '#fff8f6', // Un fond très légèrement corail
+                border: '2px solid #fcd6cf'  // Une bordure corail douce mais visible
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Send size={18} className="text-[#e8502a]" />
+                  <p className="text-sm font-bold text-foreground">Envoyer sans se déplacer</p>
+                </div>
+                <span className="text-[10px] uppercase font-bold tracking-wider bg-white px-2 py-1 rounded-md border shadow-sm" style={{ color: '#e8502a', borderColor: '#fcd6cf' }}>
+                  Partenaire
+                </span>
               </div>
 
-              <p className="text-sm text-foreground/65 leading-relaxed">
-                Envoyez votre courrier sans vous déplacer. Téléchargez votre PDF ci-dessus, puis importez-le sur le service sécurisé de notre partenaire pour un envoi postal le jour même.
+              <p className="text-sm text-foreground/75 leading-relaxed mb-5">
+                Imprimez et postez votre lettre en <strong>Recommandé avec Accusé de Réception (LRAR)</strong> directement en ligne via Merci-Facteur. Envoi le jour même.
               </p>
-
+              
               <a
                 href={LRAR_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-[14px] text-sm font-semibold border border-border hover:border-foreground transition bg-white"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[14px] text-sm font-bold text-white transition-all transform hover:scale-[1.02] shadow-md"
+                style={{ backgroundColor: '#111827' }} // Un bouton noir/très foncé pour un contraste maximum
               >
-                Envoyer en Recommandé →
+                Envoyer mon courrier <ArrowRight size={16} />
               </a>
+
+              <p className="text-xs text-center mt-4 flex items-center justify-center gap-1.5 font-medium" style={{ color: '#e8502a' }}>
+                <ShieldCheck size={14} /> Preuve légale 100% garantie
+              </p>
             </div>
 
             {/* DYNAMIC Practical advice card */}
