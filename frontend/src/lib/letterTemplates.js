@@ -100,12 +100,15 @@ const attachmentsLine = (d) => {
     .filter(Boolean);
 
   const legacyNames = d.uploadedAttachmentNames || [];
-  const allDocs = [...selectedDocs, otherText, ...uploadedAttachmentNames, ...legacyNames].filter(Boolean);
+
+  const allDocs = Array.from(
+    new Set([...selectedDocs, otherText, ...uploadedAttachmentNames, ...legacyNames].filter(Boolean))
+  );
 
   if (allDocs.length === 0) return "";
 
   return compact(`Pièces jointes :
-${allDocs.join("\n- ")}`);
+${allDocs.map((doc) => `- ${doc}`).join("\n")}`);
 };
 
 const signatureBlock = (d) => {

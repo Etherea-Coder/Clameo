@@ -420,9 +420,9 @@ export default function Result() {
             </div>
 
             {/* UPSELL PARTENAIRE: Send card (Haute Conversion) */}
-            <div 
+            <div
               className="rounded-lg p-6 relative overflow-hidden transition-all"
-              style={{ 
+              style={{
                 backgroundColor: '#fff8f6', // Un fond très légèrement corail
                 border: '2px solid #fcd6cf'  // Une bordure corail douce mais visible
               }}
@@ -440,7 +440,7 @@ export default function Result() {
               <p className="text-sm text-foreground/75 leading-relaxed mb-5">
                 Imprimez et postez votre lettre en <strong>Recommandé avec Accusé de Réception (LRAR)</strong> directement en ligne via Merci-Facteur. Envoi le jour même.
               </p>
-              
+
               <a
                 href={LRAR_URL}
                 target="_blank"
@@ -452,7 +452,7 @@ export default function Result() {
               </a>
 
               <p className="text-xs text-center mt-4 flex items-center justify-center gap-1.5 font-medium" style={{ color: '#e8502a' }}>
-                <ShieldCheck size={14} /> Preuve légale 100% garantie
+                <ShieldCheck size={14} /> Preuve de dépôt et suivi inclus
               </p>
             </div>
 
