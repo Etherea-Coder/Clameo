@@ -1,19 +1,12 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Save, Trash2, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Lock } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CASES, CASE_STEPS, RECIPIENT_STEP, ATTACHMENTS_STEP, USER_STEP, getCase } from "../lib/letterCases";
 import { validateLetterData } from "../lib/letterTemplates";
-import { saveDraft, loadDraft, clearDraft } from "../lib/share";
 import { setResult } from "../lib/resultStore";
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = 'https://your-supabase-instance.supabase.co';
-const supabaseKey = 'your-supabase-key';
-const supabaseSecret = 'your-supabase-secret';
-const supabase = createClient(supabaseUrl, supabaseKey, supabaseSecret);
 
 const token = {
   light: "#fbfaf7",
@@ -54,7 +47,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
     if (files.length === 0) return;
 
     const file = files[0];
-    
+
     // Validate file size (10 MB)
     if (file.size > 10 * 1024 * 1024) {
       toast.error('Le fichier dépasse la limite de 10 Mo');
@@ -106,7 +99,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
             className="hidden"
             data-testid={`field-${field.name}`}
           />
-          
+
           <label
             htmlFor={`field-${field.name}`}
             className={`cursor-pointer flex flex-col items-center justify-center gap-3 text-foreground/70 hover:text-foreground transition ${!sessionReady || uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -119,7 +112,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
                 </svg>
               ) : (
                 <svg className="w-6 h-6 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
               )}
             </div>
@@ -129,7 +122,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
             <span className="text-xs">PDF, PNG, JPG, DOC ou DOCX — 10 Mo maximum par fichier.</span>
           </label>
         </div>
-        
+
         {uploadedFiles.length > 0 && (
           <div className="mt-4 space-y-2">
             <p className="text-sm font-medium text-foreground">Fichiers téléchargés:</p>
@@ -138,7 +131,7 @@ function FileUploadField({ field, value, onChange, data, setData, uploadFile, de
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded bg-coral/10 flex items-center justify-center">
                     <svg className="w-4 h-4 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z" />
                     </svg>
                   </div>
                   <div>
@@ -238,7 +231,7 @@ function FieldRenderer({ field, value, onChange, attempted, data, setData, uploa
 
   if (field.type === "checkboxGroup") {
     const selectedValues = value || [];
-    
+
     return (
       <div>
         <div className="space-y-3">
@@ -309,7 +302,6 @@ export default function Builder() {
   const [stepIndex, setStepIndex] = useState(0);
   const [data, setData] = useState({});
   const [attempted, setAttempted] = useState(false);
-  const [hasDraftForCase, setHasDraftForCase] = useState(false);
   const [caseSessionId, setCaseSessionId] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
@@ -319,15 +311,6 @@ export default function Builder() {
     if (caseType && getCase(caseType)) setSelectedCase(caseType);
   }, [caseType]);
 
-  // On selectedCase change, check if a draft exists for this case (no auto-load)
-  useEffect(() => {
-    if (!selectedCase) {
-      setHasDraftForCase(false);
-      return;
-    }
-    const d = loadDraft();
-    setHasDraftForCase(!!(d && d.caseId === selectedCase));
-  }, [selectedCase]);
 
   const allSteps = useMemo(() => {
     if (!selectedCase) return [];
@@ -345,18 +328,6 @@ export default function Builder() {
     return currentStep.fields.every((f) => !f.required || (data[f.name] && String(data[f.name]).trim()));
   };
 
-  // EXPLICIT actions
-  const onSaveDraft = () => {
-    saveDraft(selectedCase, data, stepIndex);
-    setHasDraftForCase(true);
-    toast.success("Brouillon sauvegardé sur cet appareil");
-  };
-
-  const onClear = () => {
-    clearDraft();
-    setHasDraftForCase(false);
-    toast.success("Données effacées de cet appareil");
-  };
 
   const createCaseSession = useCallback(async () => {
     if (!selectedCase) {
@@ -410,8 +381,8 @@ export default function Builder() {
       if (result.ok) {
         setUploadedFiles(prev => [...prev, result.attachment]);
         // Update data with uploaded attachments
-        setData(prev => ({ 
-          ...prev, 
+        setData(prev => ({
+          ...prev,
           uploadedAttachments: [...(prev.uploadedAttachments || []), result.attachment]
         }));
         toast.success('Fichier téléchargé avec succès');
@@ -439,8 +410,8 @@ export default function Builder() {
       if (result.ok) {
         setUploadedFiles(prev => prev.filter(f => f.id !== attachmentId));
         // Update data by removing from uploadedAttachments
-        setData(prev => ({ 
-          ...prev, 
+        setData(prev => ({
+          ...prev,
           uploadedAttachments: (prev.uploadedAttachments || []).filter(f => f.id !== attachmentId)
         }));
         toast.success('Fichier supprimé');
@@ -457,22 +428,6 @@ export default function Builder() {
     createCaseSession();
   }, [selectedCase, createCaseSession]);
 
-  const onRestoreDraft = () => {
-    const d = loadDraft();
-    if (!d || d.caseId !== selectedCase) {
-      toast.error("Aucun brouillon disponible");
-      return;
-    }
-    setData(d.data || {});
-    setStepIndex(Math.min(d.stepIndex || 0, totalSteps - 1));
-    toast.success("Brouillon restauré");
-  };
-
-  const onClearDraft = () => {
-    clearDraft();
-    setHasDraftForCase(false);
-    toast.success("Données effacées de cet appareil");
-  };
 
   const next = () => {
     if (!isStepValid()) {
@@ -606,46 +561,16 @@ export default function Builder() {
           ))}
         </div>
 
-        {/* Privacy + explicit draft actions */}
-        <div className="mt-10 rounded-[16px] border p-5" style={{ background: token.white, borderColor: token.border }} data-testid="draft-panel">
+        {/* Privacy notice */}
+        <div className="mt-10 rounded-[16px] border p-5" style={{ background: token.white, borderColor: token.border }}>
           <div className="flex items-start gap-3">
             <Lock size={16} style={{ color: token.coral, flexShrink: 0, marginTop: 2 }} />
             <p className="text-xs leading-relaxed" style={{ color: token.muted }}>
-              Vos informations restent uniquement dans votre navigateur. Clameo ne les envoie pas à un serveur.
+              Vos informations servent à préparer votre lettre et votre dossier. Une partie du
+              traitement reste locale dans votre navigateur ; si vous ajoutez des pièces
+              jointes, elles sont stockées temporairement pour permettre la génération du
+              dossier, puis supprimées automatiquement au plus tard 7 jours après leur création.
             </p>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onSaveDraft}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border transition"
-              style={{ borderColor: token.border }}
-              data-testid="draft-save"
-            >
-              <Save size={14} /> Sauvegarder ce brouillon sur cet appareil
-            </button>
-            {hasDraftForCase && (
-              <>
-                <button
-                  type="button"
-                  onClick={onRestoreDraft}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border transition"
-                  style={{ borderColor: token.border }}
-                  data-testid="draft-restore"
-                >
-                  Reprendre mon brouillon
-                </button>
-                <button
-                  type="button"
-                  onClick={onClearDraft}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-[14px] text-xs font-medium border transition"
-                  style={{ borderColor: token.border, color: token.muted }}
-                  data-testid="draft-clear"
-                >
-                  <Trash2 size={14} /> Effacer mes données
-                </button>
-              </>
-            )}
           </div>
         </div>
 
@@ -669,7 +594,7 @@ export default function Builder() {
           >
             {stepIndex === totalSteps - 1 ? (
               <>
-                Générer ma lettre prête à envoyer <Check size={16} />
+                Préparer mon dossier<Check size={16} />
               </>
             ) : (
               <>

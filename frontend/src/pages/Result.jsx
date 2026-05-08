@@ -472,8 +472,11 @@ export default function Result() {
                 <Lock size={18} className="text-trust shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold">Vie privée</p>
-                  <p className="text-sm text-foreground/65 mt-1.5 leading-relaxed">
-                    Vos informations restent uniquement dans votre navigateur. Clameo ne les envoie pas à un serveur.
+                  <p className="text-sm text-foreground65 mt-1.5 leading-relaxed">
+                    Votre dossier est préparé dans Clameo, mais il n’est pas envoyé automatiquement.
+                    Les pièces jointes ajoutées servent uniquement à constituer le dossier
+                    téléchargeable et sont supprimées automatiquement au plus tard 7 jours après
+                    leur création.
                   </p>
                 </div>
               </div>
