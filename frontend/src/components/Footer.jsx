@@ -83,6 +83,15 @@ export default function Footer() {
 
               <li>
                 <Link
+                  to="/modeles/lettre-dette-caf"
+                  className="hover:text-coral transition"
+                >
+                  Dette CAF / remise
+                </Link>
+              </li>              
+
+              <li>
+                <Link
                   to="/modeles/lettre-reclamation-banque"
                   className="hover:text-coral transition"
                 >

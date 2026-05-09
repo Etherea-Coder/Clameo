@@ -926,7 +926,7 @@ function CafComingSoonSection() {
               }}
             >
               <Link
-                to="/builder/caf-reclamation"
+                to="/modeles/lettre-reclamation-caf"
                 className="clameo-btn-primary"
                 style={{
                   minHeight: 50,
@@ -934,7 +934,7 @@ function CafComingSoonSection() {
                   borderRadius: 16,
                 }}
               >
-                Générer un courrier CAF <ArrowRight size={17} />
+                Préparer une réclamation CAF <ArrowRight size={17} />
               </Link>
 
               <Link
@@ -984,19 +984,25 @@ function CafComingSoonSection() {
               {
                 Icon: FileText,
                 t: "Réclamation CAF",
-                s: "Pour demander une explication ou signaler un dossier bloqué.",
-              },
-              {
-                Icon: ShieldCheck,
-                t: "Contestation",
-                s: "Pour préparer un recours clair lorsqu’une décision doit être contestée.",
+                s: "Pour demander une explication, signaler un dossier bloqué ou un paiement suspendu.",
+                to: "/modeles/lettre-reclamation-caf",
+                status: "Disponible",
               },
               {
                 Icon: Clock,
-                t: "Remise de dette",
-                s: "Pour structurer une demande de remise gracieuse ou d’échéancier.",
+                t: "Dette CAF / remise",
+                s: "Pour demander une remise gracieuse, une remise partielle ou un échéancier.",
+                to: "/modeles/lettre-dette-caf",
+                status: "Disponible",
               },
-            ].map(({ Icon, t, s }) => (
+              {
+                Icon: ShieldCheck,
+                t: "Contestation CAF",
+                s: "Pour préparer un recours lorsqu’une décision CAF doit être contestée.",
+                to: null,
+                status: "Bientôt disponible",
+              },
+            ].map(({ Icon, t, s, to, status }) => (
               <div
                 key={t}
                 style={{
@@ -1007,24 +1013,50 @@ function CafComingSoonSection() {
                   border: `1px solid ${token.border}`,
                   background: "rgba(255,255,255,0.76)",
                   boxShadow: "0 16px 44px rgba(17,24,39,0.04)",
+                  opacity: to ? 1 : 0.72,
                 }}
               >
                 <Icon
                   size={19}
                   style={{ color: token.coral, flexShrink: 0, marginTop: 2 }}
                 />
+
                 <div>
-                  <h3
+                  <div
                     style={{
-                      margin: "0 0 5px",
-                      fontSize: 16,
-                      fontWeight: 900,
-                      letterSpacing: "-0.025em",
-                      color: token.text,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      flexWrap: "wrap",
+                      marginBottom: 5,
                     }}
                   >
-                    {t}
-                  </h3>
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontSize: 16,
+                        fontWeight: 900,
+                        letterSpacing: "-0.025em",
+                        color: token.text,
+                      }}
+                    >
+                      {t}
+                    </h3>
+
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        padding: "4px 8px",
+                        borderRadius: 999,
+                        background: to ? "#ecfdf3" : "#f2f4f7",
+                        color: to ? "#027a48" : "#667085",
+                      }}
+                    >
+                      {status}
+                    </span>
+                  </div>
+
                   <p
                     style={{
                       margin: 0,
@@ -1035,6 +1067,22 @@ function CafComingSoonSection() {
                   >
                     {s}
                   </p>
+
+                  {to && (
+                    <Link
+                      to={to}
+                      style={{
+                        display: "inline-flex",
+                        marginTop: 10,
+                        color: token.coral,
+                        fontSize: 13,
+                        fontWeight: 900,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Voir le modèle →
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
@@ -1130,20 +1178,20 @@ export default function Landing() {
               </p>
             </div>
 
-            <div className="usecase-grid">
-              {CASES.filter(c => c.id !== "caf-reclamation").map((c) => {
-                const Icon = c.Icon;
-                const isHovered = hoveredCard === c.id;
+              <div className="usecase-grid">
+                {CASES.filter((c) => !c.id.startsWith("caf-")).map((c) => {
+                  const Icon = c.Icon;
+                  const isHovered = hoveredCard === c.id;
 
-                return (
-                  <Link
-                    key={c.id}
-                    to={`/builder/${c.id}`}
-                    data-testid={`usecase-${c.id}`}
-                    className="usecase-card"
-                    onMouseEnter={() => setHoveredCard(c.id)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                  >
+                  return (
+                    <Link
+                      key={c.id}
+                      to={`/builder/${c.id}`}
+                      data-testid={`usecase-${c.id}`}
+                      className="usecase-card"
+                      onMouseEnter={() => setHoveredCard(c.id)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                    >
                     <div style={{ position: "relative" }}>
                       <Icon
                         size={16}
