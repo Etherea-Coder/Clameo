@@ -379,9 +379,9 @@ ${details || "Je souhaite obtenir une explication claire sur la situation de mon
 
 En conséquence, je vous remercie de bien vouloir examiner ma situation, m'indiquer les éléments éventuellement manquants ou les raisons du blocage, et me transmettre une réponse écrite.
 
-Je reste disponible pour fournir tout document complémentaire nécessaire à l'instruction de mon dossier.
+Je reste naturellement disponible pour fournir tout document complémentaire nécessaire à l'instruction de mon dossier.
 
-À défaut de réponse ou de régularisation, je me réserve la possibilité d'effectuer les démarches utiles auprès des services ou organismes compétents.`);
+Je vous remercie par avance pour votre aide et pour l'attention portée à ma demande.`);
   },
 };
 

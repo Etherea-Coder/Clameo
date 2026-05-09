@@ -852,6 +852,7 @@ function ModelTicker() {
 function CafComingSoonSection() {
   return (
     <section
+      id="caf"
       data-testid="caf-coming-section"
       style={{
         padding: "0 0 112px",

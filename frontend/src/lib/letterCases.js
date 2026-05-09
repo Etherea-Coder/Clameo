@@ -85,14 +85,6 @@ export const CASES = [
     Icon: Landmark,
     objet: "Réclamation bancaire",
   },
-  {
-    id: "caf-reclamation",
-    title: "Réclamation CAF",
-    short: "Dossier bloqué, paiement suspendu, absence de réponse…",
-    category: "CAF",
-    Icon: FileText,
-    objet: "Réclamation auprès de la CAF",
-  },
 ];
 
 export const getCase = (id) => CASES.find((c) => c.id === id);

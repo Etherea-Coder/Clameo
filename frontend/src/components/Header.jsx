@@ -6,6 +6,7 @@ import ClameoLogo from "./Logo";
 const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Nos modèles", to: "#modeles", isHash: true },
+  { label: "CAF", to: "#caf", isHash: true },
   { label: "FAQ", to: "#faq", isHash: true },
 ];
 

@@ -430,6 +430,59 @@ export const MODEL_PAGES = {
             },
         ],
     },
+    "lettre-reclamation-caf": {
+    caseType: "caf-reclamation",
+    title: "Modèle de lettre de réclamation CAF",
+    description:
+      "Préparez une lettre de réclamation CAF pour un dossier bloqué, un paiement suspendu, une absence de réponse ou une demande d’explication.",
+    intro:
+      "Votre dossier CAF est bloqué, un paiement est suspendu ou vous souhaitez obtenir une explication ? Clameo vous aide à préparer une lettre claire, respectueuse et structurée, avec les documents utiles à joindre.",
+    useCases: [
+      "Dossier CAF bloqué ou sans réponse",
+      "Paiement suspendu ou non reçu",
+      "Document indiqué comme manquant",
+      "Demande d’explication sur une situation CAF",
+      "Erreur ou information à corriger dans votre dossier",
+    ],
+    documents: [
+      "Numéro allocataire CAF",
+      "Courrier ou notification CAF",
+      "Capture d’écran de votre espace CAF",
+      "Justificatif lié à la prestation concernée",
+      "Échanges précédents avec la CAF",
+    ],
+    mistakes: [
+      "Employer un ton trop agressif",
+      "Ne pas indiquer la prestation concernée",
+      "Oublier le numéro allocataire",
+      "Ne pas préciser les dates importantes",
+      "Envoyer une demande sans expliquer clairement le problème",
+    ],
+    officialHelp:
+      "Cette lettre sert à formuler une réclamation ou une demande d’explication. Clameo n’est pas affilié à la CAF et ne remplace pas un conseiller social ou un organisme public.",
+    faq: [
+      {
+        question: "Cette lettre est-elle adaptée à un dossier CAF bloqué ?",
+        answer:
+          "Oui. Elle permet de demander une explication écrite et d’indiquer les éléments importants de votre situation.",
+      },
+      {
+        question: "Puis-je l’utiliser pour un paiement CAF suspendu ?",
+        answer:
+          "Oui, si vous souhaitez demander pourquoi le paiement est suspendu ou non reçu, et quels documents sont éventuellement nécessaires.",
+      },
+      {
+        question: "Est-ce une contestation officielle d’une décision CAF ?",
+        answer:
+          "Non. Cette première version est pensée pour une réclamation simple ou une demande d’explication. Une contestation formelle ou un recours peut nécessiter un courrier différent.",
+      },
+      {
+        question: "Clameo est-il affilié à la CAF ?",
+        answer:
+          "Non. Clameo est un outil indépendant qui aide à préparer un courrier et un dossier. Il ne remplace pas la CAF, un conseiller social ou un professionnel du droit.",
+      },
+    ],
+  },
 };
 
 export function getModelPage(slug) {
