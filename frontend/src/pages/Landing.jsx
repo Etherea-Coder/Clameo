@@ -998,9 +998,9 @@ function CafComingSoonSection() {
               {
                 Icon: ShieldCheck,
                 t: "Contestation CAF",
-                s: "Pour préparer un recours lorsqu’une décision CAF doit être contestée.",
-                to: null,
-                status: "Bientôt disponible",
+                s: "Pour demander le réexamen d’une décision CAF : refus, suppression, baisse d’allocation, trop-perçu ou erreur de calcul.",
+                to: "/modeles/lettre-recours-caf",
+                status: "Disponible",
               },
             ].map(({ Icon, t, s, to, status }) => (
               <div

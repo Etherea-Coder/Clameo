@@ -88,7 +88,16 @@ export default function Footer() {
                 >
                   Dette CAF / remise
                 </Link>
-              </li>              
+              </li>  
+
+              <li>
+                <Link
+                  to="/modeles/lettre-recours-caf"
+                  className="hover:text-coral transition"
+                >
+                  Recours CAF
+                </Link>
+              </li>                          
 
               <li>
                 <Link
