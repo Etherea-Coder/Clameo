@@ -292,7 +292,9 @@ export default function Builder() {
   const { caseType } = useParams();
   const navigate = useNavigate();
 
-  const [selectedCase, setSelectedCase] = useState(null);
+  const [selectedCase, setSelectedCase] = useState(() =>
+    caseType && getCase(caseType) ? caseType : null
+  );
   const [stepIndex, setStepIndex] = useState(0);
   const [data, setData] = useState({});
   const [attempted, setAttempted] = useState(false);
@@ -307,9 +309,14 @@ export default function Builder() {
   // If no case selected, show case picker
   const c = selectedCase ? getCase(selectedCase) : null;
   useEffect(() => {
-    if (caseType && getCase(caseType)) setSelectedCase(caseType);
+    if (caseType && getCase(caseType)) {
+      setSelectedCase(caseType);
+      setStepIndex(0);
+      setData({});
+      setUploadedFiles([]);
+      setCaseSessionId(null);
+    }
   }, [caseType]);
-
 
   const allSteps = useMemo(() => {
     if (!selectedCase) return [];
