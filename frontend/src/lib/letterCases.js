@@ -101,6 +101,14 @@ export const CASES = [
     Icon: FileText,
     objet: "Demande de remise gracieuse ou d'échéancier",
   },
+  {
+    id: "caf-recours",
+    title: "Recours CAF",
+    short: "Contester une décision CAF.",
+    category: "Administration",
+    Icon: FileText,
+    objet: "Recours contre une décision CAF",
+  },
 ];
 
 export const getCase = (id) => CASES.find((c) => c.id === id);
@@ -541,6 +549,91 @@ export const CASE_STEPS = {
           label: "Expliquez votre situation",
           type: "textarea",
           placeholder: "Expliquez votre situation financière, les raisons de votre demande et les justificatifs que vous pouvez fournir…",
+          required: true,
+        },
+      ],
+    },
+  ],
+
+  "caf-recours": [
+    {
+      title: "La décision CAF contestée",
+      fields: [
+        {
+          name: "cafNumber",
+          label: "Numéro allocataire CAF",
+          placeholder: "Ex : 1234567",
+        },
+        {
+          name: "decisionType",
+          label: "Décision concernée",
+          type: "select",
+          options: [
+            { value: "refus-aide", label: "Refus d’aide ou de prestation" },
+            { value: "suppression-droit", label: "Suppression d’un droit" },
+            { value: "baisse-allocation", label: "Baisse d’allocation" },
+            { value: "trop-percu-conteste", label: "Trop-perçu contesté" },
+            { value: "suspension-paiement", label: "Suspension de paiement contestée" },
+            { value: "erreur-calcul", label: "Erreur de calcul" },
+            { value: "autre", label: "Autre décision" },
+          ],
+          required: true,
+        },
+        {
+          name: "benefitType",
+          label: "Prestation concernée",
+          type: "select",
+          options: [
+            { value: "aide-logement", label: "Aide au logement / APL" },
+            { value: "rsa", label: "RSA" },
+            { value: "prime-activite", label: "Prime d’activité" },
+            { value: "allocations-familiales", label: "Allocations familiales" },
+            { value: "aah", label: "AAH" },
+            { value: "autre", label: "Autre prestation" },
+          ],
+          required: true,
+        },
+        {
+          name: "decisionDate",
+          label: "Date du courrier ou de la notification CAF",
+          type: "date",
+          required: true,
+        },
+        {
+          name: "amount",
+          label: "Montant concerné, si applicable (€)",
+          type: "number",
+          placeholder: "Ex : 450",
+        },
+      ],
+    },
+    {
+      title: "Votre contestation",
+      fields: [
+        {
+          name: "cafReason",
+          label: "Motif indiqué par la CAF",
+          type: "textarea",
+          placeholder: "Résumez le motif indiqué dans le courrier CAF…",
+        },
+        {
+          name: "contestReason",
+          label: "Pourquoi contestez-vous cette décision ?",
+          type: "textarea",
+          placeholder: "Expliquez clairement pourquoi vous pensez que la décision doit être réexaminée…",
+          required: true,
+        },
+        {
+          name: "requestType",
+          label: "Ce que vous demandez",
+          type: "select",
+          options: [
+            { value: "reexamen", label: "Réexamen de mon dossier" },
+            { value: "retablissement", label: "Rétablissement de mes droits" },
+            { value: "correction", label: "Correction du calcul ou de la situation" },
+            { value: "annulation", label: "Annulation de la décision contestée" },
+            { value: "autre", label: "Autre demande" },
+          ],
           required: true,
         },
       ],

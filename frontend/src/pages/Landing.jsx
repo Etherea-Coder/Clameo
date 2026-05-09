@@ -852,7 +852,7 @@ function CafComingSoonSection() {
   return (
     <section
       id="caf"
-      data-testid="caf-coming-section"
+      data-testid="caf-section"
       style={{
         padding: "0 0 112px",
         background: token.light,

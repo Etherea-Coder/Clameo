@@ -457,6 +457,66 @@ Je reste naturellement disponible pour transmettre tout document utile permettan
 
 Je vous remercie par avance pour votre aide et pour l'attention portée à ma demande.`);
   },
+
+  "caf-recours": (d) => {
+    const cafNumber = clean(d.cafNumber);
+    const decisionType = clean(d.decisionType);
+    const benefitType = clean(d.benefitType);
+    const decisionDate = formatDate(d.decisionDate);
+    const amount = euro(d.amount);
+    const cafReason = clean(d.cafReason);
+    const contestReason = clean(d.contestReason);
+    const requestType = clean(d.requestType);
+
+    const decisionLabels = {
+      "Refus d’aide ou de prestation": "un refus d'aide ou de prestation",
+      "Suppression d’un droit": "une suppression de droit",
+      "Baisse d’allocation": "une baisse d'allocation",
+      "Trop-perçu contesté": "un trop-perçu que je conteste",
+      "Suspension de paiement contestée": "une suspension de paiement que je conteste",
+      "Erreur de calcul": "une erreur de calcul",
+      "Autre décision": "une autre décision",
+    };
+
+    const benefitLabels = {
+      "Aide au logement / APL": "l'aide au logement / APL",
+      RSA: "le RSA",
+      "Prime d’activité": "la prime d'activité",
+      "Allocations familiales": "les allocations familiales",
+      AAH: "l'AAH",
+      "Autre prestation": "une autre prestation",
+    };
+
+    const requestLabels = {
+      "Réexamen de mon dossier": "le réexamen de mon dossier",
+      "Rétablissement de mes droits": "le rétablissement de mes droits",
+      "Correction du calcul ou de la situation": "la correction du calcul ou de ma situation",
+      "Annulation de la décision contestée": "l'annulation de la décision contestée",
+      "Autre demande": "une solution adaptée après réexamen de mon dossier",
+    };
+
+    const decision = decisionLabels[decisionType] || lowerFirst(decisionType) || "la décision concernée";
+    const benefit = benefitLabels[benefitType] || benefitType || "la prestation concernée";
+    const request = requestLabels[requestType] || lowerFirst(requestType) || "le réexamen de mon dossier";
+
+    return compact(`Madame, Monsieur,
+
+Je vous adresse la présente afin de contester la décision concernant mon dossier CAF${cafNumber ? `, numéro allocataire ${cafNumber}` : ""}.
+
+Cette contestation concerne ${decision}, relatif à ${benefit}${decisionDate ? `, à la suite d'un courrier ou d'une notification daté(e) du ${decisionDate}` : ""}${amount ? `, pour un montant concerné de ${amount}` : ""}.
+
+${cafReason ? `Le motif indiqué dans le courrier de la CAF est le suivant : ${cafReason}` : ""}
+
+Je conteste cette décision pour les raisons suivantes :
+
+${contestReason || "Les éléments de mon dossier me semblent nécessiter un réexamen."}
+
+En conséquence, je vous remercie de bien vouloir procéder au réexamen de ma situation et d'étudier ${request}.
+
+Je joins à ce courrier les éléments utiles permettant d'appuyer ma demande et reste naturellement disponible pour transmettre tout justificatif complémentaire nécessaire à l'instruction de mon dossier.
+
+Je vous remercie par avance pour l'attention portée à ma demande.`);
+  },
 };
 
 const requiredFieldsForCase = (caseId) => {
