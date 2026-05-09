@@ -10,6 +10,7 @@ import MentionsLegales from "./pages/MentionsLegales";
 import Confidentialite from "./pages/Confidentialite";
 import Contact from "./pages/Contact";
 import ModelPage from "./pages/ModelPage";
+import RadarPermis from "./pages/RadarPermis";
 
 function App() {
   useEffect(() => {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/confidentialite" element={<Confidentialite />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/modeles/:slug" element={<ModelPage />} />
+            <Route path="/services/radar-permis" element={<RadarPermis />} />
           </Routes>
         </BrowserRouter>
       </HelmetProvider>

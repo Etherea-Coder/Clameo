@@ -6,8 +6,8 @@ export default function Footer() {
   return (
     <footer className="bg-deep text-on-deep" data-testid="site-footer">
       <div className="max-w-[1320px] mx-auto px-6 lg:px-12 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12">
+          <div className="lg:col-span-4">
             <div className="text-on-deep">
               <ClameoLogo
                 size={28}
@@ -23,7 +23,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <p className="eyebrow text-white/50 mb-4">Modèles</p>
 
             <ul className="space-y-2 text-sm text-white/80">
@@ -32,7 +32,7 @@ export default function Footer() {
                   to="/modeles/lettre-demande-remboursement"
                   className="hover:text-coral transition"
                 >
-                  Lettre de remboursement
+                  Remboursement
                 </Link>
               </li>
 
@@ -74,6 +74,21 @@ export default function Footer() {
 
               <li>
                 <Link
+                  to="/modeles/lettre-reclamation-banque"
+                  className="hover:text-coral transition"
+                >
+                  Réclamation bancaire
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="lg:col-span-2">
+            <p className="eyebrow text-white/50 mb-4">CAF</p>
+
+            <ul className="space-y-2 text-sm text-white/80">
+              <li>
+                <Link
                   to="/modeles/lettre-reclamation-caf"
                   className="hover:text-coral transition"
                 >
@@ -88,7 +103,7 @@ export default function Footer() {
                 >
                   Dette CAF / remise
                 </Link>
-              </li>  
+              </li>
 
               <li>
                 <Link
@@ -97,20 +112,26 @@ export default function Footer() {
                 >
                   Recours CAF
                 </Link>
-              </li>                          
+              </li>
+            </ul>
+          </div>
 
+          <div className="lg:col-span-2">
+            <p className="eyebrow text-white/50 mb-4">Services</p>
+
+            <ul className="space-y-2 text-sm text-white/80">
               <li>
                 <Link
-                  to="/modeles/lettre-reclamation-banque"
+                  to="/services/radar-permis"
                   className="hover:text-coral transition"
                 >
-                  Réclamation bancaire
+                  Radar / permis
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-2">
             <p className="eyebrow text-white/50 mb-4">Légal</p>
 
             <ul className="space-y-2 text-sm text-white/80">
