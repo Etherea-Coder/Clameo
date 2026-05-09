@@ -503,7 +503,7 @@ Je vous remercie par avance pour votre aide et pour l'attention portée à ma de
 
 Je vous adresse la présente afin de contester la décision concernant mon dossier CAF${cafNumber ? `, numéro allocataire ${cafNumber}` : ""}.
 
-Cette contestation concerne ${decision}, relatif à ${benefit}${decisionDate ? `, à la suite d'un courrier ou d'une notification daté(e) du ${decisionDate}` : ""}${amount ? `, pour un montant concerné de ${amount}` : ""}.
+Ce recours porte sur la situation suivante : ${decision} au titre de ${benefit}${decisionDate ? `, notifiée le ${decisionDate}` : ""}${amount ? `, pour un montant de ${amount}` : ""}.
 
 ${cafReason ? `Le motif indiqué dans le courrier de la CAF est le suivant : ${cafReason}` : ""}
 

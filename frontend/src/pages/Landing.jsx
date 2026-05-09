@@ -487,6 +487,7 @@ function InjectLandingStyles() {
         border: 1px solid ${token.border};
         border-radius: 24px;
         box-shadow: 0 18px 54px rgba(17,24,39,0.04);
+        padding: 54px 56px;
       }
 
       .section-eyebrow {
@@ -628,12 +629,20 @@ function InjectLandingStyles() {
         .usecase-grid {
           grid-template-columns: repeat(2, 1fr);
         }
+
+        .section-card {
+          padding: 44px 40px;
+        }
+
+        .section-grid {
+          gap: 40px;
+        }
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 768px) {
         .clameo-container {
-          padding-left: 22px;
-          padding-right: 22px;
+          padding-left: 20px;
+          padding-right: 20px;
         }
 
         .clameo-hero-grid {
@@ -652,6 +661,7 @@ function InjectLandingStyles() {
         .clameo-privacy-line {
           border-radius: 18px;
           align-items: flex-start;
+          padding: 12px 16px;
         }
 
         .clameo-visual {
@@ -687,11 +697,59 @@ function InjectLandingStyles() {
         .usecase-grid {
           grid-template-columns: 1fr;
         }
+
+        .section-card {
+          padding: 34px 24px;
+        }
+
+        .section-title {
+          font-size: clamp(32px, 5vw, 48px);
+        }
+
+        .how-grid {
+          grid-template-columns: 1fr !important;
+          gap: 32px !important;
+        }
+
+        .how-step {
+          padding: 0 !important;
+          border-left: none !important;
+          border-bottom: 1px solid ${token.border};
+          padding-bottom: 24px !important;
+        }
+
+        .how-step:last-child {
+          border-bottom: none !important;
+          padding-bottom: 0 !important;
+        }
+        .section-grid {
+          grid-template-columns: 1fr !important;
+          gap: 34px !important;
+        }
+
+        .section-title-caf {
+          font-size: clamp(32px, 8vw, 42px) !important;
+          line-height: 1.1 !important;
+        }
+
+        .caf-actions {
+          flex-direction: column !important;
+          align-items: stretch !important;
+        }
+
+        .caf-actions > a {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+
+        .caf-model-card {
+          padding: 16px !important;
+        }
       }
 
       @media (max-width: 480px) {
         .clameo-hero-title {
-          font-size: clamp(40px, 12vw, 56px);
+          font-size: clamp(38px, 12vw, 54px);
         }
 
         .clameo-hero-subtitle {
@@ -699,8 +757,8 @@ function InjectLandingStyles() {
         }
 
         .clameo-visual {
-          transform: scale(0.85);
-          min-height: 420px;
+          transform: scale(0.82);
+          min-height: 410px;
         }
 
         .big-block {
@@ -716,22 +774,11 @@ function InjectLandingStyles() {
           width: 260px;
           min-height: 340px;
         }
-      }
 
-      @media (max-width: 768px) {
-        .section-title {
-          font-size: clamp(32px, 5vw, 48px);
-        }
-
-        .section-card {
-          padding: 32px 28px;
-        }
-      }
-
-      @media (max-width: 640px) {
         .clameo-hero-actions {
           flex-direction: column;
           gap: 12px;
+          align-items: stretch;
         }
 
         .clameo-btn-primary,
@@ -860,17 +907,14 @@ function CafComingSoonSection() {
     >
       <div className="clameo-container">
         <div
-          className="section-card"
+          className="section-card section-grid"
           style={{
             position: "relative",
             overflow: "hidden",
-            padding: "54px 56px",
-            display: "grid",
-            gridTemplateColumns: "1fr 0.8fr",
-            gap: 56,
             alignItems: "center",
             background:
               "linear-gradient(135deg, #ffffff 0%, #fffaf6 48%, #fff1ea 100%)",
+            gridTemplateColumns: "1fr 0.8fr",
           }}
         >
           <div
@@ -890,6 +934,7 @@ function CafComingSoonSection() {
             <div className="section-eyebrow">Section CAF disponible</div>
 
             <h2
+              className="section-title-caf"
               style={{
                 margin: "16px 0 18px",
                 fontSize: "clamp(36px, 5vw, 64px)",
@@ -917,6 +962,7 @@ function CafComingSoonSection() {
             </p>
 
             <div
+              className="caf-actions"
               style={{
                 marginTop: 28,
                 display: "flex",
@@ -973,6 +1019,7 @@ function CafComingSoonSection() {
           </div>
 
           <div
+            className="caf-models-grid"
             style={{
               position: "relative",
               zIndex: 1,
@@ -1005,6 +1052,7 @@ function CafComingSoonSection() {
             ].map(({ Icon, t, s, to, status }) => (
               <div
                 key={t}
+                className="caf-model-card"
                 style={{
                   display: "flex",
                   gap: 14,
@@ -1088,20 +1136,6 @@ function CafComingSoonSection() {
             ))}
           </div>
         </div>
-
-        <style>{`
-          @media (max-width: 768px) {
-            [data-testid="caf-coming-section"] {
-              padding: 0 0 64px;
-            }
-
-            [data-testid="caf-coming-section"] > div > div {
-              grid-template-columns: 1fr !important;
-              gap: 34px !important;
-              padding: 34px 28px !important;
-            }
-          }
-        `}</style>
       </div>
     </section>
   );
@@ -1166,7 +1200,7 @@ export default function Landing() {
       </section>
 
       <main className="section-light">
-        <section id="modeles" data-testid="usecases-section" style={{ padding: "112px 0", scrollMarginTop: 80 }}>
+        <section id="modeles" data-testid="usecases-section" style={{ padding: "0 0 112px", scrollMarginTop: 80 }}>
           <div className="clameo-container">
             <div style={{ maxWidth: 760, marginBottom: 54 }}>
               <div className="section-eyebrow">Nos modèles</div>
@@ -1250,17 +1284,6 @@ export default function Landing() {
                 );
               })}
             </div>
-
-            <style>{`
-              @media (max-width: 768px) {
-                [data-testid="usecases-section"] {
-                  padding: 64px 0;
-                }
-                [data-testid="usecases-section"] > div > div:first-child {
-                  margin-bottom: 36px;
-                }
-              }
-            `}</style>
           </div>
         </section>
 
@@ -1269,89 +1292,69 @@ export default function Landing() {
         <section
           data-testid="how-section"
           style={{
-            padding: "100px 0",
-            background: token.white,
-            borderTop: `1px solid ${token.border}`,
-            borderBottom: `1px solid ${token.border}`,
+            padding: "0 0 112px",
+            background: token.light,
           }}
         >
-          <div className="clameo-container">
-            <div style={{ maxWidth: 760, marginBottom: 64 }}>
-              <h2 style={{ margin: 0, fontSize: "clamp(38px, 5vw, 68px)", lineHeight: 0.98, letterSpacing: "-0.055em", fontWeight: 900 }}>
-                Du problème au courrier.
-              </h2>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
-              {STEPS.map((s, i) => (
-                <div
-                  key={s.num}
-                  style={{
-                    padding: i === 0 ? "0 44px 0 0" : "0 44px",
-                    borderLeft: i === 0 ? "none" : `1px solid ${token.border}`,
-                  }}
-                >
-                  <span
-                    style={{
-                      display: "block",
-                      color: token.coral,
-                      fontSize: "clamp(48px, 8vw, 72px)",
-                      lineHeight: 1,
-                      fontWeight: 900,
-                      letterSpacing: "-0.08em",
-                      opacity: 0.5,
-                    }}
-                  >
-                    {s.num}
-                  </span>
-
-                  <h3 style={{ margin: "24px 0 12px", fontSize: "clamp(20px, 4vw, 24px)", fontWeight: 900, letterSpacing: "-0.04em" }}>
-                    {s.title}
-                  </h3>
-
-                  <p style={{ margin: 0, color: token.muted, fontSize: 14, lineHeight: 1.7 }}>
-                    {s.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <style>{`
-              @media (max-width: 768px) {
-                [data-testid="how-section"] {
-                  padding: 64px 0;
-                }
-                [data-testid="how-section"] > div > div:first-child {
-                  margin-bottom: 40px;
-                }
-                [data-testid="how-section"] > div > div:last-child {
-                  grid-template-columns: 1fr;
-                  gap: 32px;
-                }
-                [data-testid="how-section"] > div > div:last-child > div {
-                  padding: 0 !important;
-                  border-left: none !important;
-                  border-bottom: 1px solid ${token.border};
-                  padding-bottom: 32px;
-                }
-                [data-testid="how-section"] > div > div:last-child > div:last-child {
-                  border-bottom: none;
-                  padding-bottom: 0;
-                }
-              }
-            `}</style>
-          </div>
-        </section>
-
-        <section data-testid="reassurance-section" style={{ padding: "112px 0" }}>
           <div className="clameo-container">
             <div
               className="section-card"
               style={{
-                padding: "48px 52px",
+                background: token.white,
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
                 gap: 64,
+                border: `1px solid ${token.border}`,
+              }}
+            >
+              <div style={{ maxWidth: 760 }}>
+                <h2 style={{ margin: 0, fontSize: "clamp(38px, 5vw, 68px)", lineHeight: 0.98, letterSpacing: "-0.055em", fontWeight: 900 }}>
+                  Du problème au courrier.
+                </h2>
+              </div>
+
+              <div className="how-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 40 }}>
+                {STEPS.map((s, i) => (
+                  <div
+                    key={s.num}
+                    className="how-step"
+                    style={{
+                      borderLeft: i === 0 ? "none" : `1px solid ${token.border}`,
+                      paddingLeft: i === 0 ? 0 : 40,
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "block",
+                        color: token.coral,
+                        fontSize: "clamp(48px, 8vw, 72px)",
+                        lineHeight: 1,
+                        fontWeight: 900,
+                        letterSpacing: "-0.08em",
+                        opacity: 0.5,
+                      }}
+                    >
+                      {s.num}
+                    </span>
+
+                    <h3 style={{ margin: "24px 0 12px", fontSize: "clamp(20px, 4vw, 24px)", fontWeight: 900, letterSpacing: "-0.04em" }}>
+                      {s.title}
+                    </h3>
+
+                    <p style={{ margin: 0, color: token.muted, fontSize: 14, lineHeight: 1.7 }}>
+                      {s.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section data-testid="reassurance-section" style={{ padding: "0 0 112px" }}>
+          <div className="clameo-container">
+            <div
+              className="section-card section-grid"
+              style={{
                 alignItems: "center",
               }}
             >
@@ -1370,7 +1373,7 @@ export default function Landing() {
                 </p>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div className="reassurance-grid" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {[
                   { Icon: CheckCircle2, t: "Modèles structurés", s: "Pensés pour les démarches courantes du droit français." },
                   { Icon: Clock, t: "2 minutes", s: "Un parcours court, clair et sans jargon inutile." },
@@ -1430,7 +1433,6 @@ export default function Landing() {
               style={{
                 maxWidth: 920,
                 margin: "0 auto",
-                padding: "54px 56px",
               }}
             >
               <div className="section-eyebrow">Questions fréquentes</div>
@@ -1447,19 +1449,6 @@ export default function Landing() {
               </h2>
 
               <Accordion type="single" collapsible style={{ borderTop: `1px solid ${token.border}` }}>
-              <style>{`
-                @media (max-width: 768px) {
-                  [data-testid="faq-section"] {
-                    padding: 0 0 64px;
-                  }
-                  [data-testid="faq-section"] > div > div {
-                    padding: 32px 24px;
-                  }
-                  [data-testid="faq-section"] > div > div > h2 {
-                    margin-bottom: 28px;
-                  }
-                }
-              `}</style>
                 {FAQ.map((item, idx) => (
                   <AccordionItem
                     key={idx}
