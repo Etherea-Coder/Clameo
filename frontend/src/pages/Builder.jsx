@@ -443,7 +443,6 @@ export default function Builder() {
     setAttempted(false);
     if (stepIndex < totalSteps - 1) {
       setStepIndex((i) => i + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       // Final validation before generating
       const missing = validateLetterData(selectedCase, data);
@@ -466,9 +465,14 @@ export default function Builder() {
       navigate("/builder");
     } else {
       setStepIndex((i) => i - 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [stepIndex, selectedCase]);
+
 
   // CASE PICKER
   if (!c) {
