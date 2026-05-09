@@ -1148,7 +1148,7 @@ function ServicesSection() {
       status: "Pré-vérification ouverte",
       price: "35 €",
       description:
-        "<strong>Amende radar, ANTAI, risque de retrait de points :</strong>{" "} Clameo vous aide à préparer un dossier administratif clair. Pré-vérification gratuite, aucun paiement avant validation de l’éligibilité.",
+        "<strong>Amende radar, ANTAI, risque de retrait de points :</strong> Clameo vous aide à préparer un dossier administratif clair. Pré-vérification gratuite, aucun paiement avant validation de l'éligibilité.",
       cta: "Vérifier l’éligibilité",
       to: "/services/radar-permis",
       active: true,
