@@ -444,6 +444,12 @@ export const MODEL_PAGES = {
       "Demande d’explication sur une situation CAF",
       "Erreur ou information à corriger dans votre dossier",
     ],
+    notFor: [
+      "Contester officiellement une décision CAF avec un délai de recours",
+      "Saisir la Commission de recours amiable",
+      "Demander une remise de dette ou un échéancier",
+      "Répondre à une procédure urgente sans vérifier les délais indiqués par la CAF",
+    ],
     documents: [
       "Numéro allocataire CAF",
       "Courrier ou notification CAF",

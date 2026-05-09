@@ -71,6 +71,26 @@ export default function ModelPage() {
                 items={page.useCases}
               />
 
+              {page.notFor?.length > 0 && (
+                <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-700" />
+                    <h2 className="text-2xl font-bold text-slate-950">
+                      Quand ne pas utiliser ce modèle ?
+                    </h2>
+                  </div>
+
+                  <ul className="mt-5 space-y-3">
+                    {page.notFor.map((item) => (
+                      <li key={item} className="flex gap-3 text-slate-700">
+                        <AlertTriangle className="mt-0.5 h-5 w-5 flex-none text-amber-700" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}              
+
               <Card
                 icon={<FileText className="h-5 w-5" />}
                 title="Documents utiles à préparer"

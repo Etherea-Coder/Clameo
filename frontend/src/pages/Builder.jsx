@@ -300,8 +300,10 @@ export default function Builder() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   // NOUVEAU : Déterminer si ce litige exige une LRAR
-  const requiresLRAR = selectedCase && ["mise-en-demeure", "logement", "employeur", "caf-reclamation"].includes(selectedCase);
+  const requiresLRAR =
+  selectedCase && ["mise-en-demeure", "logement", "employeur"].includes(selectedCase);
 
+  const isCafCase = selectedCase === "caf-reclamation";
   // If no case selected, show case picker
   const c = selectedCase ? getCase(selectedCase) : null;
   useEffect(() => {
@@ -567,29 +569,44 @@ export default function Builder() {
           ))}
         </div>
 
-        {/* LRAR Dynamic Advice (Uniquement affiché à la première étape) */}
+        {/* Sending advice */}
         {stepIndex === 0 && (
-          <div 
-            className="mt-10 rounded-[16px] border p-5" 
-            style={{ 
-              background: requiresLRAR ? '#fff8f6' : '#fffbeb', // Rouge très clair ou Jaune très clair
-              borderColor: requiresLRAR ? '#fcd6cf' : '#fde68a' 
+          <div
+            className="mt-10 rounded-[16px] border p-5"
+            style={{
+              background: requiresLRAR ? "#fff8f6" : "#fffbeb",
+              borderColor: requiresLRAR ? "#fcd6cf" : "#fde68a",
             }}
           >
             <div className="flex items-start gap-3">
               {requiresLRAR ? (
-                <AlertTriangle size={18} style={{ color: token.coral, flexShrink: 0, marginTop: 2 }} />
+                <AlertTriangle
+                  size={18}
+                  style={{ color: token.coral, flexShrink: 0, marginTop: 2 }}
+                />
               ) : (
-                <Lightbulb size={18} className="text-amber-600" style={{ flexShrink: 0, marginTop: 2 }} />
+                <Lightbulb
+                  size={18}
+                  className="text-amber-600"
+                  style={{ flexShrink: 0, marginTop: 2 }}
+                />
               )}
+
               <div>
                 <p className="text-sm font-bold" style={{ color: token.text }}>
-                  {requiresLRAR ? "Conseil : Conserver une preuve d’envoi" : "Conseil d'envoi"}
+                  {isCafCase
+                    ? "Conseil : gardez une trace de votre demande"
+                    : requiresLRAR
+                      ? "Conseil : conserver une preuve d’envoi"
+                      : "Conseil d’envoi"}
                 </p>
+
                 <p className="text-xs leading-relaxed mt-1" style={{ color: token.text }}>
-                  {requiresLRAR
-                    ? "Ce type de démarche exige une preuve légale absolue. Prévoyez d'envoyer votre dossier final en Lettre Recommandée avec Accusé de Réception (LRAR)."
-                    : "Votre dossier final pourra être envoyé simplement par email ou par courrier classique. Le recommandé (LRAR) ne sera utile qu'en cas de litige persistant."}
+                  {isCafCase
+                    ? "Pour une réclamation CAF simple, privilégiez un ton clair, factuel et coopératif. Conservez une copie de votre courrier, des pièces jointes et de toute preuve de dépôt, d’envoi ou de message transmis depuis votre espace CAF."
+                    : requiresLRAR
+                      ? "Pour ce type de démarche, une preuve d’envoi peut être importante. Vous pouvez envisager un envoi en Lettre Recommandée avec Accusé de Réception (LRAR), selon votre situation."
+                      : "Votre dossier final peut souvent être envoyé par email ou par courrier classique. Le recommandé (LRAR) peut être utile en cas de litige persistant ou si vous souhaitez conserver une preuve renforcée."}
                 </p>
               </div>
             </div>
