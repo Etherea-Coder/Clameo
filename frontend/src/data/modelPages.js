@@ -551,6 +551,68 @@ export const MODEL_PAGES = {
       },
     ],
   },
+
+    "lettre-recours-caf": {
+    caseType: "caf-recours",
+    title: "Modèle de lettre de recours / contestation CAF",
+    description:
+      "Préparez une lettre de recours pour contester une décision CAF : refus d'aide, suppression de droit, baisse d'allocation, trop-perçu ou suspension de paiement.",
+    intro:
+      "Vous avez reçu une décision de la CAF que vous souhaitez contester ? Clameo vous aide à préparer une lettre de recours claire et structurée pour demander le réexamen de votre dossier.",
+    useCases: [
+      "Refus d'aide ou de prestation CAF",
+      "Suppression d'un droit",
+      "Baisse d'allocation",
+      "Trop-perçu contesté",
+      "Suspension de paiement contestée",
+      "Erreur de calcul",
+    ],
+    notFor: [
+      "Saisir la Commission de recours amiable (CRA) sans délai de recours",
+      "Remplacer l'aide d'un conseiller social ou d'un professionnel du droit",
+      "Contester sans justificatifs",
+      "Répondre à une procédure urgente sans vérifier les délais indiqués",
+    ],
+    documents: [
+      "Courrier ou notification CAF de la décision contestée",
+      "Numéro allocataire CAF",
+      "Justificatifs de revenus",
+      "Justificatifs de situation familiale",
+      "Éléments prouvant l'erreur ou le changement de situation",
+      "Échanges précédents avec la CAF",
+    ],
+    mistakes: [
+      "Ne pas respecter les délais de recours",
+      "Oublier d'indiquer la décision contestée",
+      "Ne pas expliquer clairement les raisons du recours",
+      "Omettre les justificatifs utiles",
+      "Utiliser un ton trop agressif",
+    ],
+    officialHelp:
+      "Cette lettre sert à demander le réexamen d'une décision CAF. Elle ne remplace pas un recours auprès de la Commission de recours amiable (CRA) ni l'aide d'un conseiller social. Vérifiez les délais de recours figurant sur votre courrier CAF.",
+    faq: [
+      {
+        question: "Quel délai pour contester une décision CAF ?",
+        answer:
+          "Les délais varient selon le type de décision. Vérifiez toujours les indications figurant sur votre courrier CAF. En cas de doute, rapprochez-vous d'un conseiller social.",
+      },
+      {
+        question: "Cette lettre remplace-t-elle un recours CRA ?",
+        answer:
+          "Non. Cette lettre est une première étape pour demander le réexamen. Pour un recours auprès de la Commission de recours amiable (CRA), vérifiez les délais et les modalités auprès de la CAF ou d'un conseiller social.",
+      },
+      {
+        question: "Puis-je contester un trop-perçu ?",
+        answer:
+          "Oui, si vous pensez que le trop-perçu est erroné ou contestable. Le générateur vous aide à structurer votre demande de réexamen.",
+      },
+      {
+        question: "Clameo est-il affilié à la CAF ?",
+        answer:
+          "Non. Clameo est un outil indépendant qui aide à préparer un courrier et un dossier. Il ne remplace pas la CAF, un conseiller social ou un professionnel du droit.",
+      },
+    ],
+  },
 };
 
 export function getModelPage(slug) {
