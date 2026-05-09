@@ -93,6 +93,14 @@ export const CASES = [
     Icon: FileText,
     objet: "Réclamation concernant mon dossier allocataire",
   },
+  {
+    id: "caf-dette",
+    title: "Dette CAF / remise",
+    short: "Demander une remise gracieuse ou un échéancier.",
+    category: "Administration",
+    Icon: FileText,
+    objet: "Demande de remise gracieuse ou d'échéancier",
+  },
 ];
 
 export const getCase = (id) => CASES.find((c) => c.id === id);
@@ -436,6 +444,103 @@ export const CASE_STEPS = {
           label: "Expliquez la situation",
           type: "textarea",
           placeholder: "Décrivez clairement le problème, les dates importantes et ce que vous demandez à la CAF…",
+          required: true,
+        },
+      ],
+    },
+  ],
+
+  "caf-dette": [
+    {
+      title: "La dette CAF",
+      fields: [
+        {
+          name: "cafNumber",
+          label: "Numéro allocataire CAF",
+          placeholder: "Ex : 1234567",
+        },
+        {
+          name: "debtReason",
+          label: "Nature de la dette ou du trop-perçu",
+          type: "select",
+          options: [
+            { value: "trop-percu", label: "Trop-perçu CAF" },
+            { value: "remboursement-demande", label: "Demande de remboursement reçue" },
+            { value: "regularisation", label: "Régularisation de droits" },
+            { value: "changement-situation", label: "Changement de situation" },
+            { value: "erreur-declaration", label: "Erreur ou retard de déclaration" },
+            { value: "autre", label: "Autre situation" },
+          ],
+          required: true,
+        },
+        {
+          name: "benefitType",
+          label: "Prestation concernée",
+          type: "select",
+          options: [
+            { value: "aide-logement", label: "Aide au logement / APL" },
+            { value: "rsa", label: "RSA" },
+            { value: "prime-activite", label: "Prime d’activité" },
+            { value: "allocations-familiales", label: "Allocations familiales" },
+            { value: "aah", label: "AAH" },
+            { value: "autre", label: "Autre prestation" },
+          ],
+          required: true,
+        },
+        {
+          name: "amount",
+          label: "Montant demandé par la CAF (€)",
+          type: "number",
+          placeholder: "Ex : 850",
+          required: true,
+        },
+        {
+          name: "decisionDate",
+          label: "Date du courrier ou de la notification CAF",
+          type: "date",
+        },
+      ],
+    },
+    {
+      title: "Votre demande",
+      fields: [
+        {
+          name: "requestType",
+          label: "Ce que vous souhaitez demander",
+          type: "select",
+          options: [
+            { value: "remise-totale", label: "Remise gracieuse totale" },
+            { value: "remise-partielle", label: "Remise gracieuse partielle" },
+            { value: "echeancier", label: "Échéancier de paiement" },
+            { value: "remise-et-echeancier", label: "Remise partielle et échéancier" },
+          ],
+          required: true,
+        },
+        {
+          name: "financialSituation",
+          label: "Votre situation financière",
+          type: "select",
+          options: [
+            { value: "revenus-faibles", label: "Revenus faibles" },
+            { value: "charges-importantes", label: "Charges importantes" },
+            { value: "perte-emploi", label: "Perte d’emploi ou baisse de revenus" },
+            { value: "famille-charge", label: "Famille ou personnes à charge" },
+            { value: "situation-difficile", label: "Situation personnelle difficile" },
+            { value: "autre", label: "Autre situation" },
+          ],
+          required: true,
+        },
+        {
+          name: "proposedMonthlyPayment",
+          label: "Montant mensuel proposé si vous demandez un échéancier (€)",
+          type: "number",
+          placeholder: "Ex : 30",
+        },
+        {
+          name: "details",
+          label: "Expliquez votre situation",
+          type: "textarea",
+          placeholder: "Expliquez votre situation financière, les raisons de votre demande et les justificatifs que vous pouvez fournir…",
           required: true,
         },
       ],

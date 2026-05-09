@@ -383,6 +383,80 @@ Je reste naturellement disponible pour fournir tout document complémentaire né
 
 Je vous remercie par avance pour votre aide et pour l'attention portée à ma demande.`);
   },
+
+  "caf-dette": (d) => {
+    const cafNumber = clean(d.cafNumber);
+    const debtReason = clean(d.debtReason);
+    const benefitType = clean(d.benefitType);
+    const amount = euro(d.amount) || "le montant indiqué";
+    const decisionDate = formatDate(d.decisionDate);
+    const requestType = clean(d.requestType);
+    const financialSituation = clean(d.financialSituation);
+    const proposedMonthlyPayment = euro(d.proposedMonthlyPayment);
+    const details = clean(d.details);
+
+    const debtReasonLabels = {
+      "Trop-perçu CAF": "un trop-perçu CAF",
+      "Demande de remboursement reçue": "une demande de remboursement",
+      "Régularisation de droits": "une régularisation de droits",
+      "Changement de situation": "un changement de situation",
+      "Erreur ou retard de déclaration": "une erreur ou un retard de déclaration",
+      "Autre situation": "une autre situation",
+    };
+
+    const benefitLabels = {
+      "Aide au logement / APL": "l'aide au logement / APL",
+      RSA: "le RSA",
+      "Prime d’activité": "la prime d'activité",
+      "Allocations familiales": "les allocations familiales",
+      AAH: "l'AAH",
+      "Autre prestation": "une autre prestation",
+    };
+
+    const requestLabels = {
+      "Remise gracieuse totale": "une remise gracieuse totale de cette dette",
+      "Remise gracieuse partielle": "une remise gracieuse partielle de cette dette",
+      "Échéancier de paiement": "la mise en place d'un échéancier de paiement adapté à ma situation",
+      "Remise partielle et échéancier": "une remise gracieuse partielle ainsi que la mise en place d'un échéancier de paiement adapté",
+    };
+
+    const financialLabels = {
+      "Revenus faibles": "mes revenus sont actuellement faibles",
+      "Charges importantes": "je fais face à des charges importantes",
+      "Perte d’emploi ou baisse de revenus": "j'ai subi une perte d'emploi ou une baisse de revenus",
+      "Famille ou personnes à charge": "j'ai une famille ou des personnes à charge",
+      "Situation personnelle difficile": "je traverse une situation personnelle difficile",
+      "Autre situation": "ma situation actuelle ne me permet pas de régler cette somme dans de bonnes conditions",
+    };
+
+    const reason = debtReasonLabels[debtReason] || lowerFirst(debtReason) || "une dette ou un trop-perçu";
+    const benefit = benefitLabels[benefitType] || benefitType || "la prestation concernée";
+    const request = requestLabels[requestType] || lowerFirst(requestType) || "un aménagement de paiement";
+    const situation =
+      financialLabels[financialSituation] ||
+      lowerFirst(financialSituation) ||
+      "ma situation financière actuelle est difficile";
+
+    return compact(`Madame, Monsieur,
+
+Je vous adresse la présente concernant mon dossier CAF${cafNumber ? `, numéro allocataire ${cafNumber}` : ""}.
+
+J'ai été informé(e) d'une somme à rembourser de ${amount}, concernant ${benefit}${reason ? `, en lien avec ${reason}` : ""}${decisionDate ? `, à la suite d'un courrier ou d'une notification daté(e) du ${decisionDate}` : ""}.
+
+Sans contester nécessairement l'existence de la demande de remboursement dans ce courrier, je souhaite solliciter ${request}, compte tenu de ma situation actuelle.
+
+En effet, ${situation}.
+
+${details || "Le remboursement immédiat de cette somme représenterait une difficulté importante pour mon foyer. Je souhaite donc qu'une solution adaptée puisse être étudiée."}
+
+${proposedMonthlyPayment ? `Si un échéancier est envisageable, je pourrais proposer un règlement mensuel de ${proposedMonthlyPayment}, sous réserve de l'étude de mon dossier et de mes justificatifs.` : ""}
+
+Je vous remercie de bien vouloir examiner ma demande avec bienveillance et de m'indiquer les justificatifs complémentaires éventuellement nécessaires à son instruction.
+
+Je reste naturellement disponible pour transmettre tout document utile permettant d'apprécier ma situation.
+
+Je vous remercie par avance pour votre aide et pour l'attention portée à ma demande.`);
+  },
 };
 
 const requiredFieldsForCase = (caseId) => {
