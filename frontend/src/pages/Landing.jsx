@@ -1141,6 +1141,135 @@ function CafComingSoonSection() {
   );
 }
 
+function ServicesSection() {
+  const services = [
+    {
+      title: "Radar / permis",
+      status: "Pré-vérification ouverte",
+      price: "35 €",
+      description:
+        "Préparation accompagnée d’un dossier radar, amende, points ou ANTAI. Aucun paiement n’est demandé avant la vérification de l’éligibilité.",
+      cta: "Vérifier l’éligibilité",
+      to: "/services/radar-permis",
+      active: true,
+    },
+    {
+      title: "Système RGPD",
+      status: "Bientôt",
+      price: "Pack",
+      description:
+        "Un kit prêt à utiliser pour préparer vos demandes d’accès, suppression, rectification ou opposition auprès de services et courtiers de données.",
+      cta: "Bientôt disponible",
+      to: null,
+      active: false,
+    },
+    {
+      title: "Ressources utiles",
+      status: "À venir",
+      price: "Sélection",
+      description:
+        "Des partenaires et ressources contextuelles, uniquement quand cela aide vraiment : LRAR, confidentialité, achats en ligne, protection.",
+      cta: "À venir",
+      to: null,
+      active: false,
+    },
+  ];
+
+  return (
+    <section
+      id="services"
+      data-testid="services-section"
+      className="relative overflow-hidden bg-slate-950 py-24 text-white"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,116,94,0.26),transparent_34%),radial-gradient(circle_at_85%_70%,rgba(255,255,255,0.12),transparent_28%)]" />
+
+      <div className="relative mx-auto max-w-[1320px] px-6 lg:px-12">
+        <div className="max-w-3xl">
+          <p className="eyebrow text-white/50">Services et packs premium</p>
+
+          <h2 className="mt-5 text-4xl font-black tracking-[-0.055em] sm:text-6xl">
+            Quand le dossier devient plus sérieux, Clameo vous accompagne plus loin.
+          </h2>
+
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/65">
+            Les lettres restent gratuites. Certains dossiers demandent plus
+            qu’un modèle : une préparation accompagnée, un pack prêt à utiliser,
+            ou une ressource spécialisée.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          {services.map((service) => (
+            <div
+              key={service.title}
+              className={`relative overflow-hidden rounded-[28px] border p-6 shadow-2xl ${
+                service.active
+                  ? "border-white/20 bg-white text-slate-950"
+                  : "border-white/10 bg-white/[0.07] text-white"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-black ${
+                    service.active
+                      ? "bg-coral/10 text-coral"
+                      : "bg-white/10 text-white/70"
+                  }`}
+                >
+                  {service.status}
+                </span>
+
+                <span
+                  className={`text-sm font-black ${
+                    service.active ? "text-slate-500" : "text-white/45"
+                  }`}
+                >
+                  {service.price}
+                </span>
+              </div>
+
+              <h3 className="mt-8 text-2xl font-black tracking-[-0.035em]">
+                {service.title}
+              </h3>
+
+              <p
+                className={`mt-4 min-h-[112px] text-sm leading-7 ${
+                  service.active ? "text-slate-600" : "text-white/60"
+                }`}
+              >
+                {service.description}
+              </p>
+
+              {service.to ? (
+                <Link
+                  to={service.to}
+                  className="mt-7 inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-black text-white transition hover:bg-slate-800"
+                >
+                  {service.cta} <ArrowRight size={16} className="ml-2" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-black text-white/45"
+                >
+                  {service.cta}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-8 max-w-3xl text-sm leading-7 text-white/45">
+          Les services premium ne remplacent pas un avocat, un organisme public
+          ou un professionnel compétent. Ils servent à mieux préparer un dossier,
+          sans garantie de résultat.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export default function Landing() {
   const [hoveredCard, setHoveredCard] = useState(null);
 
@@ -1418,6 +1547,8 @@ export default function Landing() {
             `}</style>
           </div>
         </section>
+
+        <ServicesSection />
 
         <section
           id="faq"

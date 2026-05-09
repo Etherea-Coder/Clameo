@@ -7,6 +7,7 @@ const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Nos modèles", to: "/#modeles" },
   { label: "CAF", to: "/#caf" },
+  { label: "Services", to: "/#services", highlight: true },
   { label: "FAQ", to: "/#faq" },
 ];
 
@@ -52,7 +53,13 @@ export default function Header() {
             <Link
               key={n.to}
               to={n.to}
-              className={linkClass(n.to)}
+              className={`${linkClass(n.to)} ${
+                n.highlight
+                  ? isLanding
+                    ? "rounded-full border border-white/20 bg-white/10 px-4 py-2 text-white"
+                    : "rounded-full border border-coral/30 bg-coral/10 px-4 py-2 text-coral"
+                  : ""
+              }`}
               data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
             >
               {n.label}
