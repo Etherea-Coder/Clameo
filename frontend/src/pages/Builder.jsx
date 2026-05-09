@@ -546,6 +546,15 @@ export default function Builder() {
           </h1>
         </div>
 
+        {/* CAF-specific advisory */}
+        {selectedCase === "caf-reclamation" && (
+          <div className="mt-6 rounded-[12px] border p-4" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
+            <p className="text-xs leading-relaxed" style={{ color: token.muted }}>
+              <span style={{ color: '#166534', fontWeight: 600 }}>Clameo n'est pas affilié à la CAF.</span> Cette lettre vous aide à formuler une réclamation ou une demande d'explication de manière claire. Pour une contestation officielle, un recours ou une dette CAF, vérifiez toujours les délais et les indications figurant sur votre courrier CAF.
+            </p>
+          </div>
+        )}
+
         <div className="mt-10 space-y-6">
           {currentStep.fields.map((f) => (
             <div key={f.name} className="flex flex-col gap-2">

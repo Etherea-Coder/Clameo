@@ -5,9 +5,9 @@ import ClameoLogo from "./Logo";
 
 const NAV = [
   { label: "Accueil", to: "/" },
-  { label: "Nos modèles", to: "#modeles", isHash: true },
-  { label: "CAF", to: "#caf", isHash: true },
-  { label: "FAQ", to: "#faq", isHash: true },
+  { label: "Nos modèles", to: "/#modeles" },
+  { label: "CAF", to: "/modeles/lettre-reclamation-caf" },
+  { label: "FAQ", to: "/#faq" },
 ];
 
 export default function Header() {
@@ -15,14 +15,31 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive = (to) =>
-    to === "/" ? location.pathname === "/" : location.pathname + location.hash === to;
-
   const isLanding = location.pathname === "/";
+
+  const isActive = (to) => {
+    if (to === "/") return location.pathname === "/" && !location.hash;
+    if (to.startsWith("/#")) return location.pathname === "/" && location.hash === to.replace("/", "");
+    return location.pathname === to;
+  };
+
+  const linkClass = (to) =>
+    `nav-link text-[15px] ${
+      isLanding
+        ? "text-white/80 hover:text-white"
+        : "text-foreground/80 hover:text-foreground"
+    } ${isActive(to) ? "active" : ""}`;
+
+  const mobileLinkClass = () =>
+    `text-base ${isLanding ? "text-white" : "text-foreground"}`;
 
   return (
     <header
-      className={`w-full ${isLanding ? "absolute top-0 left-0 border-b border-white/10 bg-transparent backdrop-blur-sm" : "border-b border-border bg-background/80 backdrop-blur-sm sticky top-0"} z-40`}
+      className={`w-full ${
+        isLanding
+          ? "absolute top-0 left-0 border-b border-white/10 bg-transparent backdrop-blur-sm"
+          : "border-b border-border bg-background/80 backdrop-blur-sm sticky top-0"
+      } z-40`}
       data-testid="site-header"
     >
       <div className="max-w-[1320px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
@@ -32,29 +49,14 @@ export default function Header() {
 
         <nav className="hidden md:flex items-center gap-10">
           {NAV.map((n) => (
-            n.isHash ? (
-              <a
-                key={n.to}
-                href={n.to}
-                className={`nav-link text-[15px] ${isLanding ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground"} ${
-                  location.hash === n.to ? "active" : ""
-                }`}
-                data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-              >
-                {n.label}
-              </a>
-            ) : (
-              <Link
-                key={n.to}
-                to={n.to}
-                className={`nav-link text-[15px] ${isLanding ? "text-white/80 hover:text-white" : "text-foreground/80 hover:text-foreground"} ${
-                  isActive(n.to) ? "active" : ""
-                }`}
-                data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-              >
-                {n.label}
-              </Link>
-            )
+            <Link
+              key={n.to}
+              to={n.to}
+              className={linkClass(n.to)}
+              data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
+            >
+              {n.label}
+            </Link>
           ))}
         </nav>
 
@@ -80,38 +82,28 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {open && (
         <div
           className={`md:hidden border-t ${
-            isLanding ? "border-white/10 bg-black/90 backdrop-blur-md" : "border-border bg-background"
+            isLanding
+              ? "border-white/10 bg-black/90 backdrop-blur-md"
+              : "border-border bg-background"
           }`}
           data-testid="mobile-menu"
         >
           <div className="px-6 py-6 flex flex-col gap-4">
             {NAV.map((n) => (
-              n.isHash ? (
-                <a
-                  key={n.to}
-                  href={n.to}
-                  onClick={() => setOpen(false)}
-                  className={`text-base ${isLanding ? "text-white" : "text-foreground"}`}
-                  data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-                >
-                  {n.label}
-                </a>
-              ) : (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  onClick={() => setOpen(false)}
-                  className={`text-base ${isLanding ? "text-white" : "text-foreground"}`}
-                  data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-                >
-                  {n.label}
-                </Link>
-              )
+              <Link
+                key={n.to}
+                to={n.to}
+                onClick={() => setOpen(false)}
+                className={mobileLinkClass()}
+                data-testid={`mobile-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
+              >
+                {n.label}
+              </Link>
             ))}
+
             <button
               type="button"
               onClick={() => {
