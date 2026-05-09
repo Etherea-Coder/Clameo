@@ -1329,6 +1329,74 @@ export default function Landing() {
       </section>
 
       <main className="section-light">
+        <section data-testid="reassurance-section" style={{ padding: "0 0 112px" }}>
+          <div className="clameo-container">
+            <div
+              className="section-card section-grid"
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+                  <Lock size={20} style={{ color: token.coral }} />
+                  <span style={{ color: token.coral, fontSize: 11, fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                    Privé par défaut
+                  </span>
+                </div>
+                <h2 style={{ margin: "0 0 16px", fontSize: "clamp(32px, 4vw, 48px)", lineHeight: 1.05, letterSpacing: "-0.05em", fontWeight: 900 }}>
+                  Vos données restent sur votre appareil.
+                </h2>
+                <p style={{ margin: 0, color: token.muted, fontSize: 17, lineHeight: 1.72, maxWidth: 420 }}>
+                  Aucune inscription. Aucun compte. Vos informations restent privées et les pièces jointes sont supprimées automatiquement après 7 jours.
+                </p>
+              </div>
+
+              <div className="reassurance-grid" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {[
+                  { Icon: CheckCircle2, t: "Modèles structurés", s: "Pensés pour les démarches courantes du droit français." },
+                  { Icon: Clock, t: "2 minutes", s: "Un parcours court, clair et sans jargon inutile." },
+                ].map(({ Icon, t, s }) => (
+                  <div
+                    key={t}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 14,
+                      padding: "18px 20px",
+                      borderRadius: 16,
+                      border: `1px solid ${token.border}`,
+                      background: token.white,
+                    }}
+                  >
+                    <Icon size={18} style={{ color: token.text, flexShrink: 0, marginTop: 2 }} />
+                    <div>
+                      <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 900, letterSpacing: "-0.02em" }}>
+                        {t}
+                      </h3>
+                      <p style={{ margin: 0, color: token.muted, fontSize: 14, lineHeight: 1.6 }}>
+                        {s}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <style>{`
+              @media (max-width: 768px) {
+                [data-testid="reassurance-section"] {
+                  padding: 64px 0;
+                }
+                [data-testid="reassurance-section"] > div > div {
+                  grid-template-columns: 1fr;
+                  gap: 40px;
+                  padding: 32px 28px;
+                }
+              }
+            `}</style>
+          </div>
+        </section>
         <section id="modeles" data-testid="usecases-section" style={{ padding: "0 0 112px", scrollMarginTop: 80 }}>
           <div className="clameo-container">
             <div style={{ maxWidth: 760, marginBottom: 54 }}>
@@ -1418,6 +1486,8 @@ export default function Landing() {
 
         <CafComingSoonSection />
 
+        <ServicesSection />
+
         <section
           data-testid="how-section"
           style={{
@@ -1478,77 +1548,6 @@ export default function Landing() {
             </div>
           </div>
         </section>
-
-        <section data-testid="reassurance-section" style={{ padding: "0 0 112px" }}>
-          <div className="clameo-container">
-            <div
-              className="section-card section-grid"
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-                  <Lock size={20} style={{ color: token.coral }} />
-                  <span style={{ color: token.coral, fontSize: 11, fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
-                    Privé par défaut
-                  </span>
-                </div>
-                <h2 style={{ margin: "0 0 16px", fontSize: "clamp(32px, 4vw, 48px)", lineHeight: 1.05, letterSpacing: "-0.05em", fontWeight: 900 }}>
-                  Vos données restent sur votre appareil.
-                </h2>
-                <p style={{ margin: 0, color: token.muted, fontSize: 17, lineHeight: 1.72, maxWidth: 420 }}>
-                  Aucune inscription. Aucun compte. Vos informations restent privées et les pièces jointes sont supprimées automatiquement après 7 jours.
-                </p>
-              </div>
-
-              <div className="reassurance-grid" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {[
-                  { Icon: CheckCircle2, t: "Modèles structurés", s: "Pensés pour les démarches courantes du droit français." },
-                  { Icon: Clock, t: "2 minutes", s: "Un parcours court, clair et sans jargon inutile." },
-                ].map(({ Icon, t, s }) => (
-                  <div
-                    key={t}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 14,
-                      padding: "18px 20px",
-                      borderRadius: 16,
-                      border: `1px solid ${token.border}`,
-                      background: token.white,
-                    }}
-                  >
-                    <Icon size={18} style={{ color: token.text, flexShrink: 0, marginTop: 2 }} />
-                    <div>
-                      <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 900, letterSpacing: "-0.02em" }}>
-                        {t}
-                      </h3>
-                      <p style={{ margin: 0, color: token.muted, fontSize: 14, lineHeight: 1.6 }}>
-                        {s}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <style>{`
-              @media (max-width: 768px) {
-                [data-testid="reassurance-section"] {
-                  padding: 64px 0;
-                }
-                [data-testid="reassurance-section"] > div > div {
-                  grid-template-columns: 1fr;
-                  gap: 40px;
-                  padding: 32px 28px;
-                }
-              }
-            `}</style>
-          </div>
-        </section>
-
-        <ServicesSection />
 
         <section
           id="faq"
