@@ -11,6 +11,7 @@ import Confidentialite from "./pages/Confidentialite";
 import Contact from "./pages/Contact";
 import ModelPage from "./pages/ModelPage";
 import RadarPermis from "./pages/RadarPermis";
+import RadarEligibility from "./pages/RadarEligibility";
 
 function App() {
   useEffect(() => {
@@ -42,6 +43,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/modeles/:slug" element={<ModelPage />} />
             <Route path="/services/radar-permis" element={<RadarPermis />} />
+            <Route path="/services/radar-permis/eligibilite" element={<RadarEligibility />} />
           </Routes>
         </BrowserRouter>
       </HelmetProvider>

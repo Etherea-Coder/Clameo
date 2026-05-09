@@ -66,7 +66,7 @@ export default function RadarPermis() {
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  to="/contact?subject=radar-permis"
+                  to="/services/radar-permis/eligibilite"
                   className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-4 font-bold text-slate-950 shadow-lg transition hover:bg-slate-100"
                 >
                   Vérifier l’éligibilité de mon dossier
@@ -205,7 +205,7 @@ export default function RadarPermis() {
                 </p>
 
                 <Link
-                  to="/contact?subject=radar-permis"
+                  to="/services/radar-permis/eligibilite"
                   className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-white px-5 py-4 font-bold text-slate-950 transition hover:bg-slate-100"
                 >
                   Vérifier mon éligibilité
