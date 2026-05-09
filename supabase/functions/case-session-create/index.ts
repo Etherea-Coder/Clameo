@@ -10,7 +10,7 @@ const allowedOrigins = new Set([
 
 function corsHeaders(req: Request) {
   const origin = req.headers.get("origin") || "";
-  const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(origin);
+  const isVercelPreview = /^https:\/\/clameo-.*\.vercel\.app$/.test(origin);
   const allowOrigin =
     allowedOrigins.has(origin) || isVercelPreview ? origin : "https://clameo.fr";
 

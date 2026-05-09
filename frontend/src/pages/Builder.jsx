@@ -331,9 +331,13 @@ export default function Builder() {
 
   const isStepValid = () => {
     if (!currentStep) return false;
-    return currentStep.fields.every((f) => !f.required || (data[f.name] && String(data[f.name]).trim()));
+    return currentStep.fields.every((f) => {
+      if (!f.required) return true;
+      const val = data[f.name];
+      if (Array.isArray(val)) return val.length > 0;
+      return val && String(val).trim();
+    });
   };
-
 
   const createCaseSession = useCallback(async () => {
     if (!selectedCase) {
@@ -431,8 +435,11 @@ export default function Builder() {
   };
 
   useEffect(() => {
-    createCaseSession();
-  }, [selectedCase, createCaseSession]);
+    // Only create a session when the user reaches the attachments step
+    if (selectedCase && currentStep === ATTACHMENTS_STEP && !caseSessionId) {
+      createCaseSession();
+    }
+  }, [selectedCase, currentStep, caseSessionId, createCaseSession]);
 
 
   const next = () => {

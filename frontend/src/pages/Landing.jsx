@@ -901,7 +901,7 @@ function CafComingSoonSection() {
       id="caf"
       data-testid="caf-section"
       style={{
-        padding: "0 0 112px",
+        padding: "0 0 80px",
         background: token.light,
       }}
     >
@@ -1329,7 +1329,7 @@ export default function Landing() {
       </section>
 
       <main className="section-light">
-        <section data-testid="reassurance-section" style={{ padding: "0 0 112px" }}>
+        <section data-testid="reassurance-section" style={{ padding: "0 0 80px" }}>
           <div className="clameo-container">
             <div
               className="section-card section-grid"
@@ -1397,7 +1397,7 @@ export default function Landing() {
             `}</style>
           </div>
         </section>
-        <section id="modeles" data-testid="usecases-section" style={{ padding: "0 0 112px", scrollMarginTop: 80 }}>
+        <section id="modeles" data-testid="usecases-section" style={{ padding: "0 0 80px", scrollMarginTop: 80 }}>
           <div className="clameo-container">
             <div style={{ maxWidth: 760, marginBottom: 54 }}>
               <div className="section-eyebrow">Nos modèles</div>
@@ -1491,7 +1491,7 @@ export default function Landing() {
         <section
           data-testid="how-section"
           style={{
-            padding: "0 0 112px",
+            padding: "0 0 80px",
             background: token.light,
           }}
         >
@@ -1553,7 +1553,7 @@ export default function Landing() {
           id="faq"
           data-testid="faq-section"
           style={{
-            padding: "0 0 112px",
+            padding: "0 0 80px",
             scrollMarginTop: 80,
           }}
         >

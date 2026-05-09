@@ -12,6 +12,8 @@ import Contact from "./pages/Contact";
 import ModelPage from "./pages/ModelPage";
 import RadarPermis from "./pages/RadarPermis";
 import RadarEligibility from "./pages/RadarEligibility";
+import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
   useEffect(() => {
@@ -35,15 +37,28 @@ function App() {
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/builder" element={<Builder />} />
-            <Route path="/builder/:caseType" element={<Builder />} />
-            <Route path="/result" element={<Result />} />
+            <Route path="/builder" element={
+              <ErrorBoundary>
+                <Builder />
+              </ErrorBoundary>
+            } />
+            <Route path="/builder/:caseType" element={
+              <ErrorBoundary>
+                <Builder />
+              </ErrorBoundary>
+            } />
+            <Route path="/result" element={
+              <ErrorBoundary>
+                <Result />
+              </ErrorBoundary>
+            } />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/confidentialite" element={<Confidentialite />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/modeles/:slug" element={<ModelPage />} />
             <Route path="/services/radar-permis" element={<RadarPermis />} />
             <Route path="/services/radar-permis/eligibilite" element={<RadarEligibility />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </HelmetProvider>

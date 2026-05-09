@@ -23,7 +23,7 @@ const allowedOrigins = new Set([
 
 function corsHeaders(req: Request) {
   const origin = req.headers.get("origin") || "";
-  const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(origin);
+  const isVercelPreview = /^https:\/\/clameo-.*\.vercel\.app$/.test(origin);
   const allowOrigin =
     allowedOrigins.has(origin) || isVercelPreview ? origin : "https://clameo.fr";
 
@@ -138,6 +138,16 @@ serve(async (req) => {
 
   if (expiresAt.getTime() < now.getTime()) {
     return json(req, 410, { ok: false, error: "Session expirée." });
+  }
+
+  // Rate limiting: max 10 attachments per session
+  const { count: attachmentCount, error: countError } = await supabase
+    .from("case_attachments")
+    .select("*", { count: "exact", head: true })
+    .eq("case_session_id", caseSessionId);
+
+  if (!countError && attachmentCount !== null && attachmentCount >= 10) {
+    return json(req, 429, { ok: false, error: "Limite de 10 fichiers atteinte pour cette session." });
   }
 
   const fileId = crypto.randomUUID();

@@ -123,6 +123,21 @@ serve(async (req) => {
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
+  
+  // Basic rate limiting: check if this email has sent more than 3 messages in the last hour
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count, error: countError } = await supabase
+    .from("contact_messages")
+    .select("*", { count: "exact", head: true })
+    .eq("email", email)
+    .gt("created_at", oneHourAgo);
+
+  if (!countError && count !== null && count >= 3) {
+    return json(req, 429, {
+      ok: false,
+      error: "Trop de messages envoyés. Veuillez réessayer plus tard.",
+    });
+  }
 
   const { error: insertError } = await supabase
     .from("contact_messages")

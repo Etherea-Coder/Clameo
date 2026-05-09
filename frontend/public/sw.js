@@ -1,4 +1,4 @@
-const CACHE_NAME = 'clameo-v1';
+const CACHE_NAME = 'clameo-v1.1'; // Update this version on each deploy for cache busting
 const urlsToCache = [
   '/',
   '/manifest.json',
