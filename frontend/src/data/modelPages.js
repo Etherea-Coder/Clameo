@@ -430,6 +430,7 @@ export const MODEL_PAGES = {
             },
         ],
     },
+
     "lettre-reclamation-caf": {
     caseType: "caf-reclamation",
     title: "Modèle de lettre de réclamation CAF",
@@ -486,6 +487,67 @@ export const MODEL_PAGES = {
         question: "Clameo est-il affilié à la CAF ?",
         answer:
           "Non. Clameo est un outil indépendant qui aide à préparer un courrier et un dossier. Il ne remplace pas la CAF, un conseiller social ou un professionnel du droit.",
+      },
+    ],
+  },
+
+    "lettre-dette-caf": {
+    caseType: "caf-dette",
+    title: "Modèle de lettre pour dette CAF, remise gracieuse ou échéancier",
+    description:
+      "Préparez une lettre pour demander une remise gracieuse, une remise partielle ou un échéancier en cas de dette ou de trop-perçu CAF.",
+    intro:
+      "Vous avez reçu une demande de remboursement de la CAF, un trop-perçu ou une dette à régler ? Clameo vous aide à préparer une lettre claire et respectueuse pour demander une remise gracieuse, une remise partielle ou un échéancier adapté à votre situation.",
+    useCases: [
+      "Dette CAF ou trop-perçu à rembourser",
+      "Demande de remboursement reçue de la CAF",
+      "Difficulté à régler la somme en une seule fois",
+      "Demande de remise gracieuse totale ou partielle",
+      "Demande d’échéancier de paiement adapté",
+    ],
+    notFor: [
+      "Contester officiellement l’existence de la dette CAF",
+      "Saisir la Commission de recours amiable",
+      "Répondre à une procédure urgente sans vérifier les délais indiqués par la CAF",
+      "Remplacer l’aide d’un conseiller social, d’une association ou d’un professionnel compétent",
+    ],
+    documents: [
+      "Courrier ou notification CAF mentionnant la dette",
+      "Numéro allocataire CAF",
+      "Justificatifs de revenus",
+      "Justificatifs de charges",
+      "Éléments expliquant votre situation familiale ou financière",
+      "Échanges précédents avec la CAF",
+    ],
+    mistakes: [
+      "Employer un ton agressif ou accusatoire",
+      "Ne pas indiquer le montant demandé",
+      "Oublier d’expliquer sa situation financière",
+      "Demander un échéancier sans proposer de montant réaliste",
+      "Ne pas joindre de justificatifs utiles",
+    ],
+    officialHelp:
+      "Cette lettre sert à demander une remise gracieuse ou un échéancier. Elle ne remplace pas une contestation officielle de la dette. En cas de doute sur les délais ou vos droits, vérifiez les indications figurant sur votre courrier CAF ou rapprochez-vous d’un conseiller social.",
+    faq: [
+      {
+        question: "Cette lettre permet-elle de contester une dette CAF ?",
+        answer:
+          "Non. Ce modèle est conçu pour demander une remise gracieuse, une remise partielle ou un échéancier. Une contestation officielle de la dette peut nécessiter une démarche différente.",
+      },
+      {
+        question: "Puis-je demander une remise totale de la dette ?",
+        answer:
+          "Oui. Le générateur vous permet de demander une remise gracieuse totale, partielle, ou un échéancier selon votre situation.",
+      },
+      {
+        question: "Quels justificatifs joindre à la demande ?",
+        answer:
+          "Il est utile de joindre le courrier CAF, vos justificatifs de revenus, vos charges principales et tout document expliquant votre situation.",
+      },
+      {
+        question: "Clameo est-il affilié à la CAF ?",
+        answer:
+          "Non. Clameo est un outil indépendant qui aide à préparer un courrier et un dossier. Il ne remplace pas la CAF, un conseiller social ou un organisme public.",
       },
     ],
   },

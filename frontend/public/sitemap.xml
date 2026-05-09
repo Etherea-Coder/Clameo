@@ -91,4 +91,10 @@
     <priority>0.85</priority>
   </url>
 
+    <url>
+    <loc>https://clameo.fr/modeles/lettre-dette-caf</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
 </urlset>
