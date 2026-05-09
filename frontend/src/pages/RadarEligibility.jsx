@@ -40,6 +40,7 @@ export default function RadarEligibility() {
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
+  const [submissionResult, setSubmissionResult] = useState(null);
 
   const hasRiskFlag = useMemo(() => {
     return (
@@ -78,6 +79,7 @@ export default function RadarEligibility() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setSubmissionResult(null);
 
     if (!form.consent) {
       setError("Merci de confirmer que les informations transmises sont exactes.");
@@ -87,13 +89,43 @@ export default function RadarEligibility() {
     setStatus("loading");
 
     try {
+      const autoRefusalReasons = [];
+
+      if (form.finePaid === "Oui") {
+        autoRefusalReasons.push("Amende déjà payée");
+      }
+
+      if (form.courtSummons === "Oui") {
+        autoRefusalReasons.push("Convocation au tribunal");
+      }
+
+      if (form.seriousCase === "Oui") {
+        autoRefusalReasons.push("Alcool / stupéfiants / accident / délit grave");
+      }
+
+      const isAutoRefusal = autoRefusalReasons.length > 0;
+
       const payload = {
         name: form.name,
         email: form.email,
-        subject: "Demande d’éligibilité Radar / permis",
+        subject: isAutoRefusal
+          ? "Radar / permis — demande automatiquement non éligible"
+          : "Demande d’éligibilité Radar / permis",
         message: buildMessage(),
         requestType: "radar-permis",
         consent: true,
+        radarData: {
+          name: form.name,
+          email: form.email,
+          finePaid: form.finePaid,
+          noticeDate: form.noticeDate,
+          situationType: form.situationType,
+          courtSummons: form.courtSummons,
+          seriousCase: form.seriousCase,
+          summary: form.summary,
+          autoRefusalReasons,
+          suggestedStatus: isAutoRefusal ? "auto_refused" : "manual_review",
+        },
       };
 
         if (!CONTACT_FUNCTION_URL || !SUPABASE_ANON_KEY) {
@@ -115,6 +147,7 @@ export default function RadarEligibility() {
         throw new Error(data.error || "Erreur lors de l’envoi de la demande.");
         }
 
+      setSubmissionResult(data.radarStatus || null);
       setStatus("success");
       setForm(initialForm);
     } catch (err) {
@@ -167,9 +200,9 @@ export default function RadarEligibility() {
                 Demande envoyée
               </h2>
               <p className="mt-3 leading-7 text-slate-700">
-                Votre demande d’éligibilité a bien été transmise. Aucun paiement
-                n’est demandé à ce stade. Si votre dossier semble éligible, vous
-                recevrez les prochaines étapes par email.
+                {submissionResult === "auto_refused"
+                  ? "Votre demande a bien été reçue. D’après les informations transmises, votre situation semble dépasser le cadre du service Clameo Radar. Un email de réponse va vous être envoyé."
+                  : "Votre demande d’éligibilité a bien été transmise. Aucun paiement n’est demandé à ce stade. Si votre dossier semble éligible, vous recevrez les prochaines étapes par email."}
               </p>
 
               <Link
