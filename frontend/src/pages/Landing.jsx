@@ -831,7 +831,6 @@ function ModelTicker() {
     "Mise en demeure",
     "Travail",
     "RGPD",
-    "CAF",
   ];
 
   return (
@@ -1132,7 +1131,7 @@ export default function Landing() {
             </div>
 
             <div className="usecase-grid">
-              {CASES.map((c) => {
+              {CASES.filter(c => c.id !== "caf-reclamation").map((c) => {
                 const Icon = c.Icon;
                 const isHovered = hoveredCard === c.id;
 
