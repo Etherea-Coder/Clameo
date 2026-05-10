@@ -14,6 +14,8 @@ import RadarPermis from "./pages/RadarPermis";
 import RadarEligibility from "./pages/RadarEligibility";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
+import KitRgpd from "@/pages/KitRgpd";
+import CookieBanner from "@/components/CookieBanner";
 
 function App() {
   useEffect(() => {
@@ -58,8 +60,10 @@ function App() {
             <Route path="/modeles/:slug" element={<ModelPage />} />
             <Route path="/services/radar-permis" element={<RadarPermis />} />
             <Route path="/services/radar-permis/eligibilite" element={<RadarEligibility />} />
+            <Route path="/outils/kit-rgpd" element={<KitRgpd />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <CookieBanner />
         </BrowserRouter>
       </HelmetProvider>
     </div>

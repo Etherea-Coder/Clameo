@@ -1157,7 +1157,7 @@ function ServicesSection() {
       active: true,
     },
     {
-      title: "Système RGPD",
+      title: "Kit RGPD",
       status: "Bientôt",
       price: "Pack",
       description:

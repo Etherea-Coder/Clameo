@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   XCircle,
   Clock,
+  Gauge,
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -149,6 +150,55 @@ export default function RadarPermis() {
                   </li>
                 ))}
               </ul>
+
+              <div className="mt-8 overflow-hidden rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-slate-50 p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-orange-100 text-orange-700">
+                    <Gauge className="h-6 w-6" />
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-700">
+                      Ressource utile
+                    </p>
+
+                    <h3 className="mt-2 text-xl font-black tracking-tight text-slate-950">
+                      Vous avez déjà perdu des points ?
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-700">
+                      Si votre situation ne relève pas de Clameo Radar, vous pouvez vérifier
+                      les solutions existantes pour récupérer des points, notamment les stages
+                      de sensibilisation à la sécurité routière agréés.
+                    </p>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-700">
+                      Un stage agréé peut permettre de récupérer jusqu’à 4 points, dans la
+                      limite du plafond de votre permis, selon votre situation.
+                    </p>
+
+                    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+                      <a
+                        href="#"
+                        className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
+                      >
+                        Trouver un stage de récupération de points
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </a>
+
+                      <span className="text-xs leading-5 text-slate-500">
+                        Lien partenaire à venir
+                      </span>
+                    </div>
+
+                    <p className="mt-4 text-xs leading-5 text-slate-500">
+                      Clameo ne vend pas directement ces stages, ne garantit pas votre
+                      éligibilité et vous recommande de vérifier les conditions applicables
+                      avant toute réservation.
+                    </p>
+                  </div>
+                </div>
+              </div>             
             </div>
 
             <div>
