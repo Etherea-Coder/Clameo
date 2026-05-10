@@ -1144,7 +1144,7 @@ function CafComingSoonSection() {
 function ServicesSection() {
   const services = [
     {
-      title: "Radar / permis",
+      title: "Amende radar : vérifiez avant de payer",
       status: "Pré-vérification ouverte",
       price: "35 €",
       description: (
