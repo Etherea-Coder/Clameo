@@ -15,6 +15,9 @@ import {
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
+
+const PAYHIP_KIT_RGPD_URL = "https://payhip.com/b/g1DZG";
 
 const features = [
   {
@@ -92,14 +95,25 @@ const faqs = [
     a: "Non. Il s’agit d’un outil de préparation administrative. Le kit ne remplace pas un avocat, la CNIL ou un professionnel du droit.",
   },
   {
-    q: "Quand sera-t-il disponible ?",
-    a: "Le kit est en cours de finalisation. La page est préparée pour le lancement, mais l’achat n’est pas encore ouvert publiquement.",
+    q: "Comment recevoir le kit après achat ?",
+    a: "Après paiement sur Payhip, vous recevez automatiquement le fichier ZIP à télécharger. Il contient le fichier HTML du kit et le guide PDF d’utilisation.",
+  },
+  {
+    q: "Les mises à jour sont-elles incluses ?",
+    a: "L’achat inclut l’accès aux corrections et mises à jour importantes de la version actuelle lorsqu’elles sont publiées. Les acheteurs peuvent recevoir les informations de mise à jour via Payhip.",
   },
 ];
 
 export default function KitRgpd() {
   return (
-    <div className="min-h-screen bg-[#fafafa] text-slate-950">
+    <>
+      <Seo
+        title="Kit RGPD Clameo — Préparer et suivre vos demandes RGPD"
+        description="Kit RGPD Clameo : un espace local pour préparer, envoyer et suivre vos demandes RGPD vous-même. Modèles d’emails, envoi assisté, tracker, export Excel et sauvegarde JSON."
+        path="/outils/kit-rgpd"
+      />
+
+      <div className="min-h-screen bg-[#fafafa] text-slate-950">
       <Header />
 
       <main>
@@ -111,7 +125,7 @@ export default function KitRgpd() {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-orange-700">
                 <ShieldCheck className="h-4 w-4" />
-                Bientôt disponible
+                Disponible
               </div>
 
                 <h1 className="mt-7 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
@@ -131,7 +145,7 @@ export default function KitRgpd() {
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <div className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-black text-white shadow-sm">
-                    Prix de lancement prévu : 29 €
+                    Prix de lancement : 29 €
                   </div>
 
                   <span className="text-sm text-slate-500">
@@ -140,14 +154,15 @@ export default function KitRgpd() {
                 </div>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <button
-                    type="button"
-                    disabled
-                    className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black text-white opacity-70 shadow-sm"
+                  <a
+                    href={PAYHIP_KIT_RGPD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black text-white shadow-sm transition hover:bg-orange-700"
                   >
-                    Achat bientôt disponible
+                    Acheter le Kit RGPD — 29 €
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </button>
+                  </a>
 
                   <Link
                     to="/"
@@ -474,24 +489,24 @@ export default function KitRgpd() {
           <section className="bg-slate-950 py-20 text-white">
             <div className="mx-auto max-w-4xl px-6 text-center lg:px-8">
               <p className="text-sm font-black uppercase tracking-[0.18em] text-orange-400">
-                Lancement prochain
+                Disponible maintenant
               </p>
               <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">
-                Kit RGPD Clameo — bientôt disponible à 29 €
+                Kit RGPD Clameo — disponible à 29 €
               </h2>
               <p className="mt-5 text-base leading-8 text-slate-300">
-                La page est prête pour le lancement. L’achat sera activé lorsque
-                le système de paiement et de livraison du fichier sera finalisé.
+                Paiement unique via Payhip. Après l’achat, vous recevez automatiquement le ZIP contenant le kit HTML et le guide PDF.
               </p>
 
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black text-white opacity-70"
+                <a
+                  href={PAYHIP_KIT_RGPD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black text-white transition hover:bg-orange-700"
                 >
-                  Achat bientôt disponible
-                </button>
+                  Acheter le Kit RGPD — 29 €
+                </a>
 
                 <Link
                   to="/"
@@ -506,5 +521,6 @@ export default function KitRgpd() {
 
         <Footer />
       </div>
+    </>
   );
 }

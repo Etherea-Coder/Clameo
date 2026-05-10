@@ -128,6 +128,15 @@ export default function Footer() {
                   Radar / permis
                 </Link>
               </li>
+              
+              <li>
+                <Link
+                  to="/outils/kit-rgpd"
+                  className="hover:text-coral transition"
+                >
+                  Kit RGPD
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -173,6 +182,16 @@ export default function Footer() {
             © {new Date().getFullYear()} Clameo — Fait avec rigueur en France.
           </p>
           <p>clameo.fr</p>
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.removeItem("clameo_cookie_consent");
+              window.location.reload();
+            }}
+            className="text-sm text-slate-500 hover:text-slate-900"
+          >
+            Gérer mes cookies
+          </button>          
         </div>
       </div>
     </footer>

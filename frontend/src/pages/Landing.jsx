@@ -1147,24 +1147,21 @@ function ServicesSection() {
       title: "Amende radar : vérifiez avant de payer",
       status: "Pré-vérification ouverte",
       price: "35 €",
-      description: (
-        <>
-          <strong>Amende radar, ANTAI, risque de retrait de points :</strong> Clameo vous aide à préparer un dossier administratif clair. Pré-vérification gratuite, aucun paiement avant validation de l'éligibilité.
-        </>
-      ),
+      description:
+        "Amende radar, ANTAI, risque de retrait de points : Clameo vous aide à préparer un dossier administratif clair. Pré-vérification gratuite, aucun paiement avant validation de l’éligibilité.",
       cta: "Vérifier l’éligibilité",
       to: "/services/radar-permis",
       active: true,
     },
     {
-      title: "Kit RGPD",
-      status: "Bientôt",
-      price: "Pack",
+      title: "Kit RGPD Clameo",
+      status: "Disponible",
+      price: "29 €",
       description:
-        "Un kit prêt à utiliser pour préparer vos demandes d’accès, suppression, rectification ou opposition auprès de services et courtiers de données.",
-      cta: "Bientôt disponible",
-      to: null,
-      active: false,
+        "Un espace local pour préparer, envoyer et suivre vos demandes RGPD vous-même : modèles d’emails, envoi assisté, tracker, export Excel et guide PDF.",
+      cta: "Découvrir le kit",
+      to: "/outils/kit-rgpd",
+      active: true,
     },
     {
       title: "Ressources utiles",
