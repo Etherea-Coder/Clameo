@@ -15,7 +15,6 @@ import {
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Seo from "@/components/Seo";
 
 const PAYHIP_KIT_RGPD_URL = "https://payhip.com/b/g1DZG";
 
@@ -107,12 +106,6 @@ const faqs = [
 export default function KitRgpd() {
   return (
     <>
-      <Seo
-        title="Kit RGPD Clameo — Préparer et suivre vos demandes RGPD"
-        description="Kit RGPD Clameo : un espace local pour préparer, envoyer et suivre vos demandes RGPD vous-même. Modèles d’emails, envoi assisté, tracker, export Excel et sauvegarde JSON."
-        path="/outils/kit-rgpd"
-      />
-
       <div className="min-h-screen bg-[#fafafa] text-slate-950">
       <Header />
 
