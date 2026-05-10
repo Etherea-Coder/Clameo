@@ -151,54 +151,6 @@ export default function RadarPermis() {
                 ))}
               </ul>
 
-              <div className="mt-8 overflow-hidden rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-slate-50 p-6 shadow-sm">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-orange-100 text-orange-700">
-                    <Gauge className="h-6 w-6" />
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-700">
-                      Ressource utile
-                    </p>
-
-                    <h3 className="mt-2 text-xl font-black tracking-tight text-slate-950">
-                      Vous avez déjà perdu des points ?
-                    </h3>
-
-                    <p className="mt-3 text-sm leading-7 text-slate-700">
-                      Si votre situation ne relève pas de Clameo Radar, vous pouvez vérifier
-                      les solutions existantes pour récupérer des points, notamment les stages
-                      de sensibilisation à la sécurité routière agréés.
-                    </p>
-
-                    <p className="mt-3 text-sm leading-7 text-slate-700">
-                      Un stage agréé peut permettre de récupérer jusqu’à 4 points, dans la
-                      limite du plafond de votre permis, selon votre situation.
-                    </p>
-
-                    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-                      <a
-                        href="#"
-                        className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
-                      >
-                        Trouver un stage de récupération de points
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </a>
-
-                      <span className="text-xs leading-5 text-slate-500">
-                        Lien partenaire à venir
-                      </span>
-                    </div>
-
-                    <p className="mt-4 text-xs leading-5 text-slate-500">
-                      Clameo ne vend pas directement ces stages, ne garantit pas votre
-                      éligibilité et vous recommande de vérifier les conditions applicables
-                      avant toute réservation.
-                    </p>
-                  </div>
-                </div>
-              </div>             
             </div>
 
             <div>
@@ -214,6 +166,45 @@ export default function RadarPermis() {
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Partner strip ── */}
+        <section className="border-t border-orange-100 bg-gradient-to-r from-orange-50 via-white to-orange-50">
+          <div className="mx-auto max-w-6xl px-6 py-10">
+            <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-orange-100 text-orange-700">
+                  <Gauge className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-600">
+                    Ressource utile
+                  </p>
+                  <h2 className="mt-0.5 text-lg font-black tracking-tight text-slate-950">
+                    Vous avez déjà perdu des points ?
+                  </h2>
+                </div>
+              </div>
+
+              <p className="max-w-md text-sm leading-7 text-slate-600 sm:text-right">
+                Un stage agréé peut permettre de récupérer jusqu'à{" "}
+                <span className="font-bold text-slate-900">4 points</span>.
+                Clameo ne gère pas cette démarche, mais vous pourrez explorer les
+                stages disponibles via une ressource partenaire bientôt disponible.
+              </p>
+
+              <div className="flex flex-col items-start gap-2 sm:flex-shrink-0 sm:items-end">
+                <a
+                  href="#"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
+                >
+                  Trouver un stage
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+                <span className="text-xs text-slate-400">Lien partenaire à venir</span>
+              </div>
             </div>
           </div>
         </section>
@@ -299,6 +290,7 @@ export default function RadarPermis() {
             </div>
           </div>
         </section>
+
       </main>
 
       <Footer />
