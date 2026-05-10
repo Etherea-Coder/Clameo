@@ -15,7 +15,6 @@ import {
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Seo from "@/components/Seo";
 
 const features = [
   {
@@ -100,27 +99,20 @@ const faqs = [
 
 export default function KitRgpd() {
   return (
-    <>
-      <Seo
-        title="Kit RGPD Clameo — Préparer et suivre vos demandes RGPD"
-        description="Un espace local pour préparer, envoyer et suivre vos demandes RGPD vous-même : modèles d’emails, annuaire, tracker, export Excel, sauvegarde JSON et guide pratique."
-        path="/outils/kit-rgpd"
-      />
+    <div className="min-h-screen bg-[#fafafa] text-slate-950">
+      <Header />
 
-      <div className="min-h-screen bg-[#fafafa] text-slate-950">
-        <Header />
+      <main>
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-slate-200 bg-white">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(232,80,42,0.12),transparent_35%),radial-gradient(circle_at_top_left,rgba(15,23,42,0.06),transparent_30%)]" />
 
-        <main>
-          {/* Hero */}
-          <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(232,80,42,0.12),transparent_35%),radial-gradient(circle_at_top_left,rgba(15,23,42,0.06),transparent_30%)]" />
-
-            <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-orange-700">
-                  <ShieldCheck className="h-4 w-4" />
-                  Bientôt disponible
-                </div>
+          <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-orange-700">
+                <ShieldCheck className="h-4 w-4" />
+                Bientôt disponible
+              </div>
 
                 <h1 className="mt-7 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
                   Kit RGPD Clameo
@@ -514,6 +506,5 @@ export default function KitRgpd() {
 
         <Footer />
       </div>
-    </>
   );
 }
