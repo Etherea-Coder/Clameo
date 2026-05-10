@@ -1202,7 +1202,7 @@ function ServicesSection() {
           {services.map((service) => (
             <div
               key={service.title}
-              className={`relative overflow-hidden rounded-[28px] border p-6 shadow-2xl ${
+              className={`relative flex flex-col overflow-hidden rounded-[28px] border p-6 shadow-2xl ${
                 service.active
                   ? "border-white/20 bg-white text-slate-950"
                   : "border-white/10 bg-white/[0.07] text-white"
@@ -1228,17 +1228,19 @@ function ServicesSection() {
                 </span>
               </div>
 
-              <h3 className="mt-8 text-2xl font-black tracking-[-0.035em]">
-                {service.title}
-              </h3>
+              <div className="flex-1">
+                <h3 className="mt-8 text-2xl font-black tracking-[-0.035em]">
+                  {service.title}
+                </h3>
 
-              <p
-                className={`mt-4 min-h-[112px] text-sm leading-7 ${
-                  service.active ? "text-slate-600" : "text-white/60"
-                }`}
-              >
-                {service.description}
-              </p>
+                <p
+                  className={`mt-4 text-sm leading-7 ${
+                    service.active ? "text-slate-600" : "text-white/60"
+                  }`}
+                >
+                  {service.description}
+                </p>
+              </div>
 
               {service.to ? (
                 <Link
