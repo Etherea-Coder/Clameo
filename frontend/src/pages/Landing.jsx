@@ -1168,8 +1168,8 @@ function ServicesSection() {
       status: "À venir",
       price: "Sélection",
       description:
-        "Des partenaires et ressources contextuelles, uniquement quand cela aide vraiment : LRAR, confidentialité, achats en ligne, protection.",
-      cta: "À venir",
+        "Des liens sélectionnés selon votre situation : services officiels, associations, démarches pratiques ou partenaires clairement identifiés. Clameo privilégie les ressources utiles, pas les recommandations automatiques.",
+      cta: "Bientôt disponible",
       to: null,
       active: false,
     },

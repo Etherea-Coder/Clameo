@@ -118,6 +118,54 @@ export default function Confidentialite() {
               </p>
             </section>
 
+
+
+            <section className="space-y-4">
+              <h2 className="text-xl font-semibold text-[#111827]">
+                Achats, paiements et livraison de produits numériques
+              </h2>
+
+              <p>
+                Lorsque vous achetez un produit numérique Clameo, par exemple le
+                Kit RGPD Clameo, le paiement et la livraison du fichier peuvent
+                être gérés par des prestataires externes comme Payhip et PayPal.
+              </p>
+
+              <p>
+                Clameo ne stocke pas vos informations complètes de paiement. Les
+                données nécessaires au paiement, à la facturation, à la confirmation
+                de commande et à la livraison du fichier sont traitées par les
+                prestataires concernés selon leurs propres conditions et politiques
+                de confidentialité.
+              </p>
+
+              <p>
+                Les informations liées à l’achat peuvent notamment servir à confirmer
+                votre commande, permettre le téléchargement du produit, gérer une
+                demande d’assistance, envoyer une mise à jour importante ou vérifier
+                un problème d’accès au fichier.
+              </p>
+            </section>
+
+            <section className="space-y-4">
+              <h2 className="text-xl font-semibold text-[#111827]">
+                Kit RGPD Clameo
+              </h2>
+
+              <p>
+                Le Kit RGPD Clameo est conçu pour fonctionner localement dans votre
+                navigateur. Les données saisies dans le kit restent sur votre appareil,
+                sauf si vous décidez vous-même d’envoyer un message via votre
+                messagerie habituelle ou d’utiliser un portail officiel externe.
+              </p>
+
+              <p>
+                Si vous utilisez Gmail, Outlook Web, un fichier .eml ou un portail
+                officiel depuis le kit, vous quittez l’environnement Clameo et utilisez
+                alors le service tiers concerné sous votre propre responsabilité.
+              </p>
+            </section>
+
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-[#111827]">
                 Pourquoi nous traitons ces données
@@ -128,7 +176,7 @@ export default function Confidentialite() {
                 <li>permettre l’ajout et l’assemblage de pièces jointes ;</li>
                 <li>répondre à vos messages ;</li>
                 <li>assurer la sécurité et le bon fonctionnement du service ;</li>
-                <li>gérer, si besoin plus tard, la délivrance de produits ou services payants.</li>
+                <li>gérer la délivrance de produits ou services payants, lorsqu’un achat est effectué ;</li>
               </ul>
             </section>
 
@@ -171,7 +219,8 @@ export default function Confidentialite() {
               <p>
                 Clameo s’appuie sur des prestataires techniques pour l’hébergement,
                 le stockage temporaire de fichiers, le traitement technique du
-                formulaire de contact et l’envoi d’emails transactionnels.
+                formulaire de contact, l’envoi d’emails transactionnels, le paiement
+                et la livraison de produits numériques.
               </p>
 
               <p>
@@ -187,9 +236,11 @@ export default function Confidentialite() {
 
               <p>
                 Si vous choisissez ensuite d’utiliser un service externe, par
-                exemple pour envoyer un recommandé, vous quittez Clameo. Vous
-                utilisez alors un service tiers soumis à ses propres conditions et à
-                sa propre politique de confidentialité.
+                exemple pour envoyer un recommandé, effectuer un paiement, télécharger
+                un produit numérique, ouvrir Gmail ou Outlook Web, ou consulter un
+                portail officiel, vous quittez Clameo. Vous utilisez alors un service
+                tiers soumis à ses propres conditions et à sa propre politique de
+                confidentialité.
               </p>
 
               <p>

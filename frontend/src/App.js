@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
 import KitRgpd from "@/pages/KitRgpd";
 import CookieBanner from "@/components/CookieBanner";
+import ConditionsVente from "./pages/ConditionsVente";
 
 function App() {
   useEffect(() => {
@@ -61,6 +62,7 @@ function App() {
             <Route path="/services/radar-permis" element={<RadarPermis />} />
             <Route path="/services/radar-permis/eligibilite" element={<RadarEligibility />} />
             <Route path="/outils/kit-rgpd" element={<KitRgpd />} />
+            <Route path="/conditions-vente" element={<ConditionsVente />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieBanner />

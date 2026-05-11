@@ -54,11 +54,21 @@ export default function CookieBanner() {
 
     if (!stored) {
       setVisible(true);
-      return;
+    } else {
+      setAnalytics(Boolean(stored.analytics));
+      setPartners(Boolean(stored.partners));
     }
 
-    setAnalytics(Boolean(stored.analytics));
-    setPartners(Boolean(stored.partners));
+    // Listen for custom event to show banner
+    const handleShowBanner = () => {
+      setVisible(true);
+    };
+
+    window.addEventListener("clameo-show-cookie-banner", handleShowBanner);
+
+    return () => {
+      window.removeEventListener("clameo-show-cookie-banner", handleShowBanner);
+    };
   }, []);
 
   function acceptAll() {

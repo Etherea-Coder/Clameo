@@ -146,6 +146,16 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-white/80">
               <li>
                 <Link
+                  to="/conditions-vente"
+                  className="hover:text-coral transition"
+                  data-testid="footer-conditions"
+                >
+                  Conditions de vente
+                </Link>
+              </li>
+
+              <li>
+                <Link
                   to="/mentions-legales"
                   className="hover:text-coral transition"
                   data-testid="footer-legal"
@@ -186,7 +196,7 @@ export default function Footer() {
             type="button"
             onClick={() => {
               localStorage.removeItem("clameo_cookie_consent");
-              window.location.reload();
+              window.dispatchEvent(new CustomEvent("clameo-show-cookie-banner"));
             }}
             className="text-sm text-slate-500 hover:text-slate-900"
           >
