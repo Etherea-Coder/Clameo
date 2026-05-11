@@ -3,17 +3,10 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, FileText, AlertTriangle, ShieldCheck } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import Seo from "@/components/Seo";
 
 export default function ConditionsVente() {
   return (
     <div className="min-h-screen bg-[#f6f1eb] text-[#1f2937]">
-      <Seo
-        title="Conditions de vente — Clameo"
-        description="Conditions de vente Clameo : produits numériques, service Radar, paiement, livraison, remboursement et limites importantes."
-        path="/conditions-vente"
-      />
-
       <Header />
 
       <main className="mx-auto max-w-4xl px-6 py-12 md:px-8">
