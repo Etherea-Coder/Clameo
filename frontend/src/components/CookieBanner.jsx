@@ -52,7 +52,7 @@ export default function CookieBanner() {
   useEffect(() => {
     const stored = getStoredConsent();
 
-    if (!stored) {
+    if (!stored || !stored.decidedAt) {
       setVisible(true);
     } else {
       setAnalytics(Boolean(stored.analytics));

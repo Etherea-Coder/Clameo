@@ -1,4 +1,4 @@
-const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+const GA_ID = process.env.REACT_APP_GA_MEASUREMENT_ID || process.env.REACT_APP_GOOGLE_ANALYTICS_ID || import.meta.env?.VITE_GA_MEASUREMENT_ID;
 
 let gaLoaded = false;
 
@@ -14,8 +14,19 @@ export function hasAnalyticsConsent() {
 }
 
 export function loadGoogleAnalytics() {
-  if (!GA_ID || gaLoaded || !hasAnalyticsConsent()) return;
+  if (!GA_ID) {
+    console.warn("Google Analytics ID is missing. Check your environment variables (REACT_APP_GA_MEASUREMENT_ID).");
+    return;
+  }
+  
+  if (gaLoaded) return;
+  
+  if (!hasAnalyticsConsent()) {
+    console.log("Google Analytics waiting for user consent...");
+    return;
+  }
 
+  console.log("Google Analytics loading with ID:", GA_ID);
   gaLoaded = true;
 
   window.dataLayer = window.dataLayer || [];
