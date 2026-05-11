@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/analytics";
 
 const supportedCases = [
   "Véhicule vendu avant l’infraction",
@@ -68,6 +69,12 @@ export default function RadarPermis() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/services/radar-permis/eligibilite"
+                  onClick={() =>
+                    trackEvent("radar_eligibility_click", {
+                      location: "hero",
+                      price: 35,
+                    })
+                  }
                   className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-4 font-bold text-slate-950 shadow-lg transition hover:bg-slate-100"
                 >
                   Vérifier l’éligibilité de mon dossier
@@ -247,6 +254,12 @@ export default function RadarPermis() {
 
                 <Link
                   to="/services/radar-permis/eligibilite"
+                  onClick={() =>
+                    trackEvent("radar_eligibility_click", {
+                      location: "pricing_card",
+                      price: 35,
+                    })
+                  }
                   className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-white px-5 py-4 font-bold text-slate-950 transition hover:bg-slate-100"
                 >
                   Vérifier mon éligibilité

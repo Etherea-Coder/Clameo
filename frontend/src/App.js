@@ -17,6 +17,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import KitRgpd from "@/pages/KitRgpd";
 import CookieBanner from "@/components/CookieBanner";
 import ConditionsVente from "./pages/ConditionsVente";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 function App() {
   useEffect(() => {
@@ -38,6 +39,7 @@ function App() {
       <HelmetProvider>
         <BrowserRouter>
           <ScrollToTop />
+          <AnalyticsTracker />
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/builder" element={

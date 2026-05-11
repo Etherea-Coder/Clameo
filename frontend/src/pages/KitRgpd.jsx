@@ -15,6 +15,7 @@ import {
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/analytics";
 
 const PAYHIP_KIT_RGPD_URL = "https://payhip.com/b/g1DZG";
 
@@ -151,6 +152,12 @@ export default function KitRgpd() {
                     href={PAYHIP_KIT_RGPD_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      trackEvent("kit_rgpd_buy_click", {
+                        location: "hero",
+                        price: 29,
+                      })
+                    }
                     className="inline-flex items-center justify-center rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black text-white shadow-sm transition hover:bg-orange-700"
                   >
                     Acheter le Kit RGPD — 29 €
@@ -496,6 +503,12 @@ export default function KitRgpd() {
                   href={PAYHIP_KIT_RGPD_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackEvent("kit_rgpd_buy_click", {
+                      location: "bottom_cta",
+                      price: 29,
+                    })
+                  }
                   className="inline-flex items-center justify-center rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black text-white transition hover:bg-orange-700"
                 >
                   Acheter le Kit RGPD — 29 €

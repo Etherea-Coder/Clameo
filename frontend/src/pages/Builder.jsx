@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Check, Lock, AlertTriangle, Lightbulb } from "lu
 import { toast, Toaster } from "sonner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { trackEvent } from "@/lib/analytics";
 import { CASES, CASE_STEPS, RECIPIENT_STEP, ATTACHMENTS_STEP, USER_STEP, getCase } from "../lib/letterCases";
 import { validateLetterData } from "../lib/letterTemplates";
 import { setResult } from "../lib/resultStore";
@@ -504,6 +505,10 @@ export default function Builder() {
                   key={cs.id}
                   type="button"
                   onClick={() => {
+                    trackEvent("builder_start", {
+                      case_type: cs.id,
+                      source: "homepage_model_grid",
+                    });
                     setSelectedCase(cs.id);
                     setData({});
                     setStepIndex(0);
